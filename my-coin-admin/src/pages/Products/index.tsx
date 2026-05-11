@@ -16,7 +16,7 @@ import ProductEditModal from './ProductEditModal';
 import ProductLocalizationModal from './ProductLocalizationModal';
 import FeatureLibraryModal from './FeatureLibraryModal';
 import PageHeader from '../../components/common/PageHeader';
-import type { Product, ProductStatus } from '../../types';
+import type { Product, FeatureLibraryItem } from '../../types';
 
 const { Title, Text } = Typography;
 
@@ -185,6 +185,11 @@ const ProductContent: React.FC = () => {
       <ProductEditModal 
         open={editModalOpen}
         onCancel={() => setEditModalOpen(false)}
+        onSave={(values) => {
+           console.log('Saving product:', values);
+           setEditModalOpen(false);
+           message.success('保存成功（演示环境）');
+        }}
         editingProduct={editingPackage}
         featureLibrary={featureLibrary}
         type={editingPackage?.type || 'subscription'}
@@ -192,7 +197,13 @@ const ProductContent: React.FC = () => {
       <ProductLocalizationModal 
         open={locModalOpen}
         onCancel={() => setLocModalOpen(false)}
-        product={localizingPackage}
+        onSave={(locales) => {
+           console.log('Saving locales:', locales);
+           setLocModalOpen(false);
+           message.success('本地化配置已更新（演示环境）');
+        }}
+        initialLocales={localizingPackage?.locales || []}
+        productName={localizingPackage?.name || ''}
       />
     </div>
   );

@@ -84,12 +84,14 @@ export type ProductLocale = {
   lang: string;
   name: string;
   description: string;
+  features?: string[];
 }
 
 export type Product = {
   id: string;
   key?: string; // 兼容 key
   name: string;
+  description?: string;
   price: number;
   currency: string;
   type: 'subscription' | 'consumable' | 'one-time';

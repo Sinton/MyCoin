@@ -1,5 +1,5 @@
-import React from 'react';
-import { Typography, Space, Divider } from 'antd';
+import { Typography, Space, Divider, Button } from 'antd';
+import { ExportOutlined } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
 
@@ -8,13 +8,15 @@ export interface PageHeaderProps {
   subtitle?: string;
   extra?: React.ReactNode;
   stats?: React.ReactNode;
+  onExport?: () => void;
 }
 
 const PageHeader: React.FC<PageHeaderProps> = ({
   title,
   subtitle,
   extra,
-  stats
+  stats,
+  onExport
 }) => {
   return (
     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">

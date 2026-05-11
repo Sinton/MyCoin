@@ -1,18 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Layout, Menu, theme, Divider } from 'antd';
-import {
-  DashboardOutlined,
-  ShoppingOutlined,
-  SettingOutlined,
-  NotificationOutlined,
-  UserOutlined,
-  CreditCardOutlined,
-} from '@ant-design/icons';
+import { UserOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useIsFetching } from '@tanstack/react-query';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import NotificationCenter from '../components/layout/NotificationCenter';
+import { routes } from '../routes/config';
 
 const { Header, Sider, Content } = Layout;
 
@@ -40,33 +34,16 @@ const MainLayout: React.FC = () => {
     NProgress.configure({ showSpinner: false, speed: 400, minimum: 0.1 });
   }, []);
 
-  const menuItems = [
-    {
-      key: '/',
-      icon: <DashboardOutlined />,
-      label: '仪表盘',
-    },
-    {
-      key: '/orders',
-      icon: <ShoppingOutlined />,
-      label: '订单管理',
-    },
-    {
-      key: '/products',
-      icon: <CreditCardOutlined />,
-      label: '订阅管理',
-    },
-    {
-      key: '/webhooks',
-      icon: <NotificationOutlined />,
-      label: 'Webhook日志',
-    },
-    {
-      key: '/settings',
-      icon: <SettingOutlined />,
-      label: '系统设置',
-    },
-  ];
+  // 根据路由配置动态生成菜单项
+  const menuItems = useMemo(() => {
+    return routes
+      .filter(route => !route.hideInMenu)
+      .map(route => ({
+        key: route.path,
+        icon: route.icon,
+        label: route.label,
+      }));
+  }, []);
 
   return (
     <Layout className="min-h-screen">
@@ -77,7 +54,7 @@ const MainLayout: React.FC = () => {
         theme="dark"
         className="fixed left-0 top-0 bottom-0 overflow-auto"
       >
-        <div className="h-4" /> {/* 顶部留一点留白，防止菜单太靠顶 */}
+        <div className="h-4" />
         <Menu
           theme="dark"
           mode="inline"
@@ -92,7 +69,6 @@ const MainLayout: React.FC = () => {
           style={{ background: colorBgContainer }}
         >
           <div className="flex items-center">
-            {/* Toggle icon could go here */}
           </div>
           <div className="flex items-center gap-4">
             <NotificationCenter />
