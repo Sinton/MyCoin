@@ -5,7 +5,8 @@ import Dashboard from './pages/Dashboard';
 import Orders from './pages/Orders';
 import Products from './pages/Products/index';
 import Webhooks from './pages/Webhooks';
-import Settings from './pages/Settings/index'; // 新增
+import Settings from './pages/Settings/index';
+import Notifications from './pages/Notifications';
 import { ConfigProvider } from './context/ConfigContext'; // 新增
 
 const App: React.FC = () => {
@@ -19,6 +20,7 @@ const App: React.FC = () => {
             <Route path="products" element={<Products />} />
             <Route path="webhooks" element={<Webhooks />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="notifications" element={<Notifications />} />
           </Route>
         </Routes>
       </BrowserRouter>

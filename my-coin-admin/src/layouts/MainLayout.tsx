@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Menu, theme } from 'antd';
+import { Layout, Menu, theme, Divider } from 'antd';
 import {
   DashboardOutlined,
   ShoppingOutlined,
@@ -9,6 +9,10 @@ import {
   CreditCardOutlined,
 } from '@ant-design/icons';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
+import { useIsFetching } from '@tanstack/react-query';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
+import NotificationCenter from '../components/layout/NotificationCenter';
 
 const { Header, Sider, Content } = Layout;
 
@@ -19,6 +23,22 @@ const MainLayout: React.FC = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  // --- NProgress 全局进度条控制 ---
+  const isFetching = useIsFetching();
+  
+  React.useEffect(() => {
+    if (isFetching > 0) {
+      NProgress.start();
+    } else {
+      NProgress.done();
+    }
+  }, [isFetching]);
+
+  // 配置 NProgress
+  React.useLayoutEffect(() => {
+    NProgress.configure({ showSpinner: false, speed: 400, minimum: 0.1 });
+  }, []);
 
   const menuItems = [
     {
@@ -75,6 +95,8 @@ const MainLayout: React.FC = () => {
             {/* Toggle icon could go here */}
           </div>
           <div className="flex items-center gap-4">
+            <NotificationCenter />
+            <Divider type="vertical" style={{ height: 20 }} />
             <span className="text-gray-500 text-sm">管理员 (Admin)</span>
             <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
               <UserOutlined className="text-gray-400" />

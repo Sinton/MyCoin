@@ -1,9 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { ConfigProvider } from 'antd'
+import { ConfigProvider, App as AntdApp } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
+import ErrorBoundary from './components/common/ErrorBoundary'
 import './index.css'
 
 // 创建一个 client
@@ -28,7 +29,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           },
         }}
       >
-        <App />
+        <ErrorBoundary>
+          <AntdApp>
+            <App />
+          </AntdApp>
+        </ErrorBoundary>
       </ConfigProvider>
     </QueryClientProvider>
   </React.StrictMode>,

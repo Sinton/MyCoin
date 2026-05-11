@@ -43,10 +43,12 @@ function TableSelect<T extends object>({
       onChange={onChange}
       allowClear
       open={open}
-      onDropdownVisibleChange={setOpen}
-      dropdownStyle={{ minWidth: dropdownWidth, padding: 0 }}
-      dropdownRender={() => (
-        <div className="p-2 shadow-lg bg-white border border-gray-100 rounded-md">
+      onOpenChange={setOpen}
+      popupRender={() => (
+        <div 
+          className="p-2 shadow-lg bg-white border border-gray-100 rounded-md"
+          style={{ minWidth: dropdownWidth }}
+        >
           <Table
             size="small"
             columns={columns}

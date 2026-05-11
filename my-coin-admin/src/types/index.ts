@@ -4,7 +4,7 @@ export type ApiResponse<T> = {
   message: string;
 }
 
-// --- 订单相关 ---
+// --- 订单相关 (保持不变) ---
 export type Order = {
   key: string;
   id: string;
@@ -23,7 +23,7 @@ export type OrderStats = {
   activeUsers: number;
 }
 
-// --- 仪表盘相关 ---
+// --- 仪表盘相关 (保持不变) ---
 export type DashboardStats = {
   totalRevenue: number;
   totalRevenueChange: number;
@@ -53,13 +53,11 @@ export type RecentActivity = {
   status?: string;
 }
 
-// --- Webhook 相关 ---
-export type WebhookEvent = 'SUBSCRIBED' | 'DID_RENEW' | 'REFUND' | 'EXPIRED' | 'GRACE_PERIOD';
-
+// --- Webhook 相关 (保持不变) ---
 export type WebhookLog = {
   key: string;
   id: string;
-  event: WebhookEvent;
+  event: string;
   product: string;
   status: 'success' | 'failed';
   time: string;
@@ -74,34 +72,39 @@ export type WebhookStats = {
   alertCount: number;
 }
 
-// --- 产品/订阅相关 ---
-export type ProductStatus = 'active' | 'archived' | 'draft';
+// --- 产品/套餐相关 (回归原始 c53acab 定义) ---
+export type FeatureLibraryItem = {
+  key: string;
+  label: string;
+  sort: number;
+  category: string;
+}
 
-export type Localization = {
+export type ProductLocale = {
   lang: string;
   name: string;
   description: string;
-  currency: string;
-  price: number;
 }
 
 export type Product = {
-  key: string;
   id: string;
+  key?: string; // 兼容 key
   name: string;
-  type: 'subscription' | 'one-time';
-  interval?: 'month' | 'year';
   price: number;
   currency: string;
+  type: 'subscription' | 'consumable' | 'one-time';
+  cycle: 'month' | 'year' | 'forever' | 'none';
   appleId: string;
   googleId: string;
-  status: ProductStatus;
-  features: string[];
-  localizations: Localization[];
+  enableApple: boolean;
+  enableGoogle: boolean;
+  status: 'active' | 'inactive';
+  features: FeatureLibraryItem[];
+  locales: ProductLocale[];
 }
 
 export type ProductStats = {
   activeProducts: number;
   totalSubscribers: number;
-  mrr: number; // Monthly Recurring Revenue
+  mrr: number;
 }

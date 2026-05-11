@@ -6,16 +6,17 @@ import {
   AppleFilled, AndroidFilled, DeleteOutlined, DeleteFilled,
   StopOutlined
 } from '@ant-design/icons';
+import { useConfig } from '../../context/ConfigContext';
+import type { Product } from '../../types';
 
 const { Text, Title } = Typography;
 
 interface SubscriptionCardProps {
-  pkg: any;
-  onEdit: (pkg: any) => void;
-  onLocalize: (pkg: any) => void;
+  pkg: Product;
+  onEdit: (pkg: Product) => void;
+  onLocalize: (pkg: Product) => void;
   onDelete: (id: string) => void;
   onStatusChange: (id: string, status: string) => void;
-  previewLang?: string;
 }
 
 const getCycleConfig = (cycle: string) => {
@@ -56,9 +57,9 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   onEdit, 
   onLocalize, 
   onDelete, 
-  onStatusChange,
-  previewLang = 'master' 
+  onStatusChange
 }) => {
+  const { previewLang } = useConfig(); // 接入全局预览状态
   const cfg = getCycleConfig(pkg.cycle);
   const isActive = pkg.status === 'active';
 
@@ -72,14 +73,23 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     google: '#3DDC84'
   };
 
+  // --- 增强的语言动态提取逻辑 ---
   let displayName = pkg.name;
-  let displayDesc = '';
+  let displayDesc = pkg.description;
+  let displayFeatures = pkg.features || [];
 
   if (previewLang !== 'master' && pkg.locales) {
     const matchedLocale = pkg.locales.find((l: any) => l.lang === previewLang);
     if (matchedLocale) {
       displayName = matchedLocale.name;
       displayDesc = matchedLocale.description;
+      // 如果本地化数据中有 features，则使用本地化的，否则 fallback 到 master
+      if (matchedLocale.features && matchedLocale.features.length > 0) {
+        // 处理如果是字符串数组或对象数组的兼容性
+        displayFeatures = matchedLocale.features.map((f: any) => 
+          typeof f === 'string' ? { label: f, included: true } : f
+        );
+      }
     }
   }
 
@@ -89,6 +99,19 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       className={`overflow-hidden border-none shadow-sm hover:shadow-xl transition-all duration-500 rounded-2xl h-full flex flex-col relative ${!isActive ? 'scale-[0.98]' : 'scale-100'}`}
       styles={{ body: { padding: 0, flex: 1, display: 'flex', flexDirection: 'column' } }}
     >
+      {/* 预览模式水印标签 */}
+      {previewLang !== 'master' && isActive && (
+        <div className="absolute top-0 right-0 z-50">
+          <Tag 
+            color="orange" 
+            bordered={false} 
+            className="m-0 rounded-tr-none rounded-bl-xl px-3 py-1 font-bold shadow-sm"
+          >
+            <Space size={4}><GlobalOutlined /> {previewLang.toUpperCase()} 预览</Space>
+          </Tag>
+        </div>
+      )}
+
       {/* 已下架水印 */}
       {!isActive && (
         <div className="absolute inset-0 z-50 pointer-events-none flex items-center justify-center">
@@ -131,11 +154,11 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
       {/* 主体内容 */}
       <div className="p-6 flex-1 flex flex-col transition-colors duration-500" style={{ backgroundColor: isActive ? cfg.bodyBg : '#f9f9f9' }}>
-        {displayDesc && (
-          <div className="mb-4 bg-white/40 p-2 rounded border border-white/60">
-            <Text type="secondary" style={{ fontSize: 12, display: 'block', lineHeight: '1.4' }}>{displayDesc}</Text>
-          </div>
-        )}
+        <div className="mb-4 bg-white/40 p-2 rounded border border-white/60 min-h-[44px]">
+          <Text type="secondary" style={{ fontSize: 12, display: 'block', lineHeight: '1.4' }}>
+            {displayDesc || '暂无描述信息'}
+          </Text>
+        </div>
 
         <div className="mb-6 flex items-baseline gap-1">
           <Text strong style={{ fontSize: 16, color: themeColor }}>{pkg.currency === 'CNY' ? '¥' : pkg.currency}</Text>
@@ -170,7 +193,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
         <div className="flex-1">
           <div className="space-y-3 mb-6">
-            {(pkg.features || []).map((f: any, i: number) => (
+            {displayFeatures.map((f: any, i: number) => (
               <div key={i} className="flex items-center gap-3">
                  <CheckCircleFilled style={{ color: themeColor, fontSize: 14 }} />
                  <Text style={{ fontSize: 13, color: textSecondary }}>{f.label}</Text>
@@ -203,10 +226,10 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
              </Tooltip>
              <Tooltip title="多语言配置">
                 <Button 
-                  type="text" 
-                  icon={<GlobalOutlined />} 
-                  className="text-gray-400 hover:text-blue-500 flex items-center justify-center w-9 h-9 rounded-xl hover:bg-blue-50" 
-                  onClick={() => onLocalize(pkg)}
+                   type="text" 
+                   icon={<GlobalOutlined />} 
+                   className="text-gray-400 hover:text-blue-500 flex items-center justify-center w-9 h-9 rounded-xl hover:bg-blue-50" 
+                   onClick={() => onLocalize(pkg)}
                 />
              </Tooltip>
           </Space>

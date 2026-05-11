@@ -9,6 +9,7 @@ import {
   InfoCircleOutlined, RocketOutlined, BugOutlined
 } from '@ant-design/icons';
 import { useConfig } from '../../context/ConfigContext';
+import PageHeader from '../../components/common/PageHeader';
 
 const { Title, Text } = Typography;
 
@@ -42,7 +43,7 @@ const Settings: React.FC = () => {
         <div className="space-y-6">
           <section>
             <Title level={5}>显示与预览</Title>
-            <Card bordered size="small">
+            <Card variant="outlined" size="small">
               <List itemLayout="horizontal">
                 <List.Item
                   actions={[
@@ -79,7 +80,7 @@ const Settings: React.FC = () => {
 
           <section>
             <Title level={5}>系统通知</Title>
-            <Card bordered size="small">
+            <Card variant="outlined" size="small">
               <List itemLayout="horizontal">
                 <List.Item actions={[<Switch key="email" defaultChecked />]}>
                   <List.Item.Meta title="异常告警邮件" description="当 Webhook 处理失败超过阈值时发送通知" />
@@ -100,7 +101,7 @@ const Settings: React.FC = () => {
         <div className="space-y-6">
           <section>
             <Title level={5}>API 安全</Title>
-            <Card bordered size="small">
+            <Card variant="outlined" size="small">
               <Form layout="vertical" className="mt-2">
                 <Form.Item 
                   label="Webhook 验证密钥 (Secret)" 
@@ -122,7 +123,7 @@ const Settings: React.FC = () => {
           
           <section>
             <Title level={5}>调试模式</Title>
-            <Card bordered size="small">
+            <Card variant="outlined" size="small">
               <List itemLayout="horizontal">
                 <List.Item actions={[<Switch key="debug" />]}>
                   <List.Item.Meta 
@@ -140,7 +141,7 @@ const Settings: React.FC = () => {
       key: 'about',
       label: <Space><InfoCircleOutlined />关于系统</Space>,
       children: (
-        <Card bordered className="bg-gray-50 border-none">
+        <Card variant="borderless" className="bg-gray-50">
           <div className="flex flex-col items-center py-8">
             <div className="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-sm">
               MC
@@ -167,18 +168,18 @@ const Settings: React.FC = () => {
 
   return (
     <div className="max-w-[1600px] mx-auto">
-      <div className="mb-6 flex justify-between items-center">
-        <div>
-          <Title level={3} style={{ margin: 0 }}>系统设置</Title>
-          <Text type="secondary" style={{ fontSize: 13 }}>配置管理后台的全局偏好、开发者权限及系统行为</Text>
-        </div>
-        <Space>
-          <Button icon={<ReloadOutlined />}>取消修改</Button>
-          <Button type="primary" onClick={handleSave} icon={<RocketOutlined />}>保存配置</Button>
-        </Space>
-      </div>
+      <PageHeader 
+        title="系统设置"
+        subtitle="配置管理后台的全局偏好、开发者权限及系统行为"
+        extra={
+          <>
+            <Button icon={<ReloadOutlined />}>取消修改</Button>
+            <Button type="primary" onClick={handleSave} icon={<RocketOutlined />}>保存配置</Button>
+          </>
+        }
+      />
 
-      <Card bordered className="overflow-hidden" styles={{ body: { padding: 0 } }}>
+      <Card variant="outlined" className="overflow-hidden" styles={{ body: { padding: 0 } }}>
         <Tabs
           tabPosition="left"
           className="min-h-[500px]"

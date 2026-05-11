@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { 
   Table, Tag, Card, Typography, Space, Button, 
-  Input, Row, Col, Statistic, Drawer, Descriptions,
-  Tabs, Badge, Divider, App, Skeleton, Empty
+  Input, Row, Col, Drawer, Descriptions,
+  Tabs, Badge, Divider, App, Empty
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { 
@@ -10,11 +10,15 @@ import {
   CheckCircleOutlined, 
   InfoCircleOutlined,
   CopyOutlined,
-  HistoryOutlined,
-  ClockCircleOutlined
+  ClockCircleOutlined,
+  NotificationOutlined,
+  HistoryOutlined
 } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import { getWebhookLogs, getWebhookStats } from '../api/webhooks';
+import { exportToCSV } from '../utils/csv';
+import PageHeader from '../components/common/PageHeader';
+import StatCard from '../components/common/StatCard';
 import type { WebhookLog } from '../types';
 
 const { Text } = Typography;
@@ -37,13 +41,31 @@ const WebhookContent: React.FC = () => {
     queryFn: getWebhookLogs
   });
 
-  const { data: statsRes, isLoading: isStatsLoading } = useQuery({
+  const { data: statsRes, isLoading: isStatsLoading, refetch: refetchStats } = useQuery({
     queryKey: ['webhookStats'],
     queryFn: getWebhookStats
   });
 
   const logsData = logsRes?.data || [];
   const stats = statsRes?.data;
+
+  // --- 导出逻辑 ---
+  const handleExport = () => {
+    if (logsData.length === 0) return;
+    message.loading('正在导出 Webhook 日志...', 0.5);
+    const headers = {
+      id: '通知 ID',
+      event: '事件类型',
+      product: '产品标识',
+      status: '处理状态',
+      latency: '响应耗时(ms)',
+      time: '接收时间'
+    };
+    setTimeout(() => {
+      exportToCSV(logsData, 'MyCoin_Webhook_Logs', headers);
+      message.success('日志导出成功');
+    }, 600);
+  };
 
   // --- 过滤逻辑 ---
   const filteredData = logsData.filter(log => {
@@ -131,58 +153,67 @@ const WebhookContent: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-[1600px] mx-auto p-4">
+    <div className="max-w-[1600px] mx-auto">
+      {/* 顶部标题 */}
+      <PageHeader 
+        title="Webhook 事件监控"
+        subtitle="全平台订阅回调事件实时追踪与排错"
+        onExport={handleExport}
+        extra={
+          <>
+            <Button icon={<ReloadOutlined spin={isStatsLoading} />} onClick={() => refetchStats()}>刷新</Button>
+            <Button type="primary">报警配置</Button>
+          </>
+        }
+      />
+
       {/* 状态统计 */}
-      <Row gutter={16} className="mb-6">
-        <Col span={8}>
-          <Card variant="outlined">
-            {isStatsLoading ? <Skeleton active paragraph={{ rows: 1 }} /> : (
-              <Statistic 
-                title={<Space><HistoryOutlined /> 24H 通知总量</Space>} 
-                value={stats?.total24h} 
-                valueStyle={{ fontSize: 24, fontWeight: 600 }}
-              />
-            )}
-          </Card>
+      <Row gutter={[16, 16]} className="mb-6">
+        <Col xs={24} lg={8}>
+          <StatCard 
+            title="24H 通知总量"
+            value={stats?.total24h || 0}
+            icon={<HistoryOutlined />}
+            color="#1890ff"
+            loading={isStatsLoading}
+          />
         </Col>
-        <Col span={8}>
-          <Card variant="outlined">
-            {isStatsLoading ? <Skeleton active paragraph={{ rows: 1 }} /> : (
-              <Statistic 
-                title={<Space><CheckCircleOutlined style={{ color: '#52c41a' }} /> 成功率</Space>} 
-                value={stats?.successRate} 
-                suffix="%" 
-                valueStyle={{ fontSize: 24, fontWeight: 600, color: '#52c41a' }}
-              />
-            )}
-          </Card>
+        <Col xs={24} lg={8}>
+          <StatCard 
+            title="通知成功率"
+            value={`${stats?.successRate || 0}%`}
+            icon={<CheckCircleOutlined />}
+            color="#52c41a"
+            loading={isStatsLoading}
+          />
         </Col>
-        <Col span={8}>
-          <Card variant="outlined">
-            {isStatsLoading ? <Skeleton active paragraph={{ rows: 1 }} /> : (
-              <Statistic 
-                title={<Space><BugOutlined style={{ color: '#cf1322' }} /> 异常告警</Space>} 
-                value={stats?.alertCount} 
-                valueStyle={{ fontSize: 24, fontWeight: 600, color: '#cf1322' }} 
-              />
-            )}
-          </Card>
+        <Col xs={24} lg={8}>
+          <StatCard 
+            title="异常告警"
+            value={stats?.alertCount || 0}
+            icon={<BugOutlined />}
+            color="#cf1322"
+            loading={isStatsLoading}
+          />
         </Col>
       </Row>
 
-      {/* 过滤栏 */}
-      <Card variant="outlined" className="mb-6">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      {/* 数据主体 */}
+      <Card 
+        variant="outlined" 
+        title={
           <Tabs 
             activeKey={activeTab} 
             onChange={setActiveTab}
-            className="flex-1 mb-[-16px]"
+            className="mb-[-16px]"
             items={[
               { label: '全部记录', key: 'all' },
               { label: '处理成功', key: 'success' },
               { label: '处理失败', key: 'failed' },
             ]}
           />
+        }
+        extra={
           <Space wrap>
             <Input 
               placeholder="搜索通知 ID / 产品..." 
@@ -196,24 +227,23 @@ const WebhookContent: React.FC = () => {
               icon={<ReloadOutlined spin={isLogsRefetching} />} 
               onClick={() => refetchLogs()}
             >
-              刷新
+              刷新列表
             </Button>
           </Space>
-        </div>
+        }
+      >
+        <Table 
+          columns={columns} 
+          dataSource={filteredData} 
+          loading={isLogsLoading}
+          size="middle"
+          pagination={{ 
+            pageSize: 15,
+            showTotal: (total) => `共 ${total} 条日志`,
+            showSizeChanger: true
+          }} 
+        />
       </Card>
-
-      {/* 列表数据 */}
-      <Table 
-        columns={columns} 
-        dataSource={filteredData} 
-        loading={isLogsLoading}
-        size="middle"
-        pagination={{ 
-          pageSize: 15,
-          showTotal: (total) => `共 ${total} 条日志`,
-          showSizeChanger: true
-        }} 
-      />
 
       {/* 日志详情抽屉 */}
       <Drawer
@@ -221,7 +251,7 @@ const WebhookContent: React.FC = () => {
         placement="right"
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}
-        width={window.innerWidth < 1200 ? '90%' : 800}
+        width={window.innerWidth < 1200 ? '90%' : 600}
         footer={
           <div className="flex justify-end gap-3 py-2 px-1">
              <Button onClick={() => setDrawerOpen(false)}>关闭详情</Button>

@@ -1,32 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
-  Table, Tag, Card, Typography, Space, Button, 
-  Row, Col, Statistic, Tooltip, App, 
-  Skeleton, Empty, Popconfirm, Badge
+  Typography, Card, Space, Button, Input, 
+  Row, Col, Divider, App, Empty, Skeleton
 } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
 import { 
-  PlusOutlined, ReloadOutlined, 
-  GlobalOutlined, EditOutlined,
-  ShoppingOutlined, TeamOutlined, FundOutlined,
-  EyeOutlined, EyeInvisibleOutlined
+  PlusOutlined, SearchOutlined, 
+  DatabaseOutlined, RocketOutlined, 
+  HistoryOutlined, ReloadOutlined
 } from '@ant-design/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getProducts, getProductStats, updateProductStatus } from '../../api/products';
+import { useConfig } from '../../context/ConfigContext';
+import { getProducts, getProductStats, updateProductStatus, getFeatureLibrary, updateFeatureLibrary } from '../../api/products';
+import SubscriptionCard from './SubscriptionCard';
 import ProductEditModal from './ProductEditModal';
 import ProductLocalizationModal from './ProductLocalizationModal';
+import FeatureLibraryModal from './FeatureLibraryModal';
+import PageHeader from '../../components/common/PageHeader';
 import type { Product, ProductStatus } from '../../types';
 
 const { Title, Text } = Typography;
 
-const Products: React.FC = () => {
+const ProductContent: React.FC = () => {
   const { message } = App.useApp();
+  const { previewLang } = useConfig();
   const queryClient = useQueryClient();
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isLocModalOpen, setIsLocModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  
+  const [searchKey, setSearchKey] = useState('');
+  
+  const [libModalOpen, setLibModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [locModalOpen, setLocModalOpen] = useState(false);
+  
+  const [editingPackage, setEditingPackage] = useState<Product | null>(null);
+  const [localizingPackage, setLocalizingPackage] = useState<Product | null>(null);
 
-  // --- 使用 React Query 获取数据 ---
+  // --- 异步数据获取 (接入 P0) ---
   const { 
     data: productsRes, 
     isLoading: isProductsLoading, 
@@ -37,165 +45,159 @@ const Products: React.FC = () => {
     queryFn: getProducts
   });
 
-  const { data: statsRes, isLoading: isStatsLoading } = useQuery({
+  const { data: statsRes } = useQuery({
     queryKey: ['productStats'],
     queryFn: getProductStats
   });
 
-  // --- 状态变更 Mutation ---
+  const { data: libRes } = useQuery({
+    queryKey: ['featureLibrary'],
+    queryFn: getFeatureLibrary
+  });
+
+  // --- 业务操作 Mutations ---
   const statusMutation = useMutation({
-    mutationFn: ({ id, status }: { id: string, status: ProductStatus }) => updateProductStatus(id, status),
+    mutationFn: ({ id, status }: { id: string, status: 'active' | 'inactive' }) => updateProductStatus(id, status as any),
     onSuccess: (res) => {
       message.success(res.message);
       queryClient.invalidateQueries({ queryKey: ['products'] });
     },
   });
 
-  const products = productsRes?.data || [];
+  const libMutation = useMutation({
+    mutationFn: (newLib: FeatureLibraryItem[]) => updateFeatureLibrary(newLib),
+    onSuccess: (res) => {
+      message.success(res.message);
+      queryClient.invalidateQueries({ queryKey: ['featureLibrary'] });
+    }
+  });
+
+  const packageList = productsRes?.data || [];
   const stats = statsRes?.data;
+  const featureLibrary = libRes?.data || [];
 
-  const handleEdit = (record: Product) => {
-    setEditingProduct(record);
-    setIsEditModalOpen(true);
-  };
-
-  const handleLocalization = (record: Product) => {
-    setEditingProduct(record);
-    setIsLocModalOpen(true);
-  };
-
-  const columns: ColumnsType<Product> = [
-    {
-      title: '产品名称',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text, record) => (
-        <div className="flex flex-col">
-          <Text strong style={{ fontSize: 13 }}>{text}</Text>
-          <Text type="secondary" style={{ fontSize: 11 }}>ID: {record.id}</Text>
-        </div>
-      ),
-    },
-    {
-      title: '类型/周期',
-      key: 'type',
-      render: (_, record) => (
-        <Space size="small">
-          <Tag color="cyan" bordered={false} style={{fontSize: 11}}>{record.type === 'subscription' ? '订阅型' : '一次性'}</Tag>
-          {record.interval && <Tag color="purple" bordered={false} style={{fontSize: 11}}>{record.interval === 'month' ? '按月' : '按年'}</Tag>}
-        </Space>
-      ),
-    },
-    {
-      title: '默认定价 (CNY)',
-      dataIndex: 'price',
-      key: 'price',
-      render: (price) => <Text strong style={{ fontSize: 13 }}>¥{price.toFixed(2)}</Text>,
-    },
-    {
-      title: '内购 ID (Store IDs)',
-      key: 'storeIds',
-      render: (_, record) => (
-        <div style={{ lineHeight: 1.4 }}>
-          <div><Badge status="processing" /><Text type="secondary" style={{ fontSize: 11 }}>Apple: {record.appleId}</Text></div>
-          <div><Badge status="warning" /><Text type="secondary" style={{ fontSize: 11 }}>Google: {record.googleId}</Text></div>
-        </div>
-      ),
-    },
-    {
-      title: '当前状态',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => (
-        <Badge status={status === 'active' ? 'success' : 'default'} text={status === 'active' ? '上架中' : '已下架'} />
-      ),
-    },
-    {
-      title: '操作',
-      key: 'action',
-      width: 200,
-      render: (_, record) => (
-        <Space size="middle">
-          <Tooltip title="编辑配置"><Button type="text" icon={<EditOutlined />} onClick={() => handleEdit(record)} /></Tooltip>
-          <Tooltip title="多语言定价"><Button type="text" icon={<GlobalOutlined />} onClick={() => handleLocalization(record)} /></Tooltip>
-          <Popconfirm 
-            title={record.status === 'active' ? "下架产品？" : "上架产品？"}
-            onConfirm={() => statusMutation.mutate({ id: record.id, status: record.status === 'active' ? 'archived' : 'active' })}
-            okButtonProps={{ loading: statusMutation.isPending }}
-          >
-            <Button 
-              type="text" 
-              danger={record.status === 'active'}
-              icon={record.status === 'active' ? <EyeInvisibleOutlined /> : <EyeOutlined />} 
-            />
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
+  // --- 原始搜索过滤逻辑 ---
+  const filteredList = useMemo(() => {
+    return packageList.filter(p => {
+      const search = searchKey.toLowerCase();
+      // 获取当前语言下的名称
+      let currentName = p.name;
+      if (previewLang !== 'master' && p.locales) {
+        const locale = p.locales.find((l: any) => l.lang === previewLang);
+        if (locale) currentName = locale.name;
+      }
+      
+      return currentName.toLowerCase().includes(search) || 
+        p.id.toLowerCase().includes(search) ||
+        p.appleId?.toLowerCase().includes(search) ||
+        p.googleId?.toLowerCase().includes(search);
+    });
+  }, [packageList, searchKey, previewLang]);
 
   return (
     <div className="max-w-[1600px] mx-auto">
-      {/* 核心指标卡片 */}
-      <Row gutter={[16, 16]} className="mb-6">
-        <Col xs={24} sm={12} lg={8}>
-          <Card variant="outlined" bodyStyle={{ padding: '20px 24px' }}>
-            {isStatsLoading ? <Skeleton active paragraph={{ rows: 1 }} /> : (
-              <Statistic title={<Space><ShoppingOutlined /> 活跃产品</Space>} value={stats?.activeProducts} valueStyle={{ fontSize: 24, fontWeight: 600, color: '#1890ff' }} />
-            )}
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={8}>
-          <Card variant="outlined" bodyStyle={{ padding: '20px 24px' }}>
-            {isStatsLoading ? <Skeleton active paragraph={{ rows: 1 }} /> : (
-              <Statistic title={<Space><TeamOutlined /> 累计订阅人数</Space>} value={stats?.totalSubscribers} valueStyle={{ fontSize: 24, fontWeight: 600, color: '#52c41a' }} />
-            )}
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={8}>
-          <Card variant="outlined" bodyStyle={{ padding: '20px 24px' }}>
-            {isStatsLoading ? <Skeleton active paragraph={{ rows: 1 }} /> : (
-              <Statistic title={<Space><FundOutlined /> 预估月收入 (MRR)</Space>} value={stats?.mrr} prefix="¥" precision={2} valueStyle={{ fontSize: 24, fontWeight: 600, color: '#722ed1' }} />
-            )}
-          </Card>
-        </Col>
-      </Row>
-
-      {/* 列表 Card */}
-      <Card 
-        variant="outlined"
-        title={<Space><ShoppingOutlined /> 订阅套餐管理</Space>}
-        extra={
-          <Space>
-            <Button icon={<ReloadOutlined spin={isProductsRefetching} />} onClick={() => refetchProducts()}>刷新</Button>
-            <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsEditModalOpen(true)}>新增套餐</Button>
-          </Space>
+      {/* 顶部标题与快速统计 - 使用 PageHeader 还原样式 */}
+      <PageHeader 
+        title="订阅管理中心"
+        stats={
+          <>
+            <Text type="secondary"><RocketOutlined /> 在线套餐: {stats?.activeProducts || 0}</Text>
+            <Text type="secondary"><DatabaseOutlined /> 权益池素材: {featureLibrary.length} 项</Text>
+            <Text type="secondary"><HistoryOutlined /> 最后更新: 刚刚</Text>
+          </>
         }
-      >
-        <Table 
-          columns={columns} 
-          dataSource={products} 
-          loading={isProductsLoading}
-          size="middle"
-          pagination={false}
-          locale={{ emptyText: <Empty description="暂无产品配置" /> }}
-        />
-      </Card>
-
-      {/* 弹窗组件 */}
-      <ProductEditModal 
-        open={isEditModalOpen} 
-        onCancel={() => { setIsEditModalOpen(false); setEditingProduct(null); }} 
-        initialValues={editingProduct || undefined}
+        extra={
+          <>
+            <Button icon={<ReloadOutlined spin={isProductsRefetching} />} onClick={() => refetchProducts()}>刷新</Button>
+            <Button 
+               icon={<DatabaseOutlined />} 
+               onClick={() => setLibModalOpen(true)}
+               style={{ 
+                 borderRadius: 8,
+                 backgroundColor: '#f0f7ff',
+                 color: '#0050b3',
+                 border: '1px solid #adc6ff',
+                 fontWeight: 500
+               }}
+               className="hover:bg-blue-100 transition-all"
+            >
+              素材库
+            </Button>
+            <Button 
+              type="primary" 
+              icon={<PlusOutlined />} 
+              size="large"
+              onClick={() => { setEditingPackage(null); setEditModalOpen(true); }}>
+              发布新套餐
+            </Button>
+          </>
+        }
       />
-      
-      <ProductLocalizationModal
-        open={isLocModalOpen}
-        onCancel={() => { setIsLocModalOpen(false); setEditingProduct(null); }}
-        product={editingProduct || undefined}
+
+      {/* 搜索控制条 - 原始交互 */}
+      <div className="mb-8">
+        <Input 
+          placeholder="搜索套餐名称、ID 或商店 SKU..." 
+          prefix={<SearchOutlined className="text-gray-400" />}
+          size="large"
+          className="shadow-sm border-none rounded-xl h-12 px-6"
+          allowClear
+          value={searchKey}
+          onChange={e => setSearchKey(e.target.value)}
+        />
+      </div>
+
+      {/* 列表渲染 - 原始交互 */}
+      {isProductsLoading ? (
+        <Row gutter={[24, 24]}>
+          {[1, 2, 3].map(i => <Col xs={24} lg={12} xl={8} key={i}><Card loading variant="outlined" style={{ height: 400 }} /></Col>)}
+        </Row>
+      ) : (
+        <Row gutter={[24, 24]}>
+          {filteredList.map((pkg) => (
+            <Col xs={24} lg={12} xl={8} key={pkg.id}>
+              <SubscriptionCard 
+                pkg={pkg} 
+                onEdit={(p) => { setEditingPackage(p); setEditModalOpen(true); }} 
+                onLocalize={(p) => { setLocalizingPackage(p); setLocModalOpen(true); }}
+                onDelete={(id) => message.info('演示环境暂不支持删除，请使用下架功能')}
+                onStatusChange={(id, status) => statusMutation.mutate({ id, status: status as any })}
+              />
+            </Col>
+          ))}
+          {filteredList.length === 0 && (
+            <Col span={24}>
+              <div className="py-20 bg-gray-50/50 rounded-2xl border-dashed border-2 flex flex-col items-center justify-center text-gray-400">
+                <Empty description="未找到符合条件的套餐" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+              </div>
+            </Col>
+          )}
+        </Row>
+      )}
+
+      {/* 弹窗组件 - 原始功能 */}
+      <FeatureLibraryModal 
+        open={libModalOpen}
+        onCancel={() => setLibModalOpen(false)}
+        library={featureLibrary}
+        onChange={(newLib) => libMutation.mutate(newLib)}
+      />
+      <ProductEditModal 
+        open={editModalOpen}
+        onCancel={() => setEditModalOpen(false)}
+        editingProduct={editingPackage}
+        featureLibrary={featureLibrary}
+        type={editingPackage?.type || 'subscription'}
+      />
+      <ProductLocalizationModal 
+        open={locModalOpen}
+        onCancel={() => setLocModalOpen(false)}
+        product={localizingPackage}
       />
     </div>
   );
 };
+
+const Products: React.FC = () => (<App><ProductContent /></App>);
 
 export default Products;

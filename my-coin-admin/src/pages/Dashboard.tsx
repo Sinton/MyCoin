@@ -20,8 +20,10 @@ import {
   getProductDistribution, 
   getRecentActivity 
 } from '../api/dashboard';
+import StatCard from '../components/common/StatCard';
 
 const { Title, Text } = Typography;
+import PageHeader from '../components/common/PageHeader';
 
 const Dashboard: React.FC = () => {
   const { message } = App.useApp();
@@ -66,25 +68,16 @@ const Dashboard: React.FC = () => {
     smooth: true,
     height: 280,
     padding: 'auto',
-    areaStyle: {
-      fill: 'l(270) 0:#ffffff 0.5:#1890ff 1:#1890ff',
-      fillOpacity: 0.1,
+    style: {
+      fill: 'linear-gradient(-90deg, white 0%, #1890ff 100%)',
+      fillOpacity: 0.2,
     },
-    line: {
-      color: '#1890ff',
-      size: 2,
-    },
-    point: {
-      size: 4,
-      shape: 'circle',
-      style: {
-        fill: '#fff',
-        stroke: '#1890ff',
-        lineWidth: 2,
-      },
+    axis: {
+      y: { labelFormatter: (v: any) => `¥${v}` }
     },
     tooltip: {
-      formatter: (datum: any) => ({ name: '营收', value: `¥${datum.value}` }),
+      channel: 'y',
+      valueFormatter: (v: any) => `¥${v.toLocaleString()}`,
     },
   };
 
@@ -96,37 +89,42 @@ const Dashboard: React.FC = () => {
     innerRadius: 0.6,
     height: 280,
     label: {
-      type: 'inner',
-      offset: '-50%',
-      content: '{value}%',
-      style: { textAlign: 'center', fontSize: 14 },
+      text: (d: any) => `${d.value}%`,
+      position: 'inside',
+      style: {
+        fontWeight: 'bold',
+      },
     },
-    interactions: [{ type: 'element-active' }],
-    legend: { position: 'bottom' as const },
+    legend: {
+      color: {
+        position: 'bottom',
+        layout: { justifyContent: 'center' },
+      },
+    },
     tooltip: {
-      formatter: (datum: any) => ({ name: datum.type, value: `${datum.value}%` }),
+      items: [{ channel: 'y', valueFormatter: (v: any) => `${v}%` }],
     },
   };
 
   return (
     <div className="max-w-[1600px] mx-auto">
       {/* 顶部标题栏 */}
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <Title level={2} style={{ marginBottom: 4 }}>运营概览</Title>
-          <Text type="secondary">实时监控您的业务核心指标与增长趋势</Text>
-        </div>
-        <Space>
-          <Button icon={<CalendarOutlined />}>最近7天</Button>
-          <Button 
-            type="primary" 
-            icon={<ReloadOutlined spin={isStatsLoading} />} 
-            onClick={handleRefresh}
-          >
-            同步数据
-          </Button>
-        </Space>
-      </div>
+      <PageHeader 
+        title="运营概览"
+        subtitle="实时监控您的业务核心指标与增长趋势"
+        extra={
+          <>
+            <Button icon={<CalendarOutlined />}>最近7天</Button>
+            <Button 
+              type="primary" 
+              icon={<ReloadOutlined spin={isStatsLoading} />} 
+              onClick={handleRefresh}
+            >
+              同步数据
+            </Button>
+          </>
+        }
+      />
 
       {/* 1. 核心指标卡片 */}
       <Row gutter={[16, 16]} className="mb-6">
@@ -137,26 +135,10 @@ const Dashboard: React.FC = () => {
           { title: '业务健康度', value: `${stats?.healthScore}%`, change: stats?.healthScoreChange, icon: <PieChartOutlined />, color: '#722ed1' },
         ].map((item, index) => (
           <Col xs={24} sm={12} lg={6} key={index}>
-            <Card variant="outlined" hoverable>
-              {isStatsLoading ? <Skeleton active paragraph={{ rows: 1 }} /> : (
-                <div className="flex items-start justify-between">
-                  <div>
-                    <Text type="secondary" style={{ fontSize: 14 }}>{item.title}</Text>
-                    <div className="text-2xl font-bold mt-2">{item.value}</div>
-                    <div className="mt-2">
-                      <Tag color={(item.change || 0) >= 0 ? 'success' : 'error'} bordered={false}>
-                        {(item.change || 0) >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-                        <span className="ml-1">{Math.abs(item.change || 0)}%</span>
-                      </Tag>
-                      <Text type="secondary" style={{ fontSize: 12, marginLeft: 8 }}>较上周</Text>
-                    </div>
-                  </div>
-                  <div className="p-3 rounded-lg" style={{ backgroundColor: `${item.color}10`, color: item.color }}>
-                    {React.cloneElement(item.icon as React.ReactElement, { style: { fontSize: 24 } })}
-                  </div>
-                </div>
-              )}
-            </Card>
+            <StatCard 
+              {...item}
+              loading={isStatsLoading}
+            />
           </Col>
         ))}
       </Row>

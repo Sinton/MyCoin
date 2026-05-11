@@ -17,7 +17,23 @@ body {
   display: flex;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #f0f2f5;
+  transition: color 0.3s ease;
+}
+
+/* NProgress 样式定制 */
+#nprogress .bar {
+  background: #1677ff !important;
+  height: 3px !important;
+  box-shadow: 0 0 10px rgba(22, 119, 255, 0.5);
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #1677ff, 0 0 5px #1677ff !important;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: #1677ff !important;
+  border-left-color: #1677ff !important;
 }
 
 #root {

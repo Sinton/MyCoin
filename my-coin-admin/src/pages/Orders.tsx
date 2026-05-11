@@ -1,20 +1,26 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Table, Tag, Card, Typography, Space, Button, 
-  Row, Col, Statistic, Drawer, 
-  Tabs, Badge, Divider, App, Skeleton, Empty, Popconfirm
+  Row, Col, Drawer, 
+  Tabs, Badge, Divider, App, Empty, Popconfirm
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { 
-  ReloadOutlined,
-  AppleFilled, AndroidFilled, InfoCircleOutlined,
-  ExportOutlined, SyncOutlined,
-  ShoppingCartOutlined, TransactionOutlined, RetweetOutlined,
-  CheckCircleOutlined, RollbackOutlined
+  PlusOutlined, SearchOutlined, 
+  DatabaseOutlined, RocketOutlined, 
+  HistoryOutlined, ReloadOutlined,
+  CalendarOutlined, UserOutlined,
+  DashboardOutlined, LineChartOutlined,
+  PieChartOutlined, ShoppingCartOutlined,
+  ExportOutlined, StopOutlined,
+  InfoCircleOutlined, RollbackOutlined
 } from '@ant-design/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getOrders, getOrderStats, updateOrderStatus } from '../api/orders';
+import { exportToCSV } from '../utils/csv';
 import TableSelect from '../components/TableSelect';
+import StatCard from '../components/common/StatCard';
+import PageHeader from '../components/common/PageHeader';
 import type { Order } from '../types';
 
 const { Text } = Typography;
@@ -34,7 +40,7 @@ const Orders: React.FC = () => {
     queryFn: getOrders
   });
 
-  const { data: statsResponse, isLoading: isStatsLoading } = useQuery({
+  const { data: statsResponse, isLoading: isStatsLoading, refetch: refetchStats } = useQuery({
     queryKey: ['orderStats'],
     queryFn: getOrderStats
   });
@@ -51,6 +57,30 @@ const Orders: React.FC = () => {
 
   const ordersData = ordersResponse?.data || [];
   const stats = statsResponse?.data;
+
+  // --- 导出逻辑 ---
+  const handleExport = () => {
+    if (ordersData.length === 0) {
+      message.warning('当前没有可导出的交易数据');
+      return;
+    }
+    
+    message.loading('准备导出文件...', 0.5);
+    
+    const headers = {
+      id: '订单编号',
+      user: '用户信息',
+      product: '产品名称',
+      amount: '金额 (CNY)',
+      status: '订单状态',
+      time: '成交时间'
+    };
+    
+    setTimeout(() => {
+      exportToCSV(ordersData, 'MyCoin_Orders_Report', headers);
+      message.success('导出成功！');
+    }, 600);
+  };
 
   const userData = useMemo(() => {
     const userMap = new Map();
@@ -74,7 +104,7 @@ const Orders: React.FC = () => {
     return result;
   }, [ordersData, activeTab, selectedUserKey]);
 
-  // --- 列配置 (保持之前的紧凑优化) ---
+  // --- 列配置 ---
   const columns: ColumnsType<Order> = [
     {
       title: '订单编号',
@@ -137,19 +167,34 @@ const Orders: React.FC = () => {
 
   return (
     <div className="max-w-[1600px] mx-auto">
-      {/* 顶部指标卡片 */}
+      {/* 顶部标题与快速统计 */}
+      <PageHeader 
+        title="订单流水管理"
+        subtitle="查看并处理全平台实时交易记录"
+        onExport={handleExport}
+        extra={
+          <Button 
+            icon={<ReloadOutlined spin={isStatsLoading} />} 
+            onClick={() => { refetchStats(); refetchOrders(); }}
+          >
+            刷新数据
+          </Button>
+        }
+      />
       <div className="mb-6">
-        <Row gutter={[16, 16]}>
+        <Row gutter={[16, 16]} className="mb-6">
           {[
-            { title: '今日订单', value: stats?.todayOrders, icon: <ShoppingCartOutlined />, color: '#1890ff' },
-            { title: '今日营收', value: stats?.todayRevenue, prefix: '¥', color: '#cf1322' },
-            { title: '退款笔数', value: stats?.refundCount, color: '#d48806' },
-            { title: '活跃用户', value: stats?.activeUsers, color: '#3f8600' }
-          ].map((s, idx) => (
-            <Col xs={24} sm={12} lg={6} key={idx}>
-              <Card variant="outlined" bodyStyle={{ padding: '16px 20px' }}>
-                <Statistic title={<span style={{fontSize: 13}}>{s.title}</span>} value={s.value} prefix={s.prefix} valueStyle={{ fontSize: 22, fontWeight: 600, color: s.color }} />
-              </Card>
+            { title: '今日订单', value: stats?.todayOrders, change: 12, icon: <ShoppingCartOutlined />, color: '#1890ff' },
+            { title: '今日营收', value: `¥${stats?.todayRevenue?.toLocaleString()}`, change: 8.5, icon: <DashboardOutlined />, color: '#52c41a' },
+            { title: '退款订单', value: stats?.refundCount, change: -2, icon: <StopOutlined />, color: '#ff4d4f' },
+            { title: '活跃付费用户', value: stats?.activeUsers?.toLocaleString(), change: 5.2, icon: <UserOutlined />, color: '#722ed1' },
+          ].map((item, index) => (
+            <Col xs={24} sm={12} lg={6} key={index}>
+              <StatCard 
+                {...item}
+                loading={isStatsLoading}
+                changeLabel="较昨日"
+              />
             </Col>
           ))}
         </Row>
@@ -183,7 +228,7 @@ const Orders: React.FC = () => {
               optionLabelRender={(record: any) => record.name}
               width={160}
             />
-            <Button icon={<ExportOutlined />} size="middle">导出</Button>
+            <Button icon={<ExportOutlined />} size="middle" onClick={handleExport}>导出</Button>
             <Button type="primary" icon={<ReloadOutlined spin={isListRefetching} />} onClick={() => refetchOrders()} size="middle">刷新数据</Button>
           </Space>
         }
