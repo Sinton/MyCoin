@@ -6,8 +6,8 @@ import {
   AppleFilled, AndroidFilled, DeleteOutlined, DeleteFilled,
   StopOutlined
 } from '@ant-design/icons';
-import { useConfig } from '../../context/ConfigContext';
-import type { Product } from '../../types';
+import { useConfigStore } from '@/store';
+import type { Product } from '@/types';
 
 const { Text, Title } = Typography;
 
@@ -59,7 +59,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   onDelete, 
   onStatusChange
 }) => {
-  const { previewLang } = useConfig(); // 接入全局预览状态
+  const { previewLang } = useConfigStore(); // 接入全局预览状态
   const cfg = getCycleConfig(pkg.cycle);
   const isActive = pkg.status === 'active';
 

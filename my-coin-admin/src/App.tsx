@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Spin } from 'antd';
 import MainLayout from '@/layouts/MainLayout';
 import { routes } from '@/routes/config';
-import { ConfigProvider } from '@/context/ConfigContext';
 
 // 全局加载状态组件
 const PageLoader = () => (
@@ -15,26 +14,24 @@ const PageLoader = () => (
 
 const App: React.FC = () => {
   return (
-    <ConfigProvider>
-      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <Routes>
-          <Route path="/" element={<MainLayout />}>
-            {routes.map((route) => (
-              <Route
-                key={route.path}
-                index={route.path === '/'}
-                path={route.path === '/' ? undefined : route.path.replace(/^\//, '')}
-                element={
-                  <Suspense fallback={<PageLoader />}>
-                    {route.element}
-                  </Suspense>
-                }
-              />
-            ))}
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </ConfigProvider>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          {routes.map((route) => (
+            <Route
+              key={route.path}
+              index={route.path === '/'}
+              path={route.path === '/' ? undefined : route.path.replace(/^\//, '')}
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  {route.element}
+                </Suspense>
+              }
+            />
+          ))}
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 };
 

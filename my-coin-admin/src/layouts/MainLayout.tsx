@@ -1,17 +1,18 @@
-import React, { useState, useMemo } from 'react';
-import { Layout, Menu, theme, Divider } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import React, { useMemo } from 'react';
+import { Layout, Menu, theme, Divider, Button } from 'antd';
+import { UserOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useIsFetching } from '@tanstack/react-query';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import NotificationCenter from '@/components/layout/NotificationCenter';
 import { routes } from '@/routes/config';
+import { useUIStore } from '@/store';
 
 const { Header, Sider, Content } = Layout;
 
 const MainLayout: React.FC = () => {
-  const [collapsed] = useState(false);
+  const { sidebarCollapsed, toggleSidebar } = useUIStore();
   const navigate = useNavigate();
   const location = useLocation();
   const {
@@ -50,7 +51,7 @@ const MainLayout: React.FC = () => {
       <Sider 
         trigger={null} 
         collapsible 
-        collapsed={collapsed}
+        collapsed={sidebarCollapsed}
         theme="dark"
         className="fixed left-0 top-0 bottom-0 overflow-auto"
       >
@@ -63,12 +64,18 @@ const MainLayout: React.FC = () => {
           onClick={({ key }) => navigate(key)}
         />
       </Sider>
-      <Layout className="transition-all duration-200" style={{ marginLeft: collapsed ? 80 : 200 }}>
+      <Layout className="transition-all duration-200" style={{ marginLeft: sidebarCollapsed ? 80 : 200 }}>
         <Header 
           className="p-0 flex justify-between items-center pr-6 sticky top-0 z-10 w-full" 
           style={{ background: colorBgContainer }}
         >
-          <div className="flex items-center">
+          <div className="flex items-center pl-4">
+            <Button
+              type="text"
+              icon={sidebarCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={toggleSidebar}
+              className="text-gray-500 hover:text-gray-800"
+            />
           </div>
           <div className="flex items-center gap-4">
             <NotificationCenter />

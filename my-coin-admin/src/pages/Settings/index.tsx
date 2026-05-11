@@ -8,13 +8,13 @@ import {
   CopyOutlined, ReloadOutlined, 
   InfoCircleOutlined, RocketOutlined, BugOutlined
 } from '@ant-design/icons';
-import { useConfig } from '../../context/ConfigContext';
-import PageHeader from '../../components/common/PageHeader';
+import { useConfigStore } from '@/store';
+import PageHeader from '@/components/common/PageHeader';
 
 const { Title, Text } = Typography;
 
 const Settings: React.FC = () => {
-  const { previewLang, setPreviewLang } = useConfig();
+  const { previewLang, setPreviewLang } = useConfigStore();
   const { message, modal } = AntdApp.useApp();
   
   const handleSave = () => {

@@ -9,20 +9,20 @@ import {
   HistoryOutlined, ReloadOutlined
 } from '@ant-design/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useConfig } from '../../context/ConfigContext';
-import { getProducts, getProductStats, updateProductStatus, getFeatureLibrary, updateFeatureLibrary } from '../../api/products';
+import { useConfigStore } from '@/store';
+import { getProducts, getProductStats, updateProductStatus, getFeatureLibrary, updateFeatureLibrary } from '@/api/products';
 import SubscriptionCard from './SubscriptionCard';
 import ProductEditModal from './ProductEditModal';
 import ProductLocalizationModal from './ProductLocalizationModal';
 import FeatureLibraryModal from './FeatureLibraryModal';
-import PageHeader from '../../components/common/PageHeader';
-import type { Product, FeatureLibraryItem } from '../../types';
+import PageHeader from '@/components/common/PageHeader';
+import type { Product, FeatureLibraryItem } from '@/types';
 
 const { Title, Text } = Typography;
 
 const ProductContent: React.FC = () => {
   const { message } = App.useApp();
-  const { previewLang } = useConfig();
+  const { previewLang } = useConfigStore();
   const queryClient = useQueryClient();
   
   const [searchKey, setSearchKey] = useState('');
