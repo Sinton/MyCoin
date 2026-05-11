@@ -1,20 +1,10 @@
-import type { ApiResponse, WebhookLog, WebhookStats } from '../types';
-import { MOCK_WEBHOOK_LOGS, MOCK_WEBHOOK_STATS } from '../mock/webhooks';
+import { request } from '@/utils/request';
+import type { ApiResponse, WebhookLog, WebhookStats } from '@/types';
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-/**
- * 获取 Webhook 日志列表
- */
-export const getWebhookLogs = async (): Promise<ApiResponse<WebhookLog[]>> => {
-  await sleep(600);
-  return { code: 200, data: MOCK_WEBHOOK_LOGS, message: 'success' };
+export const getWebhookLogs = (): Promise<ApiResponse<WebhookLog[]>> => {
+  return request({ url: '/webhooks/logs', method: 'GET' });
 };
 
-/**
- * 获取 Webhook 统计指标
- */
-export const getWebhookStats = async (): Promise<ApiResponse<WebhookStats>> => {
-  await sleep(400);
-  return { code: 200, data: MOCK_WEBHOOK_STATS, message: 'success' };
+export const getWebhookStats = (): Promise<ApiResponse<WebhookStats>> => {
+  return request({ url: '/webhooks/stats', method: 'GET' });
 };

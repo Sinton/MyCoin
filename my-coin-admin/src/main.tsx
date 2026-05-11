@@ -17,8 +17,17 @@ const queryClient = new QueryClient({
   },
 })
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+async function enableMocking() {
+  if (import.meta.env.DEV) {
+    const { worker } = await import('./mocks/browser')
+    // `onUnhandledRequest: 'bypass'` 防止对本地图片等非 API 请求发出警告
+    return worker.start({ onUnhandledRequest: 'bypass' })
+  }
+}
+
+enableMocking().then(() => {
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <ConfigProvider
         locale={zhCN}
@@ -44,4 +53,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       </ConfigProvider>
     </QueryClientProvider>
   </React.StrictMode>,
-)
+  )
+})
