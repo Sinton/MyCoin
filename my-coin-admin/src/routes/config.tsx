@@ -9,7 +9,7 @@ import {
 
 // 使用 React.lazy 实现组件懒加载，优化首屏加载速度
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
-const Orders = lazy(() => import('@/pages/Orders'));
+const Orders = lazy(() => import('@/pages/Orders/index'));
 const Products = lazy(() => import('@/pages/Products/index'));
 const Webhooks = lazy(() => import('@/pages/Webhooks'));
 const Settings = lazy(() => import('@/pages/Settings/index'));
