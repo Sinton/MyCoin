@@ -1,3 +1,4 @@
+import React from 'react';
 import { Typography, Space, Divider, Button } from 'antd';
 import { ExportOutlined } from '@ant-design/icons';
 
@@ -16,26 +17,32 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   subtitle,
   extra,
   stats,
-  onExport
+  onExport,
 }) => {
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
+    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
+      {/* 左侧标题区 */}
       <div>
-        <Title level={2} style={{ margin: 0, marginBottom: 4 }}>{title}</Title>
-        {subtitle && <Text type="secondary">{subtitle}</Text>}
+        <Title level={2} className="!m-0 !mb-1">{title}</Title>
+        {subtitle && <Text type="secondary" className="text-sm">{subtitle}</Text>}
         {stats && (
           <div className="mt-2">
-             <Space split={<Divider type="vertical" />}>
-                {stats}
-             </Space>
+            <Space split={<Divider type="vertical" />}>
+              {stats}
+            </Space>
           </div>
         )}
       </div>
-      {extra && (
-        <Space size="small">
-          {extra}
-        </Space>
-      )}
+
+      {/* 右侧操作区 */}
+      <Space size="small" wrap>
+        {onExport && (
+          <Button icon={<ExportOutlined />} onClick={onExport}>
+            导出
+          </Button>
+        )}
+        {extra}
+      </Space>
     </div>
   );
 };
