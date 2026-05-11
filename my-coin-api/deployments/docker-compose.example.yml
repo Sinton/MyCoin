@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  # Instance 1: MyCoin App
+  mycoin-api:
+    build: .
+    ports:
+      - "8081:8080"
+    environment:
+      - APP_APP_MODE=release
+      - APP_DATABASE_DBNAME=mycoin_db
+      - APP_APPLE_BUNDLEID=com.l0101.mycoin
+      - APP_APPLE_KEYID=ABC123XYZ
+      - APP_APPLE_ISSUERID=issuer-uuid-1
+      - APP_APPLE_PRIVATEKEYPATH=/root/configs/certs/mycoin_private.p8
+    volumes:
+      - ./configs/certs:/root/configs/certs
+    restart: always
+
+# Define common network and other resources if needed

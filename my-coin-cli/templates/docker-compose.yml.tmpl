@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  app-{{ .AppName }}:
+    build: .
+    container_name: {{ .AppName }}-api
+    ports:
+      - "{{ .Port }}:8080"
+    environment:
+      - APP_APP_MODE=release
+      - APP_DATABASE_DBNAME={{ .DBName }}
+      - APP_APPLE_BUNDLEID={{ .BundleID }}
+      - APP_APPLE_KEYID={{ .KeyID }}
+      - APP_APPLE_ISSUERID={{ .IssuerID }}
+      - APP_APPLE_PRIVATEKEYPATH=/root/configs/certs/{{ .AppName }}_private.p8
+    volumes:
+      - ./configs:/root/configs
+    depends_on:
+      - db
+      - redis
+
+networks:
+  default:
+    external:
+      name: my-coin-network
