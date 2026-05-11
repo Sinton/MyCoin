@@ -1,64 +1,25 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   Card, List, Badge, Typography, Button, 
-  Space, Tag, Empty, Tabs, Popconfirm, App 
+  Space, Tag, Empty, Tabs, Popconfirm
 } from 'antd';
 import { 
-  BellOutlined, ShoppingCartOutlined, 
+  ShoppingCartOutlined, 
   NotificationOutlined, BugOutlined,
   CheckCircleOutlined, DeleteOutlined,
   EyeOutlined
 } from '@ant-design/icons';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
-  getNotifications, 
-  markNotificationRead, 
-  markAllNotificationsRead 
-} from '../api/notifications';
-import PageHeader from '../components/common/PageHeader';
-import type { NotificationItem } from '../mock/notifications';
+import PageHeader from '@/components/common/PageHeader';
+import { useNotifications } from './hooks/useNotifications';
 
 const { Text } = Typography;
 
 const Notifications: React.FC = () => {
-  const { message } = App.useApp();
-  const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState('all');
+  const { 
+    notifications, filteredData, isLoading, activeTab, setActiveTab, actions 
+  } = useNotifications();
 
-  // --- 数据获取 ---
-  const { data: res, isLoading } = useQuery({
-    queryKey: ['notifications'],
-    queryFn: getNotifications,
-  });
-
-  const notifications = res?.data || [];
-
-  // --- 过滤逻辑 ---
-  const filteredData = notifications.filter(n => {
-    if (activeTab === 'unread') return !n.read;
-    if (activeTab === 'order') return n.type === 'order';
-    if (activeTab === 'system') return n.type === 'system';
-    if (activeTab === 'alert') return n.type === 'alert';
-    return true;
-  });
-
-  // --- 操作逻辑 ---
-  const markReadMutation = useMutation({
-    mutationFn: markNotificationRead,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notifications'] });
-    }
-  });
-
-  const markAllReadMutation = useMutation({
-    mutationFn: markAllNotificationsRead,
-    onSuccess: () => {
-      message.success('已全部标记为已读');
-      queryClient.invalidateQueries({ queryKey: ['notifications'] });
-    }
-  });
-
-  const getIcon = (type: NotificationItem['type']) => {
+  const getIcon = (type: string) => {
     switch (type) {
       case 'order': return <ShoppingCartOutlined className="text-blue-500" />;
       case 'alert': return <BugOutlined className="text-red-500" />;
@@ -75,8 +36,8 @@ const Notifications: React.FC = () => {
           <Space>
             <Button 
               icon={<CheckCircleOutlined />} 
-              onClick={() => markAllReadMutation.mutate()}
-              disabled={!notifications.some(n => !n.read)}
+              onClick={actions.markAllRead}
+              disabled={actions.isAllRead}
             >
               全部标记已读
             </Button>
@@ -116,8 +77,8 @@ const Notifications: React.FC = () => {
               className={`hover:bg-gray-50/50 transition-colors px-4 rounded-xl my-2 border-none ${!item.read ? 'bg-blue-50/20' : ''}`}
               actions={[
                 !item.read ? (
-                  <Button type="link" onClick={() => markReadMutation.mutate(item.id)}>标记已读</Button>
-                ) : <Text type="secondary">已阅读</Text>,
+                  <Button type="link" onClick={() => actions.markRead(item.id)}>标记已读</Button>
+                ) : <Text type="secondary" className="text-xs">已阅读</Text>,
                 <Button icon={<EyeOutlined />} type="text">查看详情</Button>
               ]}
             >
@@ -129,7 +90,7 @@ const Notifications: React.FC = () => {
                 }
                 title={
                   <Space align="center">
-                    <Text strong={!item.read} style={{ fontSize: 15 }}>{item.title}</Text>
+                    <Text strong={!item.read} className="text-sm">{item.title}</Text>
                     {!item.read && <Badge status="processing" />}
                     {item.priority === 'high' && <Tag color="error">高优先级</Tag>}
                   </Space>
@@ -145,7 +106,7 @@ const Notifications: React.FC = () => {
           )}
         />
         <div className="py-8 text-center border-t border-gray-100">
-          <Text type="secondary">已显示最近 30 天的通知记录</Text>
+          <Text type="secondary" className="text-xs">已显示最近 30 天的通知记录</Text>
         </div>
       </Card>
     </div>

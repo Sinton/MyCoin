@@ -8,12 +8,12 @@ import {
 } from '@ant-design/icons';
 
 // 使用 React.lazy 实现组件懒加载，优化首屏加载速度
-const Dashboard = lazy(() => import('@/pages/Dashboard'));
+const Dashboard = lazy(() => import('@/pages/Dashboard/index'));
 const Orders = lazy(() => import('@/pages/Orders/index'));
 const Products = lazy(() => import('@/pages/Products/index'));
-const Webhooks = lazy(() => import('@/pages/Webhooks'));
+const Webhooks = lazy(() => import('@/pages/Webhooks/index'));
 const Settings = lazy(() => import('@/pages/Settings/index'));
-const Notifications = lazy(() => import('@/pages/Notifications'));
+const Notifications = lazy(() => import('@/pages/Notifications/index'));
 
 export interface RouteConfig {
   path: string;
