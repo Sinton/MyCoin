@@ -166,7 +166,7 @@ const Settings: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-[1200px] mx-auto">
+    <div className="max-w-[1600px] mx-auto">
       <div className="mb-6 flex justify-between items-center">
         <div>
           <Title level={3} style={{ margin: 0 }}>系统设置</Title>

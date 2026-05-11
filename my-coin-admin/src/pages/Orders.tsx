@@ -1,125 +1,116 @@
 import React, { useState, useMemo } from 'react';
 import { 
-  Table, Tag, Space, Button, Card, Drawer, 
-  Descriptions, Typography, App, Popconfirm,
-  Row, Col, Statistic, Tabs, Badge, Tooltip, Divider
+  Table, Tag, Card, Typography, Space, Button, 
+  Row, Col, Statistic, Drawer, 
+  Tabs, Badge, Divider, App, Skeleton, Empty, Popconfirm
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { 
   ReloadOutlined,
   AppleFilled, AndroidFilled, InfoCircleOutlined,
   ExportOutlined, SyncOutlined,
-  ShoppingCartOutlined, TransactionOutlined, RetweetOutlined
+  ShoppingCartOutlined, TransactionOutlined, RetweetOutlined,
+  CheckCircleOutlined, RollbackOutlined
 } from '@ant-design/icons';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getOrders, getOrderStats, updateOrderStatus } from '../api/orders';
 import TableSelect from '../components/TableSelect';
+import type { Order } from '../types';
 
 const { Text } = Typography;
 
-interface DataType {
-  key: string;
-  orderId: string;
-  userId: string;
-  userName: string;
-  productName: string;
-  amount: number;
-  status: 'success' | 'failed' | 'refunded';
-  platform: 'apple' | 'google';
-  date: string;
-}
-
-const mockUsers = [
-  { id: 'U001', name: '张晓明' },
-  { id: 'U002', name: '李美丽' },
-  { id: 'U003', name: '赵大炮' },
-  { id: 'U004', name: '钱小二' },
-  { id: 'U005', name: '王老五' },
-];
-
-const OrderContent: React.FC = () => {
+const Orders: React.FC = () => {
   const { message } = App.useApp();
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<DataType | null>(null);
-  const [searchUserId, setSearchUserId] = useState<string | undefined>(undefined);
-  const [activeStatus, setActiveStatus] = useState<string>('all');
-  const [reissuingKey, setReissuingKey] = useState<string | null>(null);
+  const queryClient = useQueryClient();
   
-  const rawData: DataType[] = useMemo(() => [
-    { key: '1', orderId: 'ORD_20260511_01', userId: 'U001', userName: '张晓明', productName: 'Pro 连续月包', amount: 19.0, status: 'success', platform: 'apple', date: '2026-05-11 13:45:22' },
-    { key: '2', orderId: 'ORD_20260511_02', userId: 'U002', userName: '李美丽', productName: 'Plus 年度会员', amount: 198.0, status: 'success', platform: 'google', date: '2026-05-11 13:40:10' },
-    { key: '3', orderId: 'ORD_20260511_03', userId: 'U003', userName: '赵大炮', productName: 'Pro 连续月包', amount: 19.0, status: 'refunded', platform: 'apple', date: '2026-05-10 12:20:00' },
-    { key: '4', orderId: 'ORD_20260511_04', userId: 'U004', userName: '钱小二', productName: 'Pro 连续月包', amount: 19.0, status: 'success', platform: 'apple', date: '2026-05-10 11:15:00' },
-    { key: '5', orderId: 'ORD_20260511_05', userId: 'U005', userName: '王老五', productName: 'Lifetime 终身会员', amount: 398.0, status: 'success', platform: 'google', date: '2026-05-10 09:30:00' },
-  ], []);
+  // --- 状态逻辑 ---
+  const [activeTab, setActiveTab] = useState('all');
+  const [selectedUserKey, setSelectedUserKey] = useState<string | undefined>(undefined);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+  const { data: ordersResponse, isLoading: isListLoading, refetch: refetchOrders, isRefetching: isListRefetching } = useQuery({
+    queryKey: ['orders'],
+    queryFn: getOrders
+  });
+
+  const { data: statsResponse, isLoading: isStatsLoading } = useQuery({
+    queryKey: ['orderStats'],
+    queryFn: getOrderStats
+  });
+
+  const mutation = useMutation({
+    mutationFn: ({ id, status }: { id: string, status: string }) => updateOrderStatus(id, status),
+    onSuccess: (res) => {
+      message.success(res.message);
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+      queryClient.invalidateQueries({ queryKey: ['orderStats'] });
+      setIsDetailOpen(false);
+    },
+  });
+
+  const ordersData = ordersResponse?.data || [];
+  const stats = statsResponse?.data;
+
+  const userData = useMemo(() => {
+    const userMap = new Map();
+    ordersData.forEach(order => {
+      if (!userMap.has(order.user)) {
+        const idMatch = order.user.match(/\(ID: ([^)]+)\)/);
+        userMap.set(order.user, { 
+          key: order.user, 
+          name: order.user.split(' ')[0], 
+          uid: idMatch ? idMatch[1] : 'Unknown'
+        });
+      }
+    });
+    return Array.from(userMap.values());
+  }, [ordersData]);
 
   const filteredData = useMemo(() => {
-    let result = rawData;
-    if (searchUserId) result = result.filter(item => item.userId === searchUserId);
-    if (activeStatus !== 'all') result = result.filter(item => item.status === activeStatus);
+    let result = ordersData;
+    if (activeTab !== 'all') result = result.filter(item => item.status === activeTab);
+    if (selectedUserKey) result = result.filter(item => item.user === selectedUserKey);
     return result;
-  }, [rawData, searchUserId, activeStatus]);
+  }, [ordersData, activeTab, selectedUserKey]);
 
-  const handleReissue = (record: DataType) => {
-    setReissuingKey(record.key);
-    const key = 'reissue';
-    message.loading({ content: `正在为 ${record.userName} 补发权益...`, key, duration: 0 });
-    setTimeout(() => {
-      setReissuingKey(null);
-      message.success({ content: `订单 ${record.orderId} 补发成功！`, key, duration: 2 });
-    }, 1500);
-  };
-
-  const showDetails = (record: DataType) => {
-    setSelectedOrder(record);
-    setDrawerOpen(true);
-  };
-
-  const columns: ColumnsType<DataType> = [
-    { 
-      title: '订单信息', 
-      key: 'orderInfo',
-      render: (_, record) => (
-        <Space direction="vertical" size={0}>
-          <Text strong style={{ fontSize: 13 }}>{record.orderId}</Text>
-          <Text type="secondary" style={{ fontSize: 11 }}>{record.date}</Text>
-        </Space>
-      )
-    },
-    { 
-      title: '用户信息', 
-      key: 'userInfo',
-      render: (_, record) => (
-        <Space direction="vertical" size={0}>
-          <Text strong>{record.userName}</Text>
-          <Text type="secondary" style={{ fontSize: 12 }}>{record.userId}</Text>
-        </Space>
-      )
-    },
-    { 
-      title: '产品套餐', 
-      dataIndex: 'productName', 
-      key: 'productName',
-      render: (text) => <Tag bordered={false} color="blue">{text}</Tag>
+  // --- 列配置 (保持之前的紧凑优化) ---
+  const columns: ColumnsType<Order> = [
+    {
+      title: '订单编号',
+      dataIndex: 'id',
+      key: 'id',
+      width: 170,
+      render: (text) => <Text strong className="font-mono" style={{ fontSize: 13 }}>{text}</Text>,
     },
     {
-      title: '来源',
-      dataIndex: 'platform',
-      key: 'platform',
-      render: (platform) => (
-        <Tooltip title={platform === 'apple' ? 'App Store' : 'Google Play'}>
-          {platform === 'apple' ? <AppleFilled style={{ fontSize: 18 }} /> : <AndroidFilled style={{ color: '#3DDC84', fontSize: 18 }} />}
-        </Tooltip>
-      )
+      title: '用户信息',
+      dataIndex: 'user',
+      key: 'user',
+      width: 200,
+      render: (userStr) => {
+        const name = userStr.split(' ')[0];
+        const idMatch = userStr.match(/\(ID: ([^)]+)\)/);
+        const uid = idMatch ? idMatch[1] : 'Unknown';
+        return (
+          <div style={{ lineHeight: '1.2' }}>
+            <div style={{ marginBottom: 1 }}><Text strong style={{ fontSize: 13 }}>{name}</Text></div>
+            <div><Text type="secondary" style={{ fontSize: 11, color: '#999' }}>ID: {uid}</Text></div>
+          </div>
+        );
+      },
     },
-    { 
-      title: '实付金额', 
-      dataIndex: 'amount', 
-      key: 'amount', 
-      align: 'right',
-      render: (val) => (
-        <Text strong style={{ color: '#f5222d', fontSize: 15 }}>
-          ¥{val.toFixed(2)}
-        </Text>
-      )
+    {
+      title: '订阅产品',
+      dataIndex: 'product',
+      key: 'product',
+      render: (text) => <Tag color="blue" bordered={false} style={{ margin: 0, fontSize: 12 }}>{text}</Tag>,
+    },
+    {
+      title: '金额',
+      dataIndex: 'amount',
+      key: 'amount',
+      render: (amount) => <Text strong style={{ fontSize: 13 }}>¥{amount.toFixed(2)}</Text>,
     },
     {
       title: '状态',
@@ -127,176 +118,124 @@ const OrderContent: React.FC = () => {
       key: 'status',
       render: (status) => {
         const config = {
-          success: { color: 'success', text: '支付成功', icon: <Badge status="success" /> },
-          failed: { color: 'error', text: '支付失败', icon: <Badge status="error" /> },
-          refunded: { color: 'warning', text: '已退款', icon: <Badge status="warning" /> }
-        };
-        const item = config[status] || config.failed;
-        return <Space size={4}>{item.icon}<Text style={{ fontSize: 13 }}>{item.text}</Text></Space>;
+          success: { color: 'success', text: '已支付' },
+          pending: { color: 'processing', text: '待支付' },
+          refunded: { color: 'default', text: '已退款' },
+        }[status];
+        return <Badge status={config.color as any} text={<span style={{fontSize: 12}}>{config.text}</span>} />;
       },
     },
-    { 
-      title: '操作', 
-      key: 'action', 
-      fixed: 'right',
-      width: 150,
+    {
+      title: '操作',
+      key: 'action',
+      width: 80,
       render: (_, record) => (
-        <Space>
-          <Button type="text" size="small" onClick={() => showDetails(record)}>详情</Button>
-          <Divider type="vertical" />
-          <Popconfirm
-            title="权益补发确认"
-            description={`确定要为用户 ${record.userName} 补发权益吗？`}
-            onConfirm={() => handleReissue(record)}
-          >
-            <Button 
-              type="text" 
-              size="small" 
-              danger 
-              loading={reissuingKey === record.key}
-              icon={<SyncOutlined spin={reissuingKey === record.key} />}
-            >
-              补发
-            </Button>
-          </Popconfirm>
-        </Space>
-      )
+        <Button type="link" size="small" style={{ padding: 0 }} onClick={() => { setSelectedOrder(record); setIsDetailOpen(true); }}>详情</Button>
+      ),
     },
   ];
 
   return (
-    <div className="max-w-[1400px] mx-auto p-4">
-      {/* 核心指标看板 */}
-      <Row gutter={[16, 16]} className="mb-6">
-        <Col xs={12} lg={6}>
-          <Card bordered>
-            <Statistic 
-              title={<Space><ShoppingCartOutlined /> 今日订单</Space>} 
-              value={12} 
-              suffix="单" 
-            />
-          </Card>
-        </Col>
-        <Col xs={12} lg={6}>
-          <Card bordered>
-            <Statistic 
-              title={<Space><TransactionOutlined /> 今日营收</Space>} 
-              value={1284.5} 
-              precision={2}
-              prefix="¥" 
-            />
-          </Card>
-        </Col>
-        <Col xs={12} lg={6}>
-          <Card bordered>
-            <Statistic 
-              title={<Space><RetweetOutlined /> 退款笔数</Space>} 
-              value={1} 
-            />
-          </Card>
-        </Col>
-        <Col xs={12} lg={6}>
-          <Card bordered>
-            <Statistic 
-              title={<Space><InfoCircleOutlined /> 异常订单</Space>} 
-              value={0} 
-            />
-          </Card>
-        </Col>
-      </Row>
+    <div className="max-w-[1600px] mx-auto">
+      {/* 顶部指标卡片 */}
+      <div className="mb-6">
+        <Row gutter={[16, 16]}>
+          {[
+            { title: '今日订单', value: stats?.todayOrders, icon: <ShoppingCartOutlined />, color: '#1890ff' },
+            { title: '今日营收', value: stats?.todayRevenue, prefix: '¥', color: '#cf1322' },
+            { title: '退款笔数', value: stats?.refundCount, color: '#d48806' },
+            { title: '活跃用户', value: stats?.activeUsers, color: '#3f8600' }
+          ].map((s, idx) => (
+            <Col xs={24} sm={12} lg={6} key={idx}>
+              <Card variant="outlined" bodyStyle={{ padding: '16px 20px' }}>
+                <Statistic title={<span style={{fontSize: 13}}>{s.title}</span>} value={s.value} prefix={s.prefix} valueStyle={{ fontSize: 22, fontWeight: 600, color: s.color }} />
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </div>
 
-      {/* 搜索与筛选 */}
-      <Card bordered className="mb-6">
-        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+      <Card 
+        variant="outlined"
+        title={
           <Tabs 
-            activeKey={activeStatus} 
-            onChange={setActiveStatus}
-            className="flex-1"
+            activeKey={activeTab} 
+            onChange={setActiveTab}
+            className="mb-[-16px]"
             items={[
-              { label: '全部订单', key: 'all' },
-              { label: '已支付', key: 'success' },
-              { label: '已退款', key: 'refunded' },
-              { label: '已失败', key: 'failed' },
+              { key: 'all', label: '全部订单' },
+              { key: 'success', label: '已完成' },
+              { key: 'pending', label: '待支付' },
+              { key: 'refunded', label: '退款记录' },
             ]}
           />
-          <Space wrap>
-            <TableSelect
-              placeholder="按用户筛选"
-              value={searchUserId}
-              onChange={setSearchUserId}
-              columns={[
-                { title: '用户ID', dataIndex: 'id', key: 'id', width: 100 },
-                { title: '用户名', dataIndex: 'name', key: 'name' },
-              ]}
-              dataSource={mockUsers}
-              rowKey="id"
-              optionLabelRender={(u) => u.name}
-              width={180}
-            />
-            <Button icon={<ReloadOutlined />} onClick={() => { setSearchUserId(undefined); setActiveStatus('all'); }}>重置</Button>
-            <Button type="primary" icon={<ExportOutlined />}>导出数据</Button>
-          </Space>
-        </div>
-      </Card>
-
-      {/* 列表数据 - 移除强制横向滚动 */}
-      <Table 
-        columns={columns} 
-        dataSource={filteredData} 
-        pagination={{ 
-          pageSize: 10,
-          showTotal: (total) => `共 ${total} 条订单`,
-          showSizeChanger: true
-        }} 
-        size="middle"
-      />
-
-      {/* 订单详情抽屉 */}
-      <Drawer
-        title="订单详情"
-        placement="right"
-        onClose={() => setDrawerOpen(false)}
-        open={drawerOpen}
-        width={500}
+        }
         extra={
           <Space>
-            <Button onClick={() => setDrawerOpen(false)}>关闭</Button>
-            <Button type="primary" danger icon={<SyncOutlined />}>补发权益</Button>
+            <TableSelect 
+              placeholder="用户筛选..." 
+              value={selectedUserKey}
+              onChange={setSelectedUserKey}
+              dataSource={userData}
+              columns={[{ title: '姓名', dataIndex: 'name' }, { title: 'UID', dataIndex: 'uid' }]}
+              rowKey="key"
+              dropdownWidth={300}
+              optionLabelRender={(record: any) => record.name}
+              width={160}
+            />
+            <Button icon={<ExportOutlined />} size="middle">导出</Button>
+            <Button type="primary" icon={<ReloadOutlined spin={isListRefetching} />} onClick={() => refetchOrders()} size="middle">刷新数据</Button>
           </Space>
         }
       >
-        {selectedOrder && (
-          <div className="space-y-8">
-            <Descriptions title="基本信息" bordered column={1} size="small">
-              <Descriptions.Item label="订单流水">{selectedOrder.orderId}</Descriptions.Item>
-              <Descriptions.Item label="下单日期">{selectedOrder.date}</Descriptions.Item>
-              <Descriptions.Item label="支付平台">
-                {selectedOrder.platform === 'apple' ? 'Apple App Store' : 'Google Play Store'}
-              </Descriptions.Item>
-              <Descriptions.Item label="订单金额">¥{selectedOrder.amount.toFixed(2)}</Descriptions.Item>
-            </Descriptions>
+        <Table columns={columns} dataSource={filteredData} loading={isListLoading} size="middle" pagination={{ pageSize: 10 }} />
+      </Card>
 
-            <Descriptions title="用户信息" bordered column={1} size="small">
-              <Descriptions.Item label="用户名">{selectedOrder.userName}</Descriptions.Item>
-              <Descriptions.Item label="用户ID">{selectedOrder.userId}</Descriptions.Item>
-              <Descriptions.Item label="电子邮箱">{selectedOrder.userName.toLowerCase()}@example.com</Descriptions.Item>
-            </Descriptions>
-
-            <Descriptions title="商品信息" bordered column={1} size="small">
-              <Descriptions.Item label="商品名称">{selectedOrder.productName}</Descriptions.Item>
-              <Descriptions.Item label="购买数量">1</Descriptions.Item>
-            </Descriptions>
+      <Drawer
+        title={<Space><InfoCircleOutlined className="text-blue-500" /> 业务详情</Space>}
+        placement="right"
+        width={500}
+        onClose={() => setIsDetailOpen(false)}
+        open={isDetailOpen}
+        footer={
+          <div className="flex justify-between items-center py-2 px-1">
+            <Button onClick={() => setIsDetailOpen(false)}>返回列表</Button>
+            {selectedOrder?.status === 'success' && (
+              <Popconfirm title="确认退款？" onConfirm={() => mutation.mutate({ id: selectedOrder.id, status: 'refunded' })}>
+                <Button danger type="primary" icon={<RollbackOutlined />}>申请退款</Button>
+              </Popconfirm>
+            )}
           </div>
-        )}
+        }
+      >
+        {selectedOrder ? (
+          <div className="space-y-8">
+            <section>
+              <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                <Row gutter={24}>
+                  <Col span={14}>
+                    <Text type="secondary" className="text-xs uppercase tracking-wider">订单编号</Text>
+                    <div className="text-base font-mono font-bold mt-1">{selectedOrder.id}</div>
+                  </Col>
+                  <Col span={10}>
+                    <Text type="secondary" className="text-xs uppercase tracking-wider">实付金额</Text>
+                    <div className="text-xl font-bold text-red-600 mt-1">¥{selectedOrder.amount.toFixed(2)}</div>
+                  </Col>
+                </Row>
+              </div>
+            </section>
+            <section className="px-2 space-y-5">
+              <div className="flex justify-between items-center"><Text type="secondary">用户姓名</Text><Text strong>{selectedOrder.user.split(' ')[0]}</Text></div>
+              <div className="flex justify-between items-center"><Text type="secondary">用户 ID (UID)</Text><Text code>{selectedOrder.user.match(/\(ID: ([^)]+)\)/)?.[1]}</Text></div>
+              <div className="flex justify-between items-center"><Text type="secondary">订阅产品</Text><Tag color="blue" bordered={false}>{selectedOrder.product}</Tag></div>
+              <div className="flex justify-between items-center"><Text type="secondary">支付状态</Text><Badge status={selectedOrder.status === 'success' ? 'success' : 'default'} text={selectedOrder.status === 'success' ? '已支付' : '已退款'} /></div>
+              <div className="flex justify-between items-center"><Text type="secondary">下单时间</Text><Text>{selectedOrder.time}</Text></div>
+            </section>
+          </div>
+        ) : <Empty />}
       </Drawer>
     </div>
   );
 };
-
-const Orders: React.FC = () => (
-  <App>
-    <OrderContent />
-  </App>
-);
 
 export default Orders;
