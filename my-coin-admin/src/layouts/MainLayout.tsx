@@ -5,8 +5,8 @@ import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useIsFetching } from '@tanstack/react-query';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import NotificationCenter from '../components/layout/NotificationCenter';
-import { routes } from '../routes/config';
+import NotificationCenter from '@/components/layout/NotificationCenter';
+import { routes } from '@/routes/config';
 
 const { Header, Sider, Content } = Layout;
 

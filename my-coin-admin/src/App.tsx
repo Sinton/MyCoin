@@ -1,9 +1,9 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Spin } from 'antd';
-import MainLayout from './layouts/MainLayout';
-import { routes } from './routes/config';
-import { ConfigProvider } from './context/ConfigContext';
+import MainLayout from '@/layouts/MainLayout';
+import { routes } from '@/routes/config';
+import { ConfigProvider } from '@/context/ConfigContext';
 
 // 全局加载状态组件
 const PageLoader = () => (
