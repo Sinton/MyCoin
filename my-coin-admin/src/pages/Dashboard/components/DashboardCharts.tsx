@@ -20,7 +20,7 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({
 }) => {
   return (
     <Row gutter={[16, 16]} className="mb-6">
-      <Col xs={24} lg={16}>
+      <Col xs={24} lg={14}>
         <Card 
           title={<Space><LineChartOutlined /> 7日营收趋势分析</Space>} 
           variant="outlined"
@@ -29,9 +29,9 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({
           {isTrendLoading ? <Skeleton active /> : <Area {...areaConfig} />}
         </Card>
       </Col>
-      <Col xs={24} lg={8}>
+      <Col xs={24} lg={10}>
         <Card 
-          title={<Space><PieChartOutlined /> 订阅产品占比</Space>} 
+          title={<Space><PieChartOutlined /> 订阅套餐占比</Space>} 
           variant="outlined"
         >
           {isDistLoading ? <Skeleton active /> : <Pie {...pieConfig} />}

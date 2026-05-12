@@ -7,17 +7,19 @@ const { Text } = Typography;
 interface RecentActivityListProps {
   activities: any[];
   isLoading: boolean;
+  onMore?: () => void;
 }
 
 const RecentActivityList: React.FC<RecentActivityListProps> = ({
   activities,
-  isLoading
+  isLoading,
+  onMore
 }) => {
   return (
     <Card 
       title={<Space><HistoryOutlined /> 最近系统动态</Space>} 
       variant="outlined"
-      extra={<Button type="link" icon={<EllipsisOutlined />} />}
+      extra={<Button type="link" icon={<EllipsisOutlined />} onClick={onMore} />}
     >
       <List
         loading={isLoading}

@@ -64,6 +64,7 @@ const Dashboard: React.FC = () => {
       <RecentActivityList 
         activities={activities}
         isLoading={loading.activity}
+        onMore={() => actions.navigate('/notifications')}
       />
     </div>
   );

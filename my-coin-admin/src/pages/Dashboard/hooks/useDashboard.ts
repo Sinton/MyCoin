@@ -59,8 +59,7 @@ export const useDashboard = () => {
       y: { labelFormatter: (v: any) => `¥${v}` }
     },
     tooltip: {
-      channel: 'y',
-      valueFormatter: (v: any) => `¥${v.toLocaleString()}`,
+      items: [{ channel: 'y', name: '营收金额', valueFormatter: (v: any) => `¥${v.toLocaleString()}` }],
     },
   };
 
@@ -68,13 +67,15 @@ export const useDashboard = () => {
     data: distData,
     angleField: 'value',
     colorField: 'type',
-    radius: 0.8,
-    innerRadius: 0.6,
+    radius: 0.6,
+    innerRadius: 0.4,
     height: 280,
+    padding: [10, 60, 10, 60],
     label: {
-      text: (d: any) => `${d.value}%`,
-      position: 'inside',
+      text: (d: any) => `${d.type}: ${d.value}%`,
+      position: 'spider',
       style: {
+        fontSize: 12,
         fontWeight: 'bold',
       },
     },
@@ -85,8 +86,21 @@ export const useDashboard = () => {
       },
     },
     tooltip: {
-      items: [{ channel: 'y', valueFormatter: (v: any) => `${v}%` }],
+      items: [{ channel: 'y', name: '占比', valueFormatter: (v: any) => `${v}%` }],
     },
+    annotations: [
+      {
+        type: 'text',
+        style: {
+          text: '订阅分布',
+          x: '50%',
+          y: '50%',
+          textAlign: 'center',
+          fontSize: 14,
+          fill: '#8c8c8c',
+        },
+      },
+    ],
   };
 
   return {
