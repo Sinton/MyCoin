@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Layout, Menu, theme, Divider, Button } from 'antd';
 import { UserOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useIsFetching } from '@tanstack/react-query';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
@@ -12,6 +13,7 @@ import { useUIStore } from '@/store';
 const { Header, Sider, Content } = Layout;
 
 const MainLayout: React.FC = () => {
+  const { t } = useTranslation();
   const { sidebarCollapsed, toggleSidebar } = useUIStore();
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,9 +44,9 @@ const MainLayout: React.FC = () => {
       .map(route => ({
         key: route.path,
         icon: route.icon,
-        label: route.label,
+        label: t(route.i18nKey),
       }));
-  }, []);
+  }, [t]);
 
   return (
     <Layout className="min-h-screen">

@@ -10,6 +10,7 @@ export type Order = {
   id: string;
   user: string;
   product: string;
+  productNames?: Record<string, string>;
   amount: number;
   status: 'success' | 'pending' | 'refunded';
   time: string;
@@ -43,13 +44,15 @@ export type TrendData = {
 export type DistributionData = {
   type: string;
   value: number;
+  names?: Record<string, string>;
 }
 
 export type RecentActivity = {
   id: string;
   type: 'order' | 'system' | 'user';
   title: string;
-  time: string;
+  i18n?: Record<string, string>;
+  time: number;
   status?: string;
 }
 

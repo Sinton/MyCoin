@@ -4,6 +4,7 @@ import {
   SettingOutlined, SafetyCertificateOutlined, 
   ReloadOutlined, InfoCircleOutlined, SaveOutlined 
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import PageHeader from '@/components/common/PageHeader';
 import GeneralSettings from './components/GeneralSettings';
 import DeveloperSettings from './components/DeveloperSettings';
@@ -11,12 +12,13 @@ import AboutSystem from './components/AboutSystem';
 import { useSettings } from './hooks/useSettings';
 
 const Settings: React.FC = () => {
+  const { t } = useTranslation();
   const { settings, isLoading, isSaving, isDirty, actions } = useSettings();
 
   const items = [
     {
       key: 'general',
-      label: <Space><SettingOutlined />通用设置</Space>,
+      label: <Space><SettingOutlined />{t('settings.tabs.general')}</Space>,
       children: (
         <GeneralSettings 
           data={settings?.general} 
@@ -26,7 +28,7 @@ const Settings: React.FC = () => {
     },
     {
       key: 'developer',
-      label: <Space><SafetyCertificateOutlined />开发者选项</Space>,
+      label: <Space><SafetyCertificateOutlined />{t('settings.tabs.developer')}</Space>,
       children: (
         <DeveloperSettings 
           data={settings?.developer} 
@@ -38,7 +40,7 @@ const Settings: React.FC = () => {
     },
     {
       key: 'about',
-      label: <Space><InfoCircleOutlined />关于系统</Space>,
+      label: <Space><InfoCircleOutlined />{t('settings.tabs.about')}</Space>,
       children: <AboutSystem data={settings?.about} />
     }
   ];
@@ -46,13 +48,13 @@ const Settings: React.FC = () => {
   return (
     <div className="max-w-[1600px] mx-auto">
       <PageHeader 
-        title="系统设置"
-        subtitle="配置管理后台的全局偏好、开发者权限及系统行为"
+        title={t('settings.title')}
+        subtitle={t('settings.subtitle')}
         extra={
           <>
             {isDirty && (
               <Button icon={<ReloadOutlined />} onClick={actions.handleCancel}>
-                取消修改
+                {t('common.cancel')}
               </Button>
             )}
             <Button 
@@ -62,7 +64,7 @@ const Settings: React.FC = () => {
               onClick={actions.handleSave} 
               icon={<SaveOutlined />}
             >
-              保存配置
+              {t('common.save')}
             </Button>
           </>
         }

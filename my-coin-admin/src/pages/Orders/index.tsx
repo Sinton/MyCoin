@@ -12,6 +12,7 @@ import {
   ExportOutlined,
   StopOutlined
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 import { exportToCSV } from '@/utils/csv';
 import TableSelect from '@/components/TableSelect';
@@ -26,6 +27,7 @@ import OrderDetailDrawer from './components/OrderDetailDrawer';
 const { Text } = Typography;
 
 const Orders: React.FC = () => {
+  const { t } = useTranslation();
   const { message } = App.useApp();
   
   // --- 业务逻辑托管给 Hook ---
@@ -58,12 +60,12 @@ const Orders: React.FC = () => {
     }
     message.loading('准备导出文件...', 0.5);
     const headers = {
-      id: '订单编号',
-      user: '用户信息',
-      product: '产品名称',
-      amount: '金额 (CNY)',
-      status: '订单状态',
-      time: '成交时间'
+      id: t('orders.columns.id'),
+      user: t('orders.columns.user'),
+      product: t('orders.columns.product'),
+      amount: t('orders.columns.amount'),
+      status: t('orders.columns.status'),
+      time: t('orders.columns.time')
     };
     setTimeout(() => {
       exportToCSV(ordersData, 'MyCoin_Orders_Report', headers);
@@ -84,17 +86,17 @@ const Orders: React.FC = () => {
     });
   };
 
-  // --- 表格列配置 (可以在外部定义，这里保持简洁) ---
+  // --- 表格列配置 ---
   const columns: ColumnsType<Order> = [
     {
-      title: '订单编号',
+      title: t('orders.columns.id'),
       dataIndex: 'id',
       key: 'id',
       width: 170,
       render: (text) => <Text strong className="font-mono" style={{ fontSize: 13 }}>{text}</Text>,
     },
     {
-      title: '用户信息',
+      title: t('orders.columns.user'),
       dataIndex: 'user',
       key: 'user',
       width: 200,
@@ -111,36 +113,36 @@ const Orders: React.FC = () => {
       },
     },
     {
-      title: '订阅产品',
+      title: t('orders.columns.product'),
       dataIndex: 'product',
       key: 'product',
       render: (text) => <Tag color="blue" bordered={false} style={{ margin: 0, fontSize: 12 }}>{text}</Tag>,
     },
     {
-      title: '金额',
+      title: t('orders.columns.amount'),
       dataIndex: 'amount',
       key: 'amount',
       render: (amount) => <Text strong style={{ fontSize: 13 }}>¥{amount.toFixed(2)}</Text>,
     },
     {
-      title: '状态',
+      title: t('orders.columns.status'),
       dataIndex: 'status',
       key: 'status',
       render: (status) => {
         const config = {
-          success: { color: 'success', text: '已支付' },
-          pending: { color: 'processing', text: '待支付' },
-          refunded: { color: 'default', text: '已退款' },
+          success: { color: 'success', text: t('common.status.success') },
+          pending: { color: 'processing', text: t('common.status.pending') },
+          refunded: { color: 'default', text: t('common.status.refunded') },
         }[status as 'success' | 'pending' | 'refunded'];
         return <Badge status={config.color as any} text={<span style={{fontSize: 12}}>{config.text}</span>} />;
       },
     },
     {
-      title: '操作',
+      title: t('orders.columns.action'),
       key: 'action',
       width: 80,
       render: (_, record) => (
-        <Button type="link" size="small" style={{ padding: 0 }} onClick={() => handleShowDetail(record)}>详情</Button>
+        <Button type="link" size="small" style={{ padding: 0 }} onClick={() => handleShowDetail(record)}>{t('common.more')}</Button>
       ),
     },
   ];
@@ -148,15 +150,15 @@ const Orders: React.FC = () => {
   return (
     <div className="max-w-[1600px] mx-auto">
       <PageHeader 
-        title="订单流水管理"
-        subtitle="查看并处理全平台实时交易记录"
+        title={t('orders.title')}
+        subtitle={t('orders.subtitle')}
         onExport={handleExport}
         extra={
           <Button 
             icon={<ReloadOutlined spin={isStatsLoading} />} 
             onClick={refreshAll}
           >
-            刷新数据
+            {t('common.refresh')}
           </Button>
         }
       />
@@ -172,7 +174,6 @@ const Orders: React.FC = () => {
             <StatCard 
               {...item}
               loading={isStatsLoading}
-              changeLabel="较昨日"
             />
           </Col>
         ))}
@@ -186,34 +187,34 @@ const Orders: React.FC = () => {
             onChange={setActiveTab}
             className="mb-[-16px]"
             items={[
-              { key: 'all', label: '全部订单' },
-              { key: 'success', label: '已完成' },
-              { key: 'pending', label: '待支付' },
-              { key: 'refunded', label: '退款记录' },
+              { key: 'all', label: t('orders.columns.id') === 'Order ID' ? 'All Orders' : '全部订单' },
+              { key: 'success', label: t('common.status.success') },
+              { key: 'pending', label: t('common.status.pending') },
+              { key: 'refunded', label: t('common.status.refunded') },
             ]}
           />
         }
         extra={
           <Space>
             <TableSelect 
-              placeholder="用户筛选..." 
+              placeholder={t('orders.columns.user') + '...'} 
               value={selectedUserKey}
               onChange={setSelectedUserKey}
               dataSource={userData}
-              columns={[{ title: '姓名', dataIndex: 'name' }, { title: 'UID', dataIndex: 'uid' }]}
+              columns={[{ title: t('orders.columns.user'), dataIndex: 'name' }, { title: 'UID', dataIndex: 'uid' }]}
               rowKey="key"
               dropdownWidth={300}
               optionLabelRender={(record: any) => record.name}
               width={160}
             />
-            <Button icon={<ExportOutlined />} size="middle" onClick={handleExport}>导出</Button>
+            <Button icon={<ExportOutlined />} size="middle" onClick={handleExport}>{t('common.more')}</Button>
             <Button 
               type="primary" 
               icon={<ReloadOutlined spin={isListRefetching} />} 
               onClick={() => refetchOrders()} 
               size="middle"
             >
-              刷新数据
+              {t('common.refresh')}
             </Button>
           </Space>
         }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Typography, Divider, Space, Badge } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 const { Title, Text } = Typography;
 
@@ -8,6 +9,7 @@ interface AboutSystemProps {
 }
 
 const AboutSystem: React.FC<AboutSystemProps> = ({ data }) => {
+  const { t } = useTranslation();
   return (
     <Card variant="borderless" className="bg-gray-50">
       <div className="flex flex-col items-center py-8">
@@ -15,12 +17,12 @@ const AboutSystem: React.FC<AboutSystemProps> = ({ data }) => {
           MC
         </div>
         <Title level={4} style={{ marginBottom: 4 }}>MyCoin Admin Pro</Title>
-        <Text type="secondary" className="mb-6">版本 {data?.version} (Build {data?.buildDate})</Text>
+        <Text type="secondary" className="mb-6">{t('settings.about.version')} {data?.version} (Build {data?.buildDate})</Text>
         
-        <Divider plain>系统环境</Divider>
+        <Divider plain>{t('settings.tabs.about')}</Divider>
         
         <Space split={<Divider type="vertical" />}>
-          <Badge status="success" text={`${data?.env} 环境`} />
+          <Badge status="success" text={`${data?.env} ${t('settings.about.env')}`} />
           <Text type="secondary">React 18.2</Text>
           <Text type="secondary">Ant Design 5.29</Text>
         </Space>

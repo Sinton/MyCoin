@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
 import ErrorBoundary from './components/common/ErrorBoundary'
 import './index.css'
+import './i18n'
 
 // 创建一个 client
 const queryClient = new QueryClient({

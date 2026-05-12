@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import i18n from '@/i18n';
 
 // ============================================================
 // 1. UI Store：管理与 UI 交互相关的客户端状态（不做持久化）
@@ -30,7 +31,10 @@ export const useConfigStore = create<ConfigState>()(
   persist(
     (set) => ({
       previewLang: 'master',
-      setPreviewLang: (lang) => set({ previewLang: lang }),
+      setPreviewLang: (lang) => {
+        set({ previewLang: lang });
+        i18n.changeLanguage(lang);
+      },
     }),
     {
       name: 'mycoin_config', // localStorage key

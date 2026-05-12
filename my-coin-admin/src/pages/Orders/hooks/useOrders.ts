@@ -1,12 +1,14 @@
 import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { App } from 'antd';
+import { useConfigStore } from '@/store';
 import { getOrders, getOrderStats, updateOrderStatus } from '@/api/orders';
 import { type Order } from '@/types';
 
 export const useOrders = () => {
   const { message } = App.useApp();
   const queryClient = useQueryClient();
+  const { previewLang } = useConfigStore();
   
   const [activeTab, setActiveTab] = useState('all');
   const [selectedUserKey, setSelectedUserKey] = useState<string | undefined>(undefined);
@@ -63,11 +65,16 @@ export const useOrders = () => {
 
   // --- 衍生数据：过滤后的列表 ---
   const filteredData = useMemo(() => {
-    let result = ordersData;
+    // 映射多语言产品名称
+    let result = ordersData.map(order => ({
+      ...order,
+      product: (previewLang === 'master' ? order.product : order.productNames?.[previewLang]) || order.product
+    }));
+
     if (activeTab !== 'all') result = result.filter(item => item.status === activeTab);
     if (selectedUserKey) result = result.filter(item => item.user === selectedUserKey);
     return result;
-  }, [ordersData, activeTab, selectedUserKey]);
+  }, [ordersData, activeTab, selectedUserKey, previewLang]);
 
   const refreshAll = () => {
     refetchStats();

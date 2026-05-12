@@ -1,6 +1,7 @@
 import { App } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { useConfigStore } from '@/store';
 import { 
   getDashboardStats, 
   getRevenueTrend, 
@@ -11,6 +12,7 @@ import {
 export const useDashboard = () => {
   const { message } = App.useApp();
   const navigate = useNavigate();
+  const { previewLang } = useConfigStore();
 
   // --- Data Fetching ---
   const { data: statsRes, isLoading: isStatsLoading, refetch: refetchStats } = useQuery({
@@ -35,8 +37,18 @@ export const useDashboard = () => {
 
   const stats = statsRes?.data;
   const trendData = trendRes?.data || [];
-  const distData = distRes?.data || [];
-  const activities = activityRes?.data || [];
+  
+  // 动态处理图表语言
+  const distData = (distRes?.data || []).map(item => ({
+    ...item,
+    type: (previewLang === 'master' ? item.type : item.names?.[previewLang]) || item.type
+  }));
+
+  // 动态处理动态列表语言
+  const activities = (activityRes?.data || []).map(item => ({
+    ...item,
+    title: (previewLang === 'master' ? item.title : item.i18n?.[previewLang]) || item.title
+  }));
 
   const handleRefresh = async () => {
     await refetchStats();

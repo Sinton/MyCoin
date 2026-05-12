@@ -1,0 +1,102 @@
+{
+  "common": {
+    "save": "保存配置",
+    "cancel": "取消修改",
+    "refresh": "同步数据",
+    "more": "查看详情",
+    "copy": "复制",
+    "copy_success": "复制成功",
+    "preview_badge": "{{lang}} 预览",
+    "comparison": {
+      "vs_yesterday": "较昨日",
+      "vs_last_week": "较上周"
+    },
+    "status": {
+      "success": "正常",
+      "error": "异常",
+      "pending": "处理中",
+      "active": "已激活",
+      "inactive": "未激活",
+      "refunded": "已退款"
+    }
+  },
+  "menu": {
+    "dashboard": "控制台",
+    "products": "订阅管理",
+    "orders": "订单管理",
+    "webhooks": "Webhook 日志",
+    "notifications": "通知中心",
+    "settings": "系统设置"
+  },
+  "dashboard": {
+    "title": "运营概览",
+    "subtitle": "实时监控您的业务核心指标与增长趋势",
+    "revenue_trend": "7日营收趋势分析",
+    "product_dist": "全平台订阅占比",
+    "recent_activity": "最近系统动态",
+    "stats": {
+      "revenue": "累计营收",
+      "users": "活跃用户",
+      "order_value": "客单价 (ARPU)",
+      "health": "业务健康度"
+    }
+  },
+  "settings": {
+    "title": "系统设置",
+    "subtitle": "配置管理后台的全局偏好、开发者权限及系统行为",
+    "tabs": {
+      "general": "通用设置",
+      "developer": "开发者选项",
+      "about": "关于系统"
+    },
+    "general": {
+      "lang_label": "全局预览语言",
+      "lang_help": "设置管理后台数据的默认预览语种（如产品名、通知内容等）",
+      "refresh_label": "数据自动刷新",
+      "refresh_help": "开启后，控制台数据将每隔 30 秒自动同步一次",
+      "theme_label": "系统主题颜色",
+      "default_lang": "系统默认",
+      "notifications": "系统通知",
+      "email_label": "异常告警邮件",
+      "email_help": "当 Webhook 处理失败超过阈值时发送通知",
+      "browser_label": "浏览器推送",
+      "browser_help": "开启实时订单成交的桌面通知"
+    },
+    "developer": {
+      "sandbox_label": "沙盒测试模式",
+      "sandbox_help": "开启后，所有的订单请求将指向 Apple/Google 的沙盒环境",
+      "secret_label": "系统应用密钥 (App Secret)",
+      "secret_help": "用于服务器间通信的安全校验，请妥善保管",
+      "reset_secret": "重置密钥"
+    },
+    "about": {
+      "version": "当前版本",
+      "env": "运行环境",
+      "os": "操作系统",
+      "browser": "浏览器内核"
+    }
+  },
+  "orders": {
+    "title": "订单管理",
+    "subtitle": "查询、筛选并管理全平台的订单流水与退款状态",
+    "columns": {
+      "id": "订单编号",
+      "user": "购买用户",
+      "product": "购买产品",
+      "amount": "订单金额",
+      "status": "交易状态",
+      "time": "下单时间",
+      "platform": "支付平台",
+      "action": "操作"
+    }
+  },
+  "products": {
+    "offline": "已下架",
+    "configure": "配置套餐",
+    "cycles": {
+      "month": "月度",
+      "year": "年度",
+      "forever": "终身"
+    }
+  }
+}

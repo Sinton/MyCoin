@@ -1,0 +1,102 @@
+{
+  "common": {
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "refresh": "Sync Data",
+    "more": "Details",
+    "copy": "Copy",
+    "copy_success": "Copied successfully",
+    "preview_badge": "{{lang}} Preview",
+    "comparison": {
+      "vs_yesterday": "vs Yesterday",
+      "vs_last_week": "vs Last Week"
+    },
+    "status": {
+      "success": "Success",
+      "error": "Error",
+      "pending": "Pending",
+      "active": "Active",
+      "inactive": "Inactive",
+      "refunded": "Refunded"
+    }
+  },
+  "menu": {
+    "dashboard": "Dashboard",
+    "products": "Subscriptions",
+    "orders": "Orders",
+    "webhooks": "Webhook Logs",
+    "notifications": "Notifications",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "title": "Operations Overview",
+    "subtitle": "Real-time monitoring of core business metrics and growth trends",
+    "revenue_trend": "7-Day Revenue Trend",
+    "product_dist": "Subscription Distribution",
+    "recent_activity": "Recent Activity",
+    "stats": {
+      "revenue": "Total Revenue",
+      "users": "Active Users",
+      "order_value": "ARPU",
+      "health": "Business Health"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Configure global preferences, developer permissions, and system behavior",
+    "tabs": {
+      "general": "General",
+      "developer": "Developer",
+      "about": "About"
+    },
+    "general": {
+      "lang_label": "Global Preview Language",
+      "lang_help": "Set the default preview language for data (e.g., product names, notifications)",
+      "refresh_label": "Auto Data Refresh",
+      "refresh_help": "Dashboard data will sync automatically every 30 seconds",
+      "theme_label": "System Theme",
+      "default_lang": "System Default",
+      "notifications": "System Notifications",
+      "email_label": "Error Alert Email",
+      "email_help": "Send notifications when Webhook failures exceed the threshold",
+      "browser_label": "Browser Push",
+      "browser_help": "Enable desktop notifications for real-time order completions"
+    },
+    "developer": {
+      "sandbox_label": "Sandbox Mode",
+      "sandbox_help": "Direct all order requests to Apple/Google sandbox environments",
+      "secret_label": "App Secret",
+      "secret_help": "Secure key for server-to-server communication. Keep it safe.",
+      "reset_secret": "Reset Secret"
+    },
+    "about": {
+      "version": "Version",
+      "env": "Environment",
+      "os": "Operating System",
+      "browser": "Browser Kernel"
+    }
+  },
+  "orders": {
+    "title": "Order Management",
+    "subtitle": "Query, filter, and manage transaction records and refund status",
+    "columns": {
+      "id": "Order ID",
+      "user": "Customer",
+      "product": "Product",
+      "amount": "Amount",
+      "status": "Status",
+      "time": "Order Time",
+      "platform": "Platform",
+      "action": "Action"
+    }
+  },
+  "products": {
+    "offline": "Offline",
+    "configure": "Configure",
+    "cycles": {
+      "month": "Monthly",
+      "year": "Yearly",
+      "forever": "Lifetime"
+    }
+  }
+}
