@@ -50,13 +50,35 @@ export const useDashboard = () => {
     yField: 'value',
     smooth: true,
     height: 280,
-    padding: 'auto',
+    paddingLeft: 50,
+    paddingRight: 30,
+    paddingBottom: 50,
+    paddingTop: 20,
     style: {
-      fill: 'linear-gradient(-90deg, white 0%, #1677ff 100%)',
-      fillOpacity: 0.2,
+      fill: 'linear-gradient(to bottom, #1677ff 0%, rgba(22, 119, 255, 0) 100%)', // 改为纵向渐变
+      fillOpacity: 0.4,
+    },
+    scale: {
+      x: { padding: 0.1 }, // 留出 10% 的呼吸间距
+    },
+    point: {
+      size: 4,
+      style: {
+        fill: '#ffffff',
+        stroke: '#1677ff',
+        lineWidth: 2,
+      },
     },
     axis: {
-      y: { labelFormatter: (v: any) => `¥${v}` }
+      x: {
+        labelTransform: 'rotate(45)',
+        labelFontSize: 10,
+        labelSpacing: 8,
+      },
+      y: { 
+        labelFormatter: (v: any) => `¥${v}`,
+        grid: { stroke: '#f0f0f0' }, // 浅灰色网格线
+      }
     },
     tooltip: {
       items: [{ channel: 'y', name: '营收金额', valueFormatter: (v: any) => `¥${v.toLocaleString()}` }],

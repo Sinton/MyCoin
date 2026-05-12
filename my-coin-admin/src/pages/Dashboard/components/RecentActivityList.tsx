@@ -28,8 +28,18 @@ const RecentActivityList: React.FC<RecentActivityListProps> = ({
           <List.Item className="border-none py-3">
             <List.Item.Meta
               avatar={
-                <div className={`p-2 rounded-full ${item.type === 'order' ? 'bg-blue-50' : item.type === 'system' ? 'bg-purple-50' : 'bg-green-50'}`}>
-                  {item.type === 'order' ? <ShoppingCartOutlined className="text-blue-500" /> : item.type === 'system' ? <DashboardOutlined className="text-purple-500" /> : <UserOutlined className="text-green-500" />}
+                <div className={`w-9 h-9 flex items-center justify-center rounded-lg ${
+                  item.type === 'order' ? 'bg-blue-50' : 
+                  item.type === 'system' ? 'bg-purple-50' : 
+                  'bg-green-50'
+                }`}>
+                  {item.type === 'order' ? (
+                    <ShoppingCartOutlined className="text-blue-500 text-lg" />
+                  ) : item.type === 'system' ? (
+                    <DashboardOutlined className="text-purple-500 text-lg" />
+                  ) : (
+                    <UserOutlined className="text-green-500 text-lg" />
+                  )}
                 </div>
               }
               title={<span className="text-sm font-medium">{item.title}</span>}

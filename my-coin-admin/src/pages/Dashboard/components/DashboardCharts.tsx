@@ -24,7 +24,8 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({
         <Card 
           title={<Space><LineChartOutlined /> 7日营收趋势分析</Space>} 
           variant="outlined"
-          extra={<Button type="link" onClick={onMoreData}>更多数据</Button>}
+          extra={<Button type="link" onClick={onMoreData} className="pr-0">更多数据</Button>}
+          styles={{ header: { paddingRight: 12 } }} // 稍微收紧头部右侧内边距
         >
           {isTrendLoading ? <Skeleton active /> : <Area {...areaConfig} />}
         </Card>
