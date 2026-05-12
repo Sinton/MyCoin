@@ -3,11 +3,11 @@ import { http, HttpResponse } from 'msw';
 // 导入现有的 Mock 数据
 import { 
   MOCK_DASHBOARD_STATS, MOCK_REVENUE_TREND, MOCK_PRODUCT_DIST, MOCK_RECENT_ACTIVITY 
-} from '../mock/dashboard';
-import { MOCK_ORDERS, MOCK_ORDER_STATS } from '../mock/orders';
-import { LIVE_PRODUCTS, getLiveStats, MOCK_FEATURE_LIBRARY } from '../mock/products';
-import { MOCK_WEBHOOK_LOGS, MOCK_WEBHOOK_STATS } from '../mock/webhooks';
-import { LIVE_NOTIFICATIONS } from '../mock/notifications';
+} from './data/dashboard';
+import { MOCK_ORDERS, MOCK_ORDER_STATS } from './data/orders';
+import { LIVE_PRODUCTS, getLiveStats, MOCK_FEATURE_LIBRARY } from './data/products';
+import { MOCK_WEBHOOK_LOGS, MOCK_WEBHOOK_STATS } from './data/webhooks';
+import { LIVE_NOTIFICATIONS } from './data/notifications';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/v1';
 

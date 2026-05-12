@@ -1,6 +1,6 @@
 import { request } from '@/utils/request';
 import type { ApiResponse } from '@/types';
-import type { NotificationItem } from '@/mock/notifications';
+import type { NotificationItem } from '@/mocks/data/notifications';
 
 export const getNotifications = (): Promise<ApiResponse<NotificationItem[]>> => {
   return request({ url: '/notifications', method: 'GET' });

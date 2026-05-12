@@ -1,4 +1,4 @@
-import type { WebhookLog, WebhookStats } from '../types';
+import type { WebhookLog, WebhookStats } from '@/types';
 
 export const MOCK_WEBHOOK_STATS: WebhookStats = {
   total24h: 1284,

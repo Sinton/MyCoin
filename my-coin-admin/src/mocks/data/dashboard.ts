@@ -1,4 +1,4 @@
-import type { DashboardStats, TrendData, DistributionData, RecentActivity } from '../types';
+import type { DashboardStats, TrendData, DistributionData, RecentActivity } from '@/types';
 
 export const MOCK_DASHBOARD_STATS: DashboardStats = {
   totalRevenue: 128420.50,

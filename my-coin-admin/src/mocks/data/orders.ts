@@ -1,4 +1,4 @@
-import type { Order, OrderStats } from '../types';
+import type { Order, OrderStats } from '@/types';
 
 export const MOCK_ORDERS: Order[] = [
   { key: '1', id: 'ORD-20240511001', user: '张三 (ID: U88421)', product: 'Pro 连续月包', amount: 19.00, status: 'success', time: '2024-05-11 10:30:25', platform: 'apple' },

@@ -15,7 +15,7 @@ import {
   markNotificationRead, 
   markAllNotificationsRead 
 } from '../../api/notifications';
-import type { NotificationItem } from '../../mock/notifications';
+import type { NotificationItem } from '../../mocks/data/notifications';
 
 const { Text } = Typography;
 

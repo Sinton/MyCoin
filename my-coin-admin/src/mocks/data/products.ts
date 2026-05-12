@@ -1,4 +1,4 @@
-import type { Product, ProductStats, FeatureLibraryItem } from '../types';
+import type { Product, ProductStats, FeatureLibraryItem } from '@/types';
 
 export const MOCK_FEATURE_LIBRARY: FeatureLibraryItem[] = [
   { key: 'FEAT_UNLIMITED', label: '无限次记账', sort: 1, category: 'feature' },
