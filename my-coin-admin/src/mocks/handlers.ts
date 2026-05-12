@@ -8,6 +8,7 @@ import { MOCK_ORDERS, MOCK_ORDER_STATS } from './data/orders';
 import { LIVE_PRODUCTS, getLiveStats, MOCK_FEATURE_LIBRARY } from './data/products';
 import { MOCK_WEBHOOK_LOGS, MOCK_WEBHOOK_STATS } from './data/webhooks';
 import { LIVE_NOTIFICATIONS } from './data/notifications';
+import { MOCK_SETTINGS } from './data/settings';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/v1';
 
@@ -85,6 +86,22 @@ export const handlers = [
   }),
   http.get(`${API_BASE}/webhooks/stats`, () => {
     return HttpResponse.json({ code: 200, data: MOCK_WEBHOOK_STATS, message: 'success' });
+  }),
+
+  // --- Settings ---
+  http.get(`${API_BASE}/settings`, () => {
+    return HttpResponse.json({ code: 200, data: MOCK_SETTINGS, message: 'success' });
+  }),
+  http.put(`${API_BASE}/settings`, async ({ request }) => {
+    const body = await request.json();
+    return HttpResponse.json({ code: 200, data: body, message: 'Settings updated' });
+  }),
+  http.post(`${API_BASE}/settings/reset-secret`, () => {
+    return HttpResponse.json({ 
+      code: 200, 
+      data: { newSecret: `sk_live_${Math.random().toString(36).substring(7)}` }, 
+      message: 'Secret reset success' 
+    });
   }),
 
   // --- Notifications ---
