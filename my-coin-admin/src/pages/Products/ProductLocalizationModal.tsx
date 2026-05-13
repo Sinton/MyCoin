@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Select, Input, Space, Typography, Button, App, Table, Empty } from 'antd';
 import { GlobalOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -19,14 +20,6 @@ interface ProductLocalizationModalProps {
   productName: string;
 }
 
-const LANG_OPTIONS = [
-  { value: 'zh_CN', label: '简体中文 (中国)' },
-  { value: 'zh_TW', label: '繁体中文 (中国台湾)' },
-  { value: 'en_US', label: '英语 (美国)' },
-  { value: 'ja_JP', label: '日语 (日本)' },
-  { value: 'ko_KR', label: '韩语 (韩国)' },
-];
-
 const ProductLocalizationModal: React.FC<ProductLocalizationModalProps> = ({ 
   open, 
   onCancel, 
@@ -34,8 +27,17 @@ const ProductLocalizationModal: React.FC<ProductLocalizationModalProps> = ({
   initialLocales = [],
   productName
 }) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const { message } = App.useApp();
+
+  const LANG_OPTIONS = [
+    { value: 'zh_CN', label: '简体中文' },
+    { value: 'zh_TW', label: '繁體中文' },
+    { value: 'en_US', label: 'English' },
+    { value: 'ja_JP', label: '日本語' },
+    { value: 'ko_KR', label: '한국어' },
+  ];
 
   useEffect(() => {
     if (open) {
@@ -47,7 +49,7 @@ const ProductLocalizationModal: React.FC<ProductLocalizationModalProps> = ({
     try {
       const values = await form.validateFields();
       onSave(values.locales || []);
-      message.success(`${productName} 的本地化配置已更新`);
+      message.success(t('common.copy_success'));
     } catch (error) {
       console.error('Validate Failed:', error);
     }
@@ -58,7 +60,7 @@ const ProductLocalizationModal: React.FC<ProductLocalizationModalProps> = ({
       title={
         <Space>
           <GlobalOutlined className="text-blue-500" />
-          <span>本地化多语言配置 - {productName}</span>
+          <span>{t('products.localization.title')} - {productName}</span>
         </Space>
       }
       open={open}
@@ -66,11 +68,11 @@ const ProductLocalizationModal: React.FC<ProductLocalizationModalProps> = ({
       onOk={handleOk}
       width={750}
       destroyOnHidden
-      okText="保存配置"
+      okText={t('common.confirm')}
     >
       <div className="mb-4 mt-2 bg-blue-50 p-3 rounded-lg border border-blue-100">
         <Text type="secondary" style={{ fontSize: 12 }}>
-          配置该套餐在不同地区商店显示的名称和营销描述。如果不配置，客户端将默认显示主名称。
+          {t('products.localization.tip')}
         </Text>
       </div>
 
@@ -85,16 +87,16 @@ const ProductLocalizationModal: React.FC<ProductLocalizationModalProps> = ({
                 rowKey="key"
                 columns={[
                   {
-                    title: '目标语言',
+                    title: t('products.localization.columns.lang'),
                     dataIndex: 'lang',
                     width: 180,
                     render: (_, field) => (
                       <Form.Item 
                         name={[field.name, 'lang']} 
-                        rules={[{ required: true, message: '选择语言' }]} 
+                        rules={[{ required: true, message: t('common.validation.required') }]} 
                         noStyle
                       >
-                        <Select placeholder="选择语言" size="small">
+                        <Select placeholder={t('products.localization.columns.lang')} size="small">
                           {LANG_OPTIONS.map(opt => (
                             <Option key={opt.value} value={opt.value} disabled={
                               form.getFieldValue('locales')?.some((l: any, idx: number) => l?.lang === opt.value && idx !== field.name)
@@ -107,42 +109,42 @@ const ProductLocalizationModal: React.FC<ProductLocalizationModalProps> = ({
                     )
                   },
                   {
-                    title: '展示名称',
+                    title: t('products.localization.columns.name'),
                     dataIndex: 'name',
                     render: (_, field) => (
                       <Form.Item 
                         name={[field.name, 'name']} 
-                        rules={[{ required: true, message: '输入名称' }]} 
+                        rules={[{ required: true, message: t('common.validation.required') }]} 
                         noStyle
                       >
-                        <Input placeholder="Region Name" size="small" />
+                        <Input placeholder={t('products.localization.placeholders.name')} size="small" />
                       </Form.Item>
                     )
                   },
                   {
-                    title: '营销描述 (Description)',
+                    title: t('products.localization.columns.desc'),
                     dataIndex: 'description',
                     render: (_, field) => (
                       <Form.Item 
                         name={[field.name, 'description']} 
                         noStyle
                       >
-                        <Input.TextArea placeholder="Region Description" autoSize={{ minRows: 1 }} size="small" />
+                        <Input.TextArea placeholder={t('products.localization.placeholders.desc')} autoSize={{ minRows: 1 }} size="small" />
                       </Form.Item>
                     )
                   },
                   {
-                    title: '操作',
+                    title: t('common.more'),
                     width: 60,
                     render: (_, field) => (
                       <Button type="text" danger icon={<DeleteOutlined />} onClick={() => remove(field.name)} size="small" />
                     )
                   }
                 ]}
-                locale={{ emptyText: <Empty description="尚未添加任何本地化配置" image={Empty.PRESENTED_IMAGE_SIMPLE} /> }}
+                locale={{ emptyText: <Empty description={t('products.localization.empty')} image={Empty.PRESENTED_IMAGE_SIMPLE} /> }}
               />
               <Button type="dashed" block icon={<PlusOutlined />} onClick={() => add()}>
-                添加新的语言配置
+                {t('products.localization.add_new')}
               </Button>
             </>
           )}

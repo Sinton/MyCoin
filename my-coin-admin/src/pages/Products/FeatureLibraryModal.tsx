@@ -9,18 +9,19 @@ import {
   RocketOutlined, SmileOutlined, SearchOutlined, CheckOutlined, CloseOutlined,
   SettingOutlined
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 const { Text, Title } = Typography;
 const { Option } = Select;
 
 // --- 类别配置 ---
-export const FEATURE_CATEGORIES = [
-  { value: 'all', label: '全部权益', icon: <AppstoreOutlined />, color: 'default' },
-  { value: 'feature', label: '功能特性', icon: <RocketOutlined />, color: 'blue' },
-  { value: 'experience', label: '用户体验', icon: <SmileOutlined />, color: 'green' },
-  { value: 'storage', label: '存储空间', icon: <DatabaseOutlined />, color: 'orange' },
-  { value: 'service', label: '专属服务', icon: <SettingOutlined />, color: 'purple' },
-  { value: 'entitlement', label: '核心权益', icon: <SafetyCertificateOutlined />, color: 'magenta' },
+export const getFeatureCategories = (t: any) => [
+  { value: 'all', label: t('products.library.categories.all'), icon: <AppstoreOutlined />, color: 'default' },
+  { value: 'feature', label: t('products.library.categories.feature'), icon: <RocketOutlined />, color: 'blue' },
+  { value: 'experience', label: t('products.library.categories.experience'), icon: <SmileOutlined />, color: 'green' },
+  { value: 'storage', label: t('products.library.categories.storage'), icon: <DatabaseOutlined />, color: 'orange' },
+  { value: 'service', label: t('products.library.categories.service'), icon: <SettingOutlined />, color: 'purple' },
+  { value: 'entitlement', label: t('products.library.categories.entitlement'), icon: <SafetyCertificateOutlined />, color: 'magenta' },
 ];
 
 export interface FeatureLibraryItem {
@@ -43,6 +44,9 @@ const FeatureLibraryModal: React.FC<FeatureLibraryModalProps> = ({
   library, 
   onChange 
 }) => {
+  const { t } = useTranslation();
+  const FEATURE_CATEGORIES = getFeatureCategories(t);
+  
   const [libCategory, setLibCategory] = useState('all');
   const [libSearchText, setLibSearchText] = useState('');
   const [editingKey, setEditingKey] = useState('');
@@ -57,12 +61,12 @@ const FeatureLibraryModal: React.FC<FeatureLibraryModalProps> = ({
     const newLibrary = library.map(item => item.key === key ? { ...item, ...editRowData } as FeatureLibraryItem : item);
     onChange(newLibrary);
     setEditingKey('');
-    message.success('权益信息已更新');
+    message.success(t('products.library.actions.update_success'));
   };
 
   const handleAddNewRow = () => {
     const newKey = `FEAT_NEW_${Date.now()}`;
-    const newItem = { key: newKey, label: '新权益项', sort: 99, category: libCategory === 'all' ? 'feature' : libCategory };
+    const newItem = { key: newKey, label: t('products.library.actions.new_item'), sort: 99, category: libCategory === 'all' ? 'feature' : libCategory };
     onChange([newItem, ...library]);
     setEditingKey(newKey);
     setEditRowData(newItem);
@@ -81,7 +85,7 @@ const FeatureLibraryModal: React.FC<FeatureLibraryModalProps> = ({
       <div className="flex h-[620px]">
         {/* 左侧导航 */}
         <div className="w-56 bg-gray-50 border-r flex flex-col p-4">
-          <div className="mb-8 px-2 font-bold text-gray-700">标准权益素材库</div>
+          <div className="mb-8 px-2 font-bold text-gray-700">{t('products.library.title')}</div>
           <div className="flex-1 overflow-auto">
             <List
               dataSource={FEATURE_CATEGORIES}
@@ -97,7 +101,7 @@ const FeatureLibraryModal: React.FC<FeatureLibraryModalProps> = ({
             />
           </div>
           <Divider style={{ margin: '12px 0' }} />
-          <Button type="primary" block icon={<PlusOutlined />} onClick={handleAddNewRow} ghost>添加权益</Button>
+          <Button type="primary" block icon={<PlusOutlined />} onClick={handleAddNewRow} ghost>{t('products.library.actions.add')}</Button>
         </div>
 
         {/* 右侧列表 */}
@@ -106,7 +110,7 @@ const FeatureLibraryModal: React.FC<FeatureLibraryModalProps> = ({
             <Title level={5} style={{margin:0}}>{FEATURE_CATEGORIES.find(c => c.value === libCategory)?.label}</Title>
             <Input 
               prefix={<SearchOutlined />} 
-              placeholder="搜索权益名称或代号" 
+              placeholder={t('products.library.actions.search')} 
               className="w-56 rounded-full" 
               value={libSearchText} 
               onChange={e => setLibSearchText(e.target.value)} 
@@ -121,7 +125,7 @@ const FeatureLibraryModal: React.FC<FeatureLibraryModalProps> = ({
               rowKey="key"
               columns={[
                 { 
-                  title: '权益名称', 
+                  title: t('products.library.columns.name'), 
                   dataIndex: 'label', 
                   render: (text, record) => record.key === editingKey ? (
                     <Input 
@@ -134,7 +138,7 @@ const FeatureLibraryModal: React.FC<FeatureLibraryModalProps> = ({
                   ) : <Text strong className="px-2 block" style={{ height: '28px', lineHeight: '28px', fontSize: '14px' }}>{text}</Text>
                 },
                 { 
-                  title: '权益代号', 
+                  title: t('products.library.columns.code'), 
                   dataIndex: 'key', 
                   width: 200,
                   render: (text, record) => record.key === editingKey ? (
@@ -148,7 +152,7 @@ const FeatureLibraryModal: React.FC<FeatureLibraryModalProps> = ({
                   ) : <div className="px-2"><Text code style={{ fontSize: '14px', margin: 0, padding: '2px 4px' }}>{text}</Text></div>
                 },
                 { 
-                  title: '类别', 
+                  title: t('products.library.columns.category'), 
                   dataIndex: 'category', 
                   width: 120,
                   render: (text, record) => record.key === editingKey ? (
@@ -164,7 +168,7 @@ const FeatureLibraryModal: React.FC<FeatureLibraryModalProps> = ({
                   ) : <div className="px-2"><Tag color={FEATURE_CATEGORIES.find(c => c.value === text)?.color} style={{ margin: 0, fontSize: '13px' }}>{FEATURE_CATEGORIES.find(c => c.value === text)?.label}</Tag></div>
                 },
                 { 
-                  title: '权重', 
+                  title: t('products.library.columns.sort'), 
                   dataIndex: 'sort', 
                   width: 80,
                   sorter: (a, b) => a.sort - b.sort,
@@ -179,7 +183,7 @@ const FeatureLibraryModal: React.FC<FeatureLibraryModalProps> = ({
                   ) : <div className="px-2" style={{ fontSize: '14px' }}>{text}</div>
                 },
                 { 
-                  title: '操作', 
+                  title: t('products.library.columns.action'), 
                   key: 'action', 
                   align: 'right',
                   width: 100,
@@ -199,7 +203,7 @@ const FeatureLibraryModal: React.FC<FeatureLibraryModalProps> = ({
                   ) : (
                     <Space size={12} className="px-2">
                       <EditOutlined className="text-blue-500 cursor-pointer" onClick={() => startEditLib(record)} />
-                      <Popconfirm title="确认删除？" okText="确定" cancelText="取消" onConfirm={() => onChange(library.filter(i => i.key !== record.key))}>
+                      <Popconfirm title={t('common.confirm') + '?'} okText={t('common.confirm')} cancelText={t('common.cancel')} onConfirm={() => onChange(library.filter(i => i.key !== record.key))}>
                         <DeleteOutlined className="text-red-400 cursor-pointer" />
                       </Popconfirm>
                     </Space>

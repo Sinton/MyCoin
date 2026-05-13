@@ -55,10 +55,10 @@ const Orders: React.FC = () => {
   // --- 导出逻辑 ---
   const handleExport = () => {
     if (ordersData.length === 0) {
-      message.warning('当前没有可导出的交易数据');
+      message.warning(t('orders.export.no_data'));
       return;
     }
-    message.loading('准备导出文件...', 0.5);
+    message.loading(t('orders.export.preparing'), 0.5);
     const headers = {
       id: t('orders.columns.id'),
       user: t('orders.columns.user'),
@@ -69,7 +69,7 @@ const Orders: React.FC = () => {
     };
     setTimeout(() => {
       exportToCSV(ordersData, 'MyCoin_Orders_Report', headers);
-      message.success('导出成功！');
+      message.success(t('orders.export.success'));
     }, 600);
   };
 
@@ -165,10 +165,10 @@ const Orders: React.FC = () => {
 
       <Row gutter={[16, 16]} className="mb-6">
         {[
-          { title: '今日订单', value: stats?.todayOrders, change: 12, icon: <ShoppingCartOutlined />, color: '#1890ff' },
-          { title: '今日营收', value: `¥${stats?.todayRevenue?.toLocaleString()}`, change: 8.5, icon: <DashboardOutlined />, color: '#52c41a' },
-          { title: '退款订单', value: stats?.refundCount, change: -2, icon: <StopOutlined />, color: '#ff4d4f' },
-          { title: '活跃付费用户', value: stats?.activeUsers?.toLocaleString(), change: 5.2, icon: <UserOutlined />, color: '#722ed1' },
+          { title: t('orders.stats.today_orders'), value: stats?.todayOrders, change: 12, icon: <ShoppingCartOutlined />, color: '#1890ff' },
+          { title: t('orders.stats.today_revenue'), value: `¥${stats?.todayRevenue?.toLocaleString()}`, change: 8.5, icon: <DashboardOutlined />, color: '#52c41a' },
+          { title: t('orders.stats.refund_orders'), value: stats?.refundCount, change: -2, icon: <StopOutlined />, color: '#ff4d4f' },
+          { title: t('orders.stats.active_users'), value: stats?.activeUsers?.toLocaleString(), change: 5.2, icon: <UserOutlined />, color: '#722ed1' },
         ].map((item, index) => (
           <Col xs={24} sm={12} lg={6} key={index}>
             <StatCard 
@@ -187,7 +187,7 @@ const Orders: React.FC = () => {
             onChange={setActiveTab}
             className="mb-[-16px]"
             items={[
-              { key: 'all', label: t('orders.columns.id') === 'Order ID' ? 'All Orders' : '全部订单' },
+              { key: 'all', label: t('common.tabs.all') },
               { key: 'success', label: t('common.status.success') },
               { key: 'pending', label: t('common.status.pending') },
               { key: 'refunded', label: t('common.status.refunded') },
@@ -207,7 +207,7 @@ const Orders: React.FC = () => {
               optionLabelRender={(record: any) => record.name}
               width={160}
             />
-            <Button icon={<ExportOutlined />} size="middle" onClick={handleExport}>{t('common.more')}</Button>
+            <Button icon={<ExportOutlined />} size="middle" onClick={handleExport}>{t('common.export')}</Button>
             <Button 
               type="primary" 
               icon={<ReloadOutlined spin={isListRefetching} />} 

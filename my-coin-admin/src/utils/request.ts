@@ -1,5 +1,6 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse, type AxiosError } from 'axios';
 import { message } from 'antd';
+import i18n from '@/i18n';
 
 // 创建 axios 实例
 const service: AxiosInstance = axios.create({
@@ -38,7 +39,7 @@ service.interceptors.response.use(
     // 这里假设后端的标准返回格式是 { code: number, data: any, message: string }
     // 如果 code 不是 200，我们可以认为是业务错误
     if (data && data.code && data.code !== 200) {
-      message.error(data.message || '业务处理失败');
+      message.error(data.message || i18n.t('errors.business'));
       return Promise.reject(new Error(data.message || 'Error'));
     }
     
@@ -48,48 +49,37 @@ service.interceptors.response.use(
     // 超出 2xx 范围的状态码都会触发该函数
     console.error('Response Error:', error);
     
-    let errorMsg = '网络请求失败，请稍后重试';
+    let errorMsg = i18n.t('errors.network');
     
     if (error.response) {
       // 请求已发出，且服务器响应了状态码，但状态代码超出了 2xx 的范围
       const status = error.response.status;
       switch (status) {
         case 400:
-          errorMsg = '请求参数错误 (400)';
+          errorMsg = i18n.t('errors.param');
           break;
         case 401:
-          errorMsg = '未授权，请重新登录 (401)';
-          // 这里可以触发登出逻辑，例如：
-          // localStorage.removeItem('mycoin_admin_token');
-          // window.location.href = '/login';
+          errorMsg = i18n.t('errors.unauthorized');
           break;
         case 403:
-          errorMsg = '拒绝访问 (403)';
+          errorMsg = i18n.t('errors.forbidden');
           break;
         case 404:
-          errorMsg = '请求的资源不存在 (404)';
+          errorMsg = i18n.t('errors.not_found');
           break;
         case 500:
-          errorMsg = '服务器内部错误 (500)';
-          break;
-        case 502:
-          errorMsg = '网关错误 (502)';
-          break;
-        case 503:
-          errorMsg = '服务不可用 (503)';
-          break;
-        case 504:
-          errorMsg = '网关超时 (504)';
+          errorMsg = i18n.t('errors.server');
           break;
         default:
-          errorMsg = `请求失败 (${status})`;
+          errorMsg = `${i18n.t('errors.network')} (${status})`;
       }
     } else if (error.request) {
       // 请求已经成功发起，但没有收到响应
+      // @ts-ignore
       if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
-        errorMsg = '请求超时，请检查网络连接';
+        errorMsg = i18n.t('errors.timeout');
       } else {
-        errorMsg = '网络异常，未收到服务器响应';
+        errorMsg = i18n.t('errors.network');
       }
     } else {
       // 发送请求时出了点问题

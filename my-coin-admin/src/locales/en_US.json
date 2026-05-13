@@ -1,61 +1,88 @@
 {
   "common": {
-    "save": "Save Changes",
+    "confirm": "Confirm",
     "cancel": "Cancel",
-    "refresh": "Sync Data",
-    "more": "Details",
+    "save": "Save",
+    "refresh": "Refresh",
+    "more": "More",
     "copy": "Copy",
-    "copy_success": "Copied successfully",
-    "preview_badge": "{{lang}} Preview",
+    "delete": "Delete",
+    "export": "Export Data",
+    "total": "Total",
+    "pending": "Pending",
+    "select_feature": "Select a feature",
+    "copy_success": "Copied to clipboard",
     "comparison": {
       "vs_yesterday": "vs Yesterday",
       "vs_last_week": "vs Last Week"
+    },
+    "currency": {
+      "cny": "CNY",
+      "usd": "USD",
+      "jpy": "JPY",
+      "krw": "KRW"
     },
     "status": {
       "success": "Success",
       "error": "Error",
       "pending": "Pending",
-      "active": "Active",
       "inactive": "Inactive",
       "refunded": "Refunded"
+    },
+    "tabs": {
+      "all": "All"
+    },
+    "ranges": {
+      "last_7_days": "Last 7 Days",
+      "last_30_days": "Last 30 Days"
+    },
+    "validation": {
+      "required": "This field is required",
+      "invalid": "Invalid input format"
     }
   },
   "menu": {
     "dashboard": "Dashboard",
-    "products": "Subscriptions",
     "orders": "Orders",
+    "products": "Subscriptions",
     "webhooks": "Webhook Logs",
-    "notifications": "Notifications",
-    "settings": "Settings"
+    "settings": "Settings",
+    "notifications": "Notifications"
   },
   "dashboard": {
     "title": "Operations Overview",
-    "subtitle": "Real-time monitoring of core business metrics and growth trends",
+    "subtitle": "Real-time monitoring and analysis of core business data across all platforms",
+    "recent_activity": "Recent Activity",
     "revenue_trend": "7-Day Revenue Trend",
     "product_dist": "Subscription Distribution",
-    "recent_activity": "Recent Activity",
     "stats": {
       "revenue": "Total Revenue",
       "users": "Active Users",
-      "order_value": "ARPU",
-      "health": "Business Health"
+      "order_value": "Avg. Order Value",
+      "health": "System Health"
     }
   },
   "settings": {
-    "title": "Settings",
-    "subtitle": "Configure global preferences, developer permissions, and system behavior",
+    "title": "System Settings",
+    "subtitle": "Manage console preferences, developer credentials and system status",
     "tabs": {
       "general": "General",
       "developer": "Developer",
       "about": "About"
     },
     "general": {
-      "lang_label": "Global Preview Language",
-      "lang_help": "Set the default preview language for data (e.g., product names, notifications)",
-      "refresh_label": "Auto Data Refresh",
+      "lang_label": "Interface Language",
+      "lang_help": "Set the display language of the admin console",
+      "default_lang": "System Default",
+      "languages": {
+        "zh_CN": "Simplified Chinese",
+        "zh_TW": "Traditional Chinese",
+        "en_US": "English",
+        "ja_JP": "Japanese"
+      },
+      "refresh_label": "Auto Refresh",
       "refresh_help": "Dashboard data will sync automatically every 30 seconds",
       "theme_label": "System Theme",
-      "default_lang": "System Default",
       "notifications": "System Notifications",
       "email_label": "Error Alert Email",
       "email_help": "Send notifications when Webhook failures exceed the threshold",
@@ -65,6 +92,7 @@
     "developer": {
       "sandbox_label": "Sandbox Mode",
       "sandbox_help": "Direct all order requests to Apple/Google sandbox environments",
+      "api_label": "API Endpoint",
       "secret_label": "App Secret",
       "secret_help": "Secure key for server-to-server communication. Keep it safe.",
       "reset_secret": "Reset Secret"
@@ -74,11 +102,32 @@
       "env": "Environment",
       "os": "Operating System",
       "browser": "Browser Kernel"
+    },
+    "messages": {
+      "save_success": "Configuration saved successfully and applied instantly",
+      "reset_secret_success": "Secret reset successfully",
+      "cancel_info": "Changes cancelled",
+      "copy_secret": "Secret copied to clipboard"
+    },
+    "reset_confirm": {
+      "title": "Reset Webhook Secret?",
+      "content": "After resetting, existing Webhook validations will fail. You need to update your production validation logic accordingly."
     }
   },
   "orders": {
     "title": "Order Management",
     "subtitle": "Query, filter, and manage transaction records and refund status",
+    "stats": {
+      "today_orders": "Today's Orders",
+      "today_revenue": "Today's Revenue",
+      "refund_orders": "Refunded Orders",
+      "active_users": "Active Paid Users"
+    },
+    "export": {
+      "no_data": "No transaction data available for export",
+      "preparing": "Preparing export file...",
+      "success": "Export successful!"
+    },
     "columns": {
       "id": "Order ID",
       "user": "Customer",
@@ -91,12 +140,145 @@
     }
   },
   "products": {
+    "title": "Subscription Management",
+    "stats": {
+      "active": "Active Plans",
+      "features": "Feature Pool: {{count}} items",
+      "last_update": "Last Update: {{time}}",
+      "just_now": "Just now"
+    },
+    "actions": {
+      "new": "New Plan",
+      "library": "Feature Pool",
+      "online": "Click to Online",
+      "offline": "Click to Offline"
+    },
+    "search_placeholder": "Search by name, ID or SKU...",
+    "empty_result": "No matching plans found",
+    "messages": {
+      "delete_demo": "Deletion is disabled in demo mode, please use offline instead",
+      "save_demo": "Saved successfully (Demo mode)",
+      "localize_demo": "Localization updated (Demo mode)"
+    },
+    "library": {
+      "title": "Standard Feature Pool",
+      "categories": {
+        "all": "All Features",
+        "feature": "Functionality",
+        "experience": "Experience",
+        "storage": "Storage",
+        "service": "Support",
+        "entitlement": "Core Benefits"
+      },
+      "columns": {
+        "name": "Feature Name",
+        "code": "Feature Key",
+        "category": "Category",
+        "sort": "Priority",
+        "action": "Action"
+      },
+      "actions": {
+        "add": "Add Feature",
+        "search": "Search name or key",
+        "new_item": "New Feature Item",
+        "update_success": "Feature updated successfully"
+      }
+    },
+    "no_desc": "No marketing description provided for this plan",
     "offline": "Offline",
     "configure": "Configure",
     "cycles": {
       "month": "Monthly",
       "year": "Yearly",
       "forever": "Lifetime"
+    },
+    "edit": {
+      "title_edit": "Configure Plan",
+      "title_add": "New Subscription Plan",
+      "id_label": "Product ID",
+      "id_help": "ID cannot be changed once created. Used for backend identification.",
+      "name_label": "Plan Name",
+      "name_placeholder": "e.g., Gold Membership",
+      "price_label": "Base Price",
+      "currency_label": "Currency",
+      "cycle_label": "Billing Cycle",
+      "platform_bind": "Store SKU Binding",
+      "features_title": "Included Features",
+      "no_features": "No features configured yet",
+      "add_feature": "Add New Feature",
+      "features_full": "All available features have been added",
+      "feature_category": {
+        "feature": "Functionality",
+        "experience": "Experience",
+        "storage": "Storage",
+        "service": "Support",
+        "entitlement": "Core Benefits",
+        "other": "Other"
+      }
+    },
+    "localization": {
+      "title": "Multi-language Config",
+      "tip": "Configure the name and marketing description displayed in different region stores. If not configured, the master name will be used.",
+      "add_new": "Add New Language",
+      "empty": "No localization added yet",
+      "columns": {
+        "lang": "Target Language",
+        "name": "Display Name",
+        "desc": "Description"
+      },
+      "placeholders": {
+        "name": "Enter regional display name",
+        "desc": "Enter regional marketing description"
+      }
+    }
+  },
+  "webhooks": {
+    "title": "Webhook Monitoring",
+    "subtitle": "Real-time tracking of platform payment events and retry status",
+    "search_placeholder": "Search by order ID, endpoint URL or event...",
+    "detail_title": "Event Details",
+    "payload": "Request Payload",
+    "response": "Response body",
+    "copy_payload": "Copy Payload",
+    "tabs": {
+      "all": "All Logs",
+      "success": "Successful",
+      "failed": "Failed"
+    },
+    "stats": {
+      "total_24h": "24h Requests",
+      "success_rate": "Success Rate",
+      "alerts": "Alerts"
+    },
+    "columns": {
+      "id": "Event ID",
+      "status": "Status",
+      "event": "Event Type",
+      "product": "Product",
+      "url": "Endpoint URL",
+      "latency": "Latency",
+      "time": "Triggered Time",
+      "action": "Details"
+    }
+  },
+  "notifications": {
+    "title": "Message Center",
+    "subtitle": "View system notifications, order updates, and error alerts",
+    "mark_all_read": "Mark all as read",
+    "mark_read": "Mark as read",
+    "already_read": "Read",
+    "clear_all": "Clear all records",
+    "clear_confirm": "Are you sure you want to clear all notification history?",
+    "empty": "No new notifications",
+    "high_priority": "High",
+    "view_all": "View all notifications",
+    "history_tip": "The system only keeps records from the last 30 days",
+    "tabs": {
+      "all": "All Messages",
+      "unread": "Unread",
+      "order": "Orders",
+      "alert": "Alerts",
+      "system": "System"
     }
   }
 }

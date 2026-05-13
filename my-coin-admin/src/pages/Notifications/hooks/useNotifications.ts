@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { App } from 'antd';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { 
   getNotifications, 
   markNotificationRead, 
@@ -8,6 +9,7 @@ import {
 } from '@/api/notifications';
 
 export const useNotifications = () => {
+  const { t } = useTranslation();
   const { message } = App.useApp();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('all');
@@ -40,7 +42,7 @@ export const useNotifications = () => {
   const markAllReadMutation = useMutation({
     mutationFn: markAllNotificationsRead,
     onSuccess: () => {
-      message.success('已全部标记为已读');
+      message.success(t('common.copy_success'));
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
     }
   });

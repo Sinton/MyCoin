@@ -8,25 +8,11 @@ import {
   DeleteOutlined, TagOutlined, InfoCircleOutlined,
   LinkOutlined, RobotOutlined
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import type { FeatureLibraryItem } from './FeatureLibraryModal';
 
 const { Text } = Typography;
 const { Option, OptGroup } = Select;
-
-const CURRENCY_OPTIONS = [
-  { value: 'CNY', label: '人民币 (CNY)' },
-  { value: 'USD', label: '美元 (USD)' },
-  { value: 'JPY', label: '日元 (JPY)' },
-  { value: 'KRW', label: '韩元 (KRW)' },
-];
-
-const CATEGORY_MAP: Record<string, { label: string, color: string }> = {
-  feature: { label: '功能', color: 'blue' },
-  experience: { label: '体验', color: 'cyan' },
-  storage: { label: '存储', color: 'purple' },
-  service: { label: '服务', color: 'orange' },
-  entitlement: { label: '权益', color: 'gold' },
-};
 
 interface ProductEditModalProps {
   open: boolean;
@@ -45,8 +31,24 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
   featureLibrary,
   type
 }) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const { message } = App.useApp();
+  
+  const CURRENCY_OPTIONS = [
+    { value: 'CNY', label: `${t('common.currency.cny')} (CNY)` },
+    { value: 'USD', label: `${t('common.currency.usd')} (USD)` },
+    { value: 'JPY', label: `${t('common.currency.jpy')} (JPY)` },
+    { value: 'KRW', label: `${t('common.currency.krw')} (KRW)` },
+  ];
+
+  const CATEGORY_MAP: Record<string, { label: string, color: string }> = {
+    feature: { label: t('products.edit.feature_category.feature'), color: 'blue' },
+    experience: { label: t('products.edit.feature_category.experience'), color: 'cyan' },
+    storage: { label: t('products.edit.feature_category.storage'), color: 'purple' },
+    service: { label: t('products.edit.feature_category.service'), color: 'orange' },
+    entitlement: { label: t('products.edit.feature_category.entitlement'), color: 'gold' },
+  };
   
   // 监听名称和周期，用于自动生成 ID
 
@@ -111,7 +113,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
 
   return (
     <Modal
-      title={editingProduct ? "配置订阅套餐" : "新增订阅套餐"}
+      title={editingProduct ? t('products.edit.title_edit') : t('products.edit.title_add')}
       open={open}
       onCancel={onCancel}
       onOk={handleOk}
@@ -123,28 +125,32 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item 
-              label={<Space><RobotOutlined className="text-blue-500"/> 套餐 ID (自动生成)</Space>} 
+              label={<Space><RobotOutlined className="text-blue-500"/> {t('products.edit.id_label')}</Space>} 
               name="id" 
-              rules={[{required:true}]}
-              tooltip="系统根据套餐类型和时间自动生成的唯一标识，不可修改"
+              rules={[{required:true, message:t('common.validation.required')}]}
+              tooltip={t('products.edit.id_help')}
             >
               <Input variant="filled" disabled style={{ color: '#666', fontWeight: 'bold' }} />
             </Form.Item>
           </Col>
-          <Col span={12}><Form.Item label="套餐名称" name="name" rules={[{required:true, message:'必填'}]}><Input placeholder="例如：Pro 会员月包"/></Form.Item></Col>
+          <Col span={12}><Form.Item label={t('products.edit.name_label')} name="name" rules={[{required:true, message:t('common.validation.required')}]}><Input placeholder={t('products.edit.name_placeholder')}/></Form.Item></Col>
         </Row>
         
         <Row gutter={16}>
-          <Col span={8}><Form.Item label="价格" name="price" rules={[{required:true, message:'必填'}]}><InputNumber className="w-full" precision={2}/></Form.Item></Col>
-          <Col span={8}><Form.Item label="货币单位" name="currency" initialValue="CNY"><Select options={CURRENCY_OPTIONS}/></Form.Item></Col>
+          <Col span={8}><Form.Item label={t('products.edit.price_label')} name="price" rules={[{required:true, message:t('common.validation.required')}]}><InputNumber className="w-full" precision={2}/></Form.Item></Col>
+          <Col span={8}><Form.Item label={t('products.edit.currency_label')} name="currency" initialValue="CNY"><Select options={CURRENCY_OPTIONS}/></Form.Item></Col>
           <Col span={8}>
-            <Form.Item label="计费周期" name="cycle" initialValue="month">
-              <Select options={[{value:'month',label:'每月续费'},{value:'year',label:'每年续费'},{value:'forever',label:'终身有效'}]}/>
+            <Form.Item label={t('products.edit.cycle_label')} name="cycle" initialValue="month">
+              <Select options={[
+                {value:'month',label:t('products.cycles.month')},
+                {value:'year',label:t('products.cycles.year')},
+                {value:'forever',label:t('products.cycles.forever')}
+              ]}/>
             </Form.Item>
           </Col>
         </Row>
-
-        <Divider plain><Text type="secondary" style={{fontSize:11}}>多平台 ID 绑定</Text></Divider>
+ 
+        <Divider plain><Text type="secondary" style={{fontSize:11}}>{t('products.edit.platform_bind')}</Text></Divider>
         
         <div className="space-y-2">
           {[
@@ -172,7 +178,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                           <Switch size="small" />
                         </Form.Item>
                       </div>
-                      <Form.Item name={p.idField} noStyle rules={[{ required: active, message: '请输入 ID' }]}>
+                      <Form.Item name={p.idField} noStyle rules={[{ required: active, message: t('common.validation.required') }]}>
                         <Input 
                           size="small"
                           placeholder={p.placeholder}
@@ -190,7 +196,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
           ))}
         </div>
 
-        <Divider plain><Text type="secondary" style={{fontSize:11}}>套餐权益清单 (按类聚合)</Text></Divider>
+        <Divider plain><Text type="secondary" style={{fontSize:11}}>{t('products.edit.features_title')}</Text></Divider>
         
         <Form.Item noStyle shouldUpdate={(prev, curr) => prev.features !== curr.features}>
           {() => (
@@ -215,8 +221,8 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                     {Object.entries(readyFields).map(([catKey, catFields]) => (
                       <div key={catKey} className="border border-gray-100 rounded-lg bg-white overflow-hidden shadow-sm">
                         <div className="bg-gray-50 px-3 py-1.5 border-b border-gray-100 flex items-center justify-between">
-                          <Space><TagOutlined className="text-gray-400"/><Text strong style={{fontSize:12}}>{CATEGORY_MAP[catKey]?.label || '其他'}</Text></Space>
-                          <Tag color={CATEGORY_MAP[catKey]?.color} style={{margin:0, fontSize:10}}>{catFields.length} 项</Tag>
+                          <Space><TagOutlined className="text-gray-400"/><Text strong style={{fontSize:12}}>{CATEGORY_MAP[catKey]?.label || t('products.edit.feature_category.other')}</Text></Space>
+                          <Tag color={CATEGORY_MAP[catKey]?.color} style={{margin:0, fontSize:10}}>{catFields.length}</Tag>
                         </div>
                         <div className="p-1 space-y-1">
                           {catFields.map(({ key, ...rest }) => (
@@ -237,13 +243,13 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                       <div className="border border-blue-200 rounded-lg bg-blue-50/30 p-3 border-dashed">
                         <div className="mb-2 flex items-center gap-2">
                           <InfoCircleOutlined className="text-blue-400"/>
-                          <Text type="secondary" strong style={{fontSize:12}}>正在配置新权益...</Text>
+                          <Text type="secondary" strong style={{fontSize:12}}>{t('common.pending')}...</Text>
                         </div>
                         <div className="space-y-2">
                           {pendingFields.map(({ key, ...rest }) => (
                             <div key={key} className="flex items-center gap-2 bg-white p-2 rounded shadow-sm border border-blue-100">
-                              <Form.Item {...rest} name={[rest.name, 'key']} noStyle rules={[{required:true, message:'请选择'}]}>
-                                <Select placeholder="请搜索选择目标权益" showSearch className="flex-1" optionFilterProp="label">
+                              <Form.Item {...rest} name={[rest.name, 'key']} noStyle rules={[{required:true, message:t('common.validation.required')}]}>
+                                <Select placeholder={t('common.select_feature')} showSearch className="flex-1" optionFilterProp="label">
                                   {renderOptions(featureLibrary, allSelectedKeys)}
                                 </Select>
                               </Form.Item>
@@ -254,7 +260,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                       </div>
                     )}
 
-                    {fields.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂未配置权益" className="my-4"/>}
+                    {fields.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('products.edit.no_features')} className="my-4"/>}
                     
                     <Button 
                       type="dashed" 
@@ -262,14 +268,14 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                       icon={<PlusOutlined />} 
                       onClick={() => {
                         if (fields.length >= featureLibrary.length) {
-                          message.warning('素材库中的所有权益已全部添加完毕');
+                          message.warning(t('products.edit.features_full'));
                           return;
                         }
                         add();
                       }}
                       style={{ height: 40, borderRadius: 6 }}
                     >
-                      添加权益素材到套餐
+                      {t('products.edit.add_feature')}
                     </Button>
                   </div>
                 );

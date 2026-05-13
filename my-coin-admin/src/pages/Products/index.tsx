@@ -9,6 +9,7 @@ import {
   HistoryOutlined, ReloadOutlined
 } from '@ant-design/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { useConfigStore } from '@/store';
 import { getProducts, getProductStats, updateProductStatus, getFeatureLibrary, updateFeatureLibrary } from '@/api/products';
 import SubscriptionCard from './SubscriptionCard';
@@ -21,6 +22,7 @@ import type { Product, FeatureLibraryItem } from '@/types';
 const { Title, Text } = Typography;
 
 const ProductContent: React.FC = () => {
+  const { t } = useTranslation();
   const { message } = App.useApp();
   const { previewLang } = useConfigStore();
   const queryClient = useQueryClient();
@@ -98,17 +100,17 @@ const ProductContent: React.FC = () => {
     <div className="max-w-[1600px] mx-auto">
       {/* 顶部标题与快速统计 - 使用 PageHeader 还原样式 */}
       <PageHeader 
-        title="订阅管理中心"
+        title={t('products.title')}
         stats={
           <>
-            <Text type="secondary"><RocketOutlined /> 在线套餐: {stats?.activeProducts || 0}</Text>
-            <Text type="secondary"><DatabaseOutlined /> 权益池素材: {featureLibrary.length} 项</Text>
-            <Text type="secondary"><HistoryOutlined /> 最后更新: 刚刚</Text>
+            <Text type="secondary"><RocketOutlined /> {t('products.stats.active')}: {stats?.activeProducts || 0}</Text>
+            <Text type="secondary"><DatabaseOutlined /> {t('products.stats.features', { count: featureLibrary.length })}</Text>
+            <Text type="secondary"><HistoryOutlined /> {t('products.stats.last_update', { time: t('products.stats.just_now') })}</Text>
           </>
         }
         extra={
           <>
-            <Button icon={<ReloadOutlined spin={isProductsRefetching} />} onClick={() => refetchProducts()}>刷新</Button>
+            <Button icon={<ReloadOutlined spin={isProductsRefetching} />} onClick={() => refetchProducts()}>{t('common.refresh')}</Button>
             <Button 
                icon={<DatabaseOutlined />} 
                onClick={() => setLibModalOpen(true)}
@@ -121,14 +123,13 @@ const ProductContent: React.FC = () => {
                }}
                className="hover:bg-blue-100 transition-all"
             >
-              素材库
+              {t('products.actions.library')}
             </Button>
             <Button 
               type="primary" 
               icon={<PlusOutlined />} 
-              size="large"
               onClick={() => { setEditingPackage(null); setEditModalOpen(true); }}>
-              发布新套餐
+              {t('products.actions.new')}
             </Button>
           </>
         }
@@ -137,7 +138,7 @@ const ProductContent: React.FC = () => {
       {/* 搜索控制条 - 原始交互 */}
       <div className="mb-8">
         <Input 
-          placeholder="搜索套餐名称、ID 或商店 SKU..." 
+          placeholder={t('products.search_placeholder')} 
           prefix={<SearchOutlined className="text-gray-400" />}
           size="large"
           className="shadow-sm border-none rounded-xl h-12 px-6"
@@ -156,11 +157,11 @@ const ProductContent: React.FC = () => {
         <Row gutter={[24, 24]}>
           {filteredList.map((pkg) => (
             <Col xs={24} lg={12} xl={8} key={pkg.id}>
-              <SubscriptionCard 
+               <SubscriptionCard 
                 pkg={pkg} 
                 onEdit={(p) => { setEditingPackage(p); setEditModalOpen(true); }} 
                 onLocalize={(p) => { setLocalizingPackage(p); setLocModalOpen(true); }}
-                onDelete={(id) => message.info('演示环境暂不支持删除，请使用下架功能')}
+                onDelete={(id) => message.info(t('products.messages.delete_demo'))}
                 onStatusChange={(id, status) => statusMutation.mutate({ id, status: status as any })}
               />
             </Col>
@@ -168,7 +169,7 @@ const ProductContent: React.FC = () => {
           {filteredList.length === 0 && (
             <Col span={24}>
               <div className="py-20 bg-gray-50/50 rounded-2xl border-dashed border-2 flex flex-col items-center justify-center text-gray-400">
-                <Empty description="未找到符合条件的套餐" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                <Empty description={t('products.empty_result')} image={Empty.PRESENTED_IMAGE_SIMPLE} />
               </div>
             </Col>
           )}
@@ -188,7 +189,7 @@ const ProductContent: React.FC = () => {
         onSave={(values) => {
            console.log('Saving product:', values);
            setEditModalOpen(false);
-           message.success('保存成功（演示环境）');
+           message.success(t('products.messages.save_demo'));
         }}
         editingProduct={editingPackage}
         featureLibrary={featureLibrary}
@@ -200,7 +201,7 @@ const ProductContent: React.FC = () => {
         onSave={(locales) => {
            console.log('Saving locales:', locales);
            setLocModalOpen(false);
-           message.success('本地化配置已更新（演示环境）');
+           message.success(t('products.messages.localize_demo'));
         }}
         initialLocales={localizingPackage?.locales || []}
         productName={localizingPackage?.name || ''}

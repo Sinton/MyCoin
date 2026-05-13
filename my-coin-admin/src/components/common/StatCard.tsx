@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Typography, Space, Tag, Skeleton } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 const { Text } = Typography;
 
@@ -18,11 +19,14 @@ const StatCard: React.FC<StatCardProps> = ({
   title,
   value,
   change,
-  changeLabel = '较上周',
+  changeLabel,
   icon,
   color,
   loading = false,
 }) => {
+  const { t } = useTranslation();
+  const displayLabel = changeLabel || t('common.comparison.vs_last_week');
+
   return (
     <Card variant="outlined" hoverable style={{ height: '100%' }}>
       {loading ? (
@@ -38,7 +42,7 @@ const StatCard: React.FC<StatCardProps> = ({
                   {change >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
                   <span className="ml-1">{Math.abs(change)}%</span>
                 </Tag>
-                <Text type="secondary" style={{ fontSize: 12, marginLeft: 8 }}>{changeLabel}</Text>
+                <Text type="secondary" style={{ fontSize: 12, marginLeft: 8 }}>{displayLabel}</Text>
               </div>
             )}
           </div>

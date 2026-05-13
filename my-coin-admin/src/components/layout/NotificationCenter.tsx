@@ -5,11 +5,17 @@ import {
 } from 'antd';
 import { 
   BellOutlined, ShoppingCartOutlined, 
-  NotificationOutlined, BugOutlined,
-  CheckCircleOutlined
+  NotificationOutlined, BugOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import 'dayjs/locale/zh-cn';
+import 'dayjs/locale/en';
+import 'dayjs/locale/ja';
+
 import { 
   getNotifications, 
   markNotificationRead, 
@@ -17,18 +23,31 @@ import {
 } from '../../api/notifications';
 import type { NotificationItem } from '../../mocks/data/notifications';
 
+// 启用相对时间插件
+dayjs.extend(relativeTime);
+
 const { Text } = Typography;
 
 const NotificationCenter: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const { message } = App.useApp();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
+  // 根据当前语言设置 dayjs 区域
+  const getDayjsLocale = (lang: string) => {
+    switch (lang) {
+      case 'zh_CN': return 'zh-cn';
+      case 'ja_JP': return 'ja';
+      default: return 'en';
+    }
+  };
 
   // --- 获取数据 ---
   const { data: res, isLoading } = useQuery({
     queryKey: ['notifications'],
     queryFn: getNotifications,
-    refetchInterval: 30000, // 每30秒轮询一次
+    refetchInterval: 30000,
   });
 
   const notifications = res?.data || [];
@@ -45,7 +64,7 @@ const NotificationCenter: React.FC = () => {
   const markAllReadMutation = useMutation({
     mutationFn: markAllNotificationsRead,
     onSuccess: () => {
-      message.success('已全部标记为已读');
+      message.success(t('notifications.mark_all_read'));
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
     }
   });
@@ -61,7 +80,7 @@ const NotificationCenter: React.FC = () => {
   const notificationList = (
     <div style={{ width: 320 }}>
       <div className="flex justify-between items-center mb-4 px-1">
-        <Text strong style={{ fontSize: 16 }}>通知中心</Text>
+        <Text strong style={{ fontSize: 16 }}>{t('notifications.title')}</Text>
         {unreadCount > 0 && (
           <Button 
             type="link" 
@@ -69,7 +88,7 @@ const NotificationCenter: React.FC = () => {
             onClick={() => markAllReadMutation.mutate()}
             style={{ padding: 0 }}
           >
-            全部已读
+            {t('notifications.mark_all_read')}
           </Button>
         )}
       </div>
@@ -78,7 +97,7 @@ const NotificationCenter: React.FC = () => {
         <List
           loading={isLoading}
           dataSource={notifications}
-          locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无通知" /> }}
+          locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('notifications.empty')} /> }}
           renderItem={(item) => (
             <List.Item 
               className={`px-2 py-3 cursor-pointer transition-colors hover:bg-gray-50 rounded-lg mb-1 border-none ${!item.read ? 'bg-blue-50/30' : ''}`}
@@ -92,16 +111,20 @@ const NotificationCenter: React.FC = () => {
                 }
                 title={
                   <div className="flex justify-between items-start">
-                    <Text strong={!item.read} style={{ fontSize: 13 }}>{item.title}</Text>
-                    {!item.read && item.priority === 'high' && <Tag color="error" bordered={false} style={{ fontSize: 10, margin: 0 }}>紧急</Tag>}
+                    <Text strong={!item.read} style={{ fontSize: 13 }}>
+                      {(item.titles && item.titles[i18n.language]) || item.title}
+                    </Text>
+                    {!item.read && item.priority === 'high' && <Tag color="error" bordered={false} style={{ fontSize: 10, margin: 0 }}>{t('notifications.high_priority')}</Tag>}
                   </div>
                 }
                 description={
                   <div className="mt-1">
                     <div className={`text-xs ${item.read ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {item.content}
+                      {(item.contents && item.contents[i18n.language]) || item.content}
                     </div>
-                    <div className="text-[10px] text-gray-400 mt-1">{item.time}</div>
+                    <div className="text-[10px] text-gray-400 mt-1">
+                      {dayjs(item.timestamp).locale(getDayjsLocale(i18n.language)).fromNow()}
+                    </div>
                   </div>
                 }
               />
@@ -111,7 +134,7 @@ const NotificationCenter: React.FC = () => {
       </div>
       
       <div className="border-t border-gray-100 mt-2 pt-2 text-center">
-        <Button type="link" block size="small" onClick={() => navigate('/notifications')}>查看全部历史通知</Button>
+        <Button type="link" block size="small" onClick={() => navigate('/notifications')}>{t('notifications.view_all')}</Button>
       </div>
     </div>
   );

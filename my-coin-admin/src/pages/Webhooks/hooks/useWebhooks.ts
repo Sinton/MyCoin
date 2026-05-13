@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { App } from 'antd';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { getWebhookLogs, getWebhookStats } from '@/api/webhooks';
 import { exportToCSV } from '@/utils/csv';
 import type { WebhookLog } from '@/types';
 
 export const useWebhooks = () => {
+  const { t } = useTranslation();
   const { message } = App.useApp();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedLog, setSelectedLog] = useState<WebhookLog | null>(null);
@@ -34,18 +36,18 @@ export const useWebhooks = () => {
   // --- Export Logic ---
   const handleExport = () => {
     if (logsData.length === 0) return;
-    message.loading('正在导出 Webhook 日志...', 0.5);
+    message.loading(t('orders.export.preparing'), 0.5);
     const headers = {
-      id: '通知 ID',
-      event: '事件类型',
-      product: '产品标识',
-      status: '处理状态',
-      latency: '响应耗时(ms)',
-      time: '接收时间'
+      id: t('webhooks.columns.id'),
+      event: t('webhooks.columns.event'),
+      product: t('webhooks.columns.product'),
+      status: t('webhooks.columns.status'),
+      latency: t('webhooks.columns.latency'),
+      time: t('webhooks.columns.time')
     };
     setTimeout(() => {
       exportToCSV(logsData, 'MyCoin_Webhook_Logs', headers);
-      message.success('日志导出成功');
+      message.success(t('orders.export.success'));
     }, 600);
   };
 
@@ -63,7 +65,7 @@ export const useWebhooks = () => {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    message.success('内容已复制到剪贴板');
+    message.success(t('common.copy_success'));
   };
 
   return {

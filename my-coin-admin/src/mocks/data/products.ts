@@ -30,8 +30,18 @@ export let LIVE_PRODUCTS: Product[] = [
       { key: 'FEAT_REPORT', label: '高级报表', sort: 3, category: 'feature' }
     ],
     locales: [
-      { lang: 'en_US', name: 'Pro Monthly', description: 'Unlimited features for pro users' },
-      { lang: 'ja_JP', name: 'Pro マンスリー', description: 'プロユーザー向けの無制限の功能' },
+      { 
+        lang: 'en_US', 
+        name: 'Pro Monthly', 
+        description: 'Unlimited features for pro users',
+        features: ['Unlimited Transactions', 'Multi-device Sync', 'Advanced Reports']
+      },
+      { 
+        lang: 'ja_JP', 
+        name: 'Pro マンスリー', 
+        description: 'プロユーザー向けの無制限の機能',
+        features: ['無制限の記帳', 'マルチデバイス同期', '高度なレポート']
+      },
     ]
   },
   {
@@ -51,7 +61,18 @@ export let LIVE_PRODUCTS: Product[] = [
       { key: 'FEAT_OFFLINE', label: '离线模式', sort: 5, category: 'experience' }
     ],
     locales: [
-      { lang: 'en_US', name: 'Plus Yearly', description: 'Best value for essential features' },
+      { 
+        lang: 'en_US', 
+        name: 'Plus Yearly', 
+        description: 'Best value for essential features',
+        features: ['Unlimited Transactions', 'Offline Mode']
+      },
+      { 
+        lang: 'ja_JP', 
+        name: 'Plus アニュアル', 
+        description: '基本機能に最適なバリュー',
+        features: ['無制限の記帳', 'オフラインモード']
+      }
     ]
   },
   {
@@ -70,7 +91,20 @@ export let LIVE_PRODUCTS: Product[] = [
       { key: 'FEAT_UNLIMITED', label: '无限次记账', sort: 1, category: 'feature' },
       { key: 'FEAT_AI', label: 'AI 财务顾问', sort: 4, category: 'feature' }
     ],
-    locales: []
+    locales: [
+      { 
+        lang: 'en_US', 
+        name: 'Lifetime Membership', 
+        description: 'Unlock all features forever with a single payment',
+        features: ['Lifetime Access', 'AI Financial Advisor']
+      },
+      { 
+        lang: 'ja_JP', 
+        name: '生涯会員プラン', 
+        description: '一度の支払いで、すべての機能を永続的に利用可能',
+        features: ['無期限アクセス', 'AI 財務アドバイザー']
+      }
+    ]
   }
 ];
 

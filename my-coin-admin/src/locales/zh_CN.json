@@ -1,61 +1,88 @@
 {
   "common": {
-    "save": "保存配置",
-    "cancel": "取消修改",
-    "refresh": "同步数据",
-    "more": "查看详情",
+    "confirm": "确定",
+    "cancel": "取消",
+    "save": "保存",
+    "refresh": "刷新",
+    "more": "更多",
     "copy": "复制",
-    "copy_success": "复制成功",
-    "preview_badge": "{{lang}} 预览",
+    "delete": "删除",
+    "export": "导出数据",
+    "total": "总计",
+    "pending": "待处理",
+    "select_feature": "请选择一项权益",
+    "copy_success": "已成功复制到剪贴板",
     "comparison": {
       "vs_yesterday": "较昨日",
       "vs_last_week": "较上周"
     },
+    "currency": {
+      "cny": "人民币",
+      "usd": "美元",
+      "jpy": "日元",
+      "krw": "韩元"
+    },
     "status": {
-      "success": "正常",
-      "error": "异常",
+      "success": "成功",
+      "error": "失败",
       "pending": "处理中",
-      "active": "已激活",
       "inactive": "未激活",
       "refunded": "已退款"
+    },
+    "tabs": {
+      "all": "全部"
+    },
+    "ranges": {
+      "last_7_days": "最近 7 天",
+      "last_30_days": "最近 30 天"
+    },
+    "validation": {
+      "required": "该字段为必填项",
+      "invalid": "输入格式不正确"
     }
   },
   "menu": {
     "dashboard": "控制台",
-    "products": "订阅管理",
     "orders": "订单管理",
+    "products": "订阅套餐",
     "webhooks": "Webhook 日志",
-    "notifications": "通知中心",
-    "settings": "系统设置"
+    "settings": "系统设置",
+    "notifications": "系统通知"
   },
   "dashboard": {
     "title": "运营概览",
-    "subtitle": "实时监控您的业务核心指标与增长趋势",
+    "subtitle": "全平台核心业务数据实时监控与分析",
+    "recent_activity": "实时动态",
     "revenue_trend": "7日营收趋势分析",
     "product_dist": "全平台订阅占比",
-    "recent_activity": "最近系统动态",
     "stats": {
       "revenue": "累计营收",
       "users": "活跃用户",
-      "order_value": "客单价 (ARPU)",
-      "health": "业务健康度"
+      "order_value": "平均客单价",
+      "health": "系统健康度"
     }
   },
   "settings": {
-    "title": "系统设置",
-    "subtitle": "配置管理后台的全局偏好、开发者权限及系统行为",
+    "title": "系统中心设置",
+    "subtitle": "管理控制台偏好、开发者凭据及查看系统运行状态",
     "tabs": {
-      "general": "通用设置",
+      "general": "常规设置",
       "developer": "开发者选项",
       "about": "关于系统"
     },
     "general": {
-      "lang_label": "全局预览语言",
-      "lang_help": "设置管理后台数据的默认预览语种（如产品名、通知内容等）",
-      "refresh_label": "数据自动刷新",
+      "lang_label": "界面语言",
+      "lang_help": "设置控制台界面的显示语言",
+      "default_lang": "系统默认",
+      "languages": {
+        "zh_CN": "简体中文",
+        "zh_TW": "繁体中文",
+        "en_US": "英语 (English)",
+        "ja_JP": "日语 (日本語)"
+      },
+      "refresh_label": "自动刷新",
       "refresh_help": "开启后，控制台数据将每隔 30 秒自动同步一次",
       "theme_label": "系统主题颜色",
-      "default_lang": "系统默认",
       "notifications": "系统通知",
       "email_label": "异常告警邮件",
       "email_help": "当 Webhook 处理失败超过阈值时发送通知",
@@ -65,6 +92,7 @@
     "developer": {
       "sandbox_label": "沙盒测试模式",
       "sandbox_help": "开启后，所有的订单请求将指向 Apple/Google 的沙盒环境",
+      "api_label": "系统 API 端点 (API Endpoint)",
       "secret_label": "系统应用密钥 (App Secret)",
       "secret_help": "用于服务器间通信的安全校验，请妥善保管",
       "reset_secret": "重置密钥"
@@ -74,29 +102,183 @@
       "env": "运行环境",
       "os": "操作系统",
       "browser": "浏览器内核"
+    },
+    "messages": {
+      "save_success": "配置已成功保存并实时生效",
+      "reset_secret_success": "密钥重置成功",
+      "cancel_info": "修改已取消",
+      "copy_secret": "密钥已复制"
+    },
+    "reset_confirm": {
+      "title": "重置 Webhook 密钥？",
+      "content": "重置后，现有的 Webhook 验证将失效，您需要同步更新生产环境的验证逻辑。"
     }
   },
   "orders": {
     "title": "订单管理",
-    "subtitle": "查询、筛选并管理全平台的订单流水与退款状态",
+    "subtitle": "查询、筛选并管理全平台的交易记录与退款状态",
+    "stats": {
+      "today_orders": "今日订单数",
+      "today_revenue": "今日营收",
+      "refund_orders": "退款订单",
+      "active_users": "活跃付费用户"
+    },
+    "export": {
+      "no_data": "暂无可导出的交易数据",
+      "preparing": "正在准备导出文件...",
+      "success": "数据导出成功！"
+    },
     "columns": {
-      "id": "订单编号",
-      "user": "购买用户",
+      "id": "订单 ID",
+      "user": "用户信息",
       "product": "购买产品",
-      "amount": "订单金额",
-      "status": "交易状态",
+      "amount": "支付金额",
+      "status": "状态",
       "time": "下单时间",
-      "platform": "支付平台",
+      "platform": "来源平台",
       "action": "操作"
     }
   },
   "products": {
+    "title": "订阅管理中心",
+    "stats": {
+      "active": "在线套餐",
+      "features": "权益池素材: {{count}} 项",
+      "last_update": "最后更新: {{time}}",
+      "just_now": "刚刚"
+    },
+    "actions": {
+      "new": "发布新套餐",
+      "library": "素材库",
+      "online": "点击上架",
+      "offline": "点击下架"
+    },
+    "search_placeholder": "搜索套餐名称、ID 或商店 SKU...",
+    "empty_result": "未找到符合条件的套餐",
+    "messages": {
+      "delete_demo": "演示环境暂不支持删除，请使用下架功能",
+      "save_demo": "保存成功（演示环境）",
+      "localize_demo": "本地化配置已更新（演示环境）"
+    },
+    "library": {
+      "title": "标准权益素材库",
+      "categories": {
+        "all": "全部权益",
+        "feature": "功能特性",
+        "experience": "用户体验",
+        "storage": "存储空间",
+        "service": "专属服务",
+        "entitlement": "核心权益"
+      },
+      "columns": {
+        "name": "权益名称",
+        "code": "权益代号",
+        "category": "类别",
+        "sort": "权重",
+        "action": "操作"
+      },
+      "actions": {
+        "add": "添加权益",
+        "search": "搜索权益名称或代号",
+        "new_item": "新权益项",
+        "update_success": "权益信息已更新"
+      }
+    },
+    "no_desc": "该方案暂无详细营销描述内容",
     "offline": "已下架",
     "configure": "配置套餐",
     "cycles": {
       "month": "月度",
       "year": "年度",
       "forever": "终身"
+    },
+    "edit": {
+      "title_edit": "配置订阅方案",
+      "title_add": "发布新方案",
+      "id_label": "产品 ID",
+      "id_help": "该 ID 一经创建不可修改，用于服务端逻辑识别",
+      "name_label": "方案名称",
+      "name_placeholder": "例如: 黄金会员",
+      "price_label": "基础价格",
+      "currency_label": "货币单位",
+      "cycle_label": "计费周期",
+      "platform_bind": "上架商店 (SKU 绑定)",
+      "features_title": "包含权益配置",
+      "no_features": "尚未配置任何权益项",
+      "add_feature": "添加新的权益",
+      "features_full": "权益池项已全部添加",
+      "feature_category": {
+        "feature": "功能特性",
+        "experience": "用户体验",
+        "storage": "存储空间",
+        "service": "专属服务",
+        "entitlement": "核心权益",
+        "other": "其他"
+      }
+    },
+    "localization": {
+      "title": "多语言展示配置",
+      "tip": "配置该套餐在不同地区商店显示的名称 and 营销描述。如果不配置，客户端将默认显示主名称。",
+      "add_new": "添加新的语言配置",
+      "empty": "尚未添加任何本地化配置",
+      "columns": {
+        "lang": "目标语言",
+        "name": "展示名称",
+        "desc": "营销描述 (Description)"
+      },
+      "placeholders": {
+        "name": "输入该地区的展示名称",
+        "desc": "输入该地区的营销描述文案"
+      }
+    }
+  },
+  "webhooks": {
+    "title": "Webhook 监控看板",
+    "subtitle": "实时追踪全平台支付回调事件与重试状态",
+    "search_placeholder": "搜索订单号、端点 URL 或事件名称...",
+    "detail_title": "事件详情",
+    "payload": "请求报文 (Payload)",
+    "response": "响应内容 (Response body)",
+    "copy_payload": "复制报文",
+    "tabs": {
+      "all": "全部日志",
+      "success": "成功推送",
+      "failed": "推送失败"
+    },
+    "stats": {
+      "total_24h": "24h 请求总数",
+      "success_rate": "请求成功率",
+      "alerts": "异常告警数"
+    },
+    "columns": {
+      "id": "事件 ID",
+      "status": "状态",
+      "event": "事件类型",
+      "product": "关联产品",
+      "url": "回调地址",
+      "latency": "延迟",
+      "time": "触发时间",
+      "action": "详情"
+    }
+  },
+  "notifications": {
+    "title": "消息中心",
+    "subtitle": "查看系统通知、订单动态以及异常告警记录",
+    "mark_all_read": "全部标记为已读",
+    "mark_read": "标记已读",
+    "already_read": "已读",
+    "clear_all": "清空所有记录",
+    "clear_confirm": "确定要清空所有的历史通知记录吗？",
+    "empty": "暂无新消息",
+    "high_priority": "紧急",
+    "view_all": "查看全部消息",
+    "history_tip": "系统仅保留最近 30 天的消息记录",
+    "tabs": {
+      "all": "全部消息",
+      "unread": "未读",
+      "order": "订单动态",
+      "alert": "异常告警",
+      "system": "系统通知"
     }
   }
 }

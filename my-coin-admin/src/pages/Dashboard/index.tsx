@@ -24,7 +24,7 @@ const Dashboard: React.FC = () => {
         subtitle={t('dashboard.subtitle')}
         extra={
           <>
-            <Button icon={<CalendarOutlined />}>最近7天</Button>
+            <Button icon={<CalendarOutlined />}>{t('common.ranges.last_7_days')}</Button>
             <Button 
               type="primary" 
               icon={<ReloadOutlined spin={loading.stats} />} 

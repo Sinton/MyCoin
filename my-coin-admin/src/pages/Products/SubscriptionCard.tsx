@@ -25,28 +25,24 @@ const getCycleConfig = (cycle: string) => {
     case 'month': return {
       icon: <ThunderboltOutlined />,
       color: '#1677ff',
-      label: '月度',
       headerBg: '#e6f4ff',
       bodyBg: '#f0f7ff'
     };
     case 'year': return {
       icon: <RocketOutlined />,
       color: '#faad14',
-      label: '年度',
       headerBg: '#fffbe6',
       bodyBg: '#fffef0'
     };
     case 'forever': return {
       icon: <CrownOutlined />,
       color: '#722ed1',
-      label: '终身',
       headerBg: '#f9f0ff',
       bodyBg: '#fcf9ff'
     };
     default: return {
       icon: <RocketOutlined />,
       color: '#595959',
-      label: '标准',
       headerBg: '#f5f5f5',
       bodyBg: '#fafafa'
     };
@@ -141,7 +137,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               icon={isActive ? cfg.icon : <StopOutlined />}
               style={{ backgroundColor: 'white', color: themeColor, borderRadius: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}
             />
-            <Tooltip title={isActive ? "点击下架" : "点击上架"}>
+            <Tooltip title={isActive ? t('products.actions.offline') : t('products.actions.online')}>
               <Switch
                 size="small"
                 checked={isActive}
@@ -160,7 +156,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       <div className="p-6 flex-1 flex flex-col transition-colors duration-500" style={{ backgroundColor: isActive ? cfg.bodyBg : '#f9f9f9' }}>
         <div className="mb-4 bg-white/40 p-2 rounded border border-white/60 min-h-[44px]">
           <Text type="secondary" style={{ fontSize: 12, display: 'block', lineHeight: '1.4' }}>
-            {displayDesc || '暂无描述信息'}
+            {displayDesc || t('products.no_desc')}
           </Text>
         </div>
 
@@ -210,11 +206,11 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
         <div className="flex justify-between items-center">
           <Space size={8}>
-            <Tooltip title={t('common.more')}>
+            <Tooltip title={t('common.delete')}>
               <Popconfirm
-                title={t('common.more') + '?'}
+                title={t('common.delete') + '?'}
                 onConfirm={() => onDelete(pkg.id)}
-                okText={t('common.save')}
+                okText={t('common.confirm')}
                 cancelText={t('common.cancel')}
                 okButtonProps={{ danger: true }}
                 disabled={isActive}
@@ -228,7 +224,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                 />
               </Popconfirm>
             </Tooltip>
-            <Tooltip title={t('menu.settings')}>
+            <Tooltip title={t('products.localization.title')}>
               <Button
                 type="text"
                 icon={<GlobalOutlined />}

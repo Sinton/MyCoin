@@ -35,7 +35,7 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = ({ data, onUpdate }) => 
                   options={[
                     { value: 'master', label: t('settings.general.default_lang') },
                     { value: 'zh_CN', label: '简体中文' },
-                    { value: 'zh_TW', label: '繁体中文' },
+                    { value: 'zh_TW', label: '繁體中文' },
                     { value: 'en_US', label: 'English' },
                     { value: 'ja_JP', label: '日本語' },
                   ]}

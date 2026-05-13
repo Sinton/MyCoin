@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { App } from 'antd';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { getSettings, updateSettings, resetWebhookSecret } from '@/api/settings';
 
 export const useSettings = () => {
+  const { t } = useTranslation();
   const { message, modal } = App.useApp();
   const queryClient = useQueryClient();
 
@@ -29,26 +31,26 @@ export const useSettings = () => {
   const saveMutation = useMutation({
     mutationFn: updateSettings,
     onSuccess: () => {
-      message.success('配置已成功保存并实时生效');
+      message.success(t('settings.messages.save_success'));
       queryClient.invalidateQueries({ queryKey: ['settings'] });
     }
   });
 
   const resetSecretMutation = useMutation({
     mutationFn: resetWebhookSecret,
-    onSuccess: (res) => {
-      message.success('密钥重置成功');
+    onSuccess: () => {
+      message.success(t('settings.messages.reset_secret_success'));
       queryClient.invalidateQueries({ queryKey: ['settings'] });
     }
   });
 
   const handleResetSecret = () => {
     modal.confirm({
-      title: '重置 Webhook 密钥？',
-      content: '重置后，现有的 Webhook 验证将失效，您需要同步更新生产环境的验证逻辑。',
-      okText: '确定重置',
+      title: t('settings.reset_confirm.title'),
+      content: t('settings.reset_confirm.content'),
+      okText: t('common.confirm'),
       okType: 'danger',
-      cancelText: '取消',
+      cancelText: t('common.cancel'),
       onOk: () => resetSecretMutation.mutate()
     });
   };
@@ -59,7 +61,7 @@ export const useSettings = () => {
 
   const handleCancel = () => {
     setLocalSettings(JSON.parse(JSON.stringify(settings)));
-    message.info('修改已取消');
+    message.info(t('settings.messages.cancel_info'));
   };
 
   const updateLocalSettings = (path: string, value: any) => {
@@ -87,7 +89,7 @@ export const useSettings = () => {
       updateLocalSettings,
       copySecret: (text: string) => {
         navigator.clipboard.writeText(text);
-        message.success('密钥已复制');
+        message.success(t('settings.messages.copy_secret'));
       }
     }
   };

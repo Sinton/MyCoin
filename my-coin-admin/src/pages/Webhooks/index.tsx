@@ -8,6 +8,7 @@ import {
   SearchOutlined, ReloadOutlined, BugOutlined, 
   CheckCircleOutlined, HistoryOutlined
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import PageHeader from '@/components/common/PageHeader';
 import StatCard from '@/components/common/StatCard';
 import type { WebhookLog } from '@/types';
@@ -17,20 +18,21 @@ import WebhookDetailDrawer from './components/WebhookDetailDrawer';
 const { Text } = Typography;
 
 const WebhookContent: React.FC = () => {
+  const { t } = useTranslation();
   const { 
     stats, filteredData, loading, filter, drawer, actions 
   } = useWebhooks();
 
   const columns: ColumnsType<WebhookLog> = [
     {
-      title: '通知 ID',
+      title: t('webhooks.columns.id'),
       dataIndex: 'id',
       key: 'id',
       width: 180,
       render: (id) => <Text code className="text-xs font-mono">{id}</Text>,
     },
     {
-      title: '事件类型',
+      title: t('webhooks.columns.event'),
       dataIndex: 'event',
       key: 'event',
       render: (event) => {
@@ -44,24 +46,24 @@ const WebhookContent: React.FC = () => {
       },
     },
     {
-      title: '产品标识',
+      title: t('webhooks.columns.product'),
       dataIndex: 'product',
       key: 'product',
       render: (text) => <Text type="secondary" className="text-xs">{text}</Text>
     },
     {
-      title: '处理状态',
+      title: t('webhooks.columns.status'),
       dataIndex: 'status',
       key: 'status',
       render: (status) => (
         <Badge 
           status={status === 'success' ? 'success' : 'error'} 
-          text={status === 'success' ? '已完成' : '失败'} 
+          text={status === 'success' ? t('common.status.success') : t('common.status.error')} 
         />
       ),
     },
     {
-      title: '响应耗时',
+      title: t('webhooks.columns.latency'),
       dataIndex: 'latency',
       key: 'latency',
       sorter: (a, b) => a.latency - b.latency,
@@ -72,19 +74,19 @@ const WebhookContent: React.FC = () => {
       )
     },
     {
-      title: '接收时间',
+      title: t('webhooks.columns.time'),
       dataIndex: 'time',
       key: 'time',
       width: 170,
-      render: (t) => <Text type="secondary" className="text-xs">{t}</Text>
+      render: (t_str) => <Text type="secondary" className="text-xs">{t_str}</Text>
     },
     {
-      title: '操作',
+      title: t('orders.columns.action'),
       key: 'action',
       fixed: 'right',
       width: 80,
       render: (_, record) => (
-        <Button type="link" size="small" onClick={() => actions.showDetails(record)}>详情</Button>
+        <Button type="link" size="small" onClick={() => actions.showDetails(record)}>{t('common.more')}</Button>
       ),
     },
   ];
@@ -92,13 +94,13 @@ const WebhookContent: React.FC = () => {
   return (
     <div className="max-w-[1600px] mx-auto">
       <PageHeader 
-        title="Webhook 事件监控"
-        subtitle="全平台订阅回调事件实时追踪与排错"
+        title={t('webhooks.title')}
+        subtitle={t('webhooks.subtitle')}
         onExport={actions.handleExport}
         extra={
           <>
-            <Button icon={<ReloadOutlined spin={loading.stats} />} onClick={() => actions.refetchStats()}>刷新</Button>
-            <Button type="primary">报警配置</Button>
+            <Button icon={<ReloadOutlined spin={loading.stats} />} onClick={() => actions.refetchStats()}>{t('common.refresh')}</Button>
+            <Button type="primary">{t('menu.settings')}</Button>
           </>
         }
       />
@@ -106,7 +108,7 @@ const WebhookContent: React.FC = () => {
       <Row gutter={[16, 16]} className="mb-6">
         <Col xs={24} lg={8}>
           <StatCard 
-            title="24H 通知总量"
+            title={t('webhooks.stats.total_24h')}
             value={stats?.total24h || 0}
             icon={<HistoryOutlined />}
             color="#1677ff"
@@ -115,7 +117,7 @@ const WebhookContent: React.FC = () => {
         </Col>
         <Col xs={24} lg={8}>
           <StatCard 
-            title="通知成功率"
+            title={t('webhooks.stats.success_rate')}
             value={`${stats?.successRate || 0}%`}
             icon={<CheckCircleOutlined />}
             color="#52c41a"
@@ -124,7 +126,7 @@ const WebhookContent: React.FC = () => {
         </Col>
         <Col xs={24} lg={8}>
           <StatCard 
-            title="异常告警"
+            title={t('webhooks.stats.alerts')}
             value={stats?.alertCount || 0}
             icon={<BugOutlined />}
             color="#ff4d4f"
@@ -141,16 +143,16 @@ const WebhookContent: React.FC = () => {
             onChange={filter.setActiveTab}
             className="mb-[-16px]"
             items={[
-              { label: '全部记录', key: 'all' },
-              { label: '处理成功', key: 'success' },
-              { label: '处理失败', key: 'failed' },
+              { label: t('webhooks.tabs.all'), key: 'all' },
+              { label: t('webhooks.tabs.success'), key: 'success' },
+              { label: t('webhooks.tabs.failed'), key: 'failed' },
             ]}
           />
         }
         extra={
           <Space wrap>
             <Input 
-              placeholder="搜索通知 ID / 产品..." 
+              placeholder={t('webhooks.search_placeholder')} 
               prefix={<SearchOutlined />} 
               style={{ width: 280 }}
               value={filter.searchText}
@@ -161,7 +163,7 @@ const WebhookContent: React.FC = () => {
               icon={<ReloadOutlined spin={loading.logsRefetching} />} 
               onClick={() => actions.refetchLogs()}
             >
-              刷新列表
+              {t('common.refresh')}
             </Button>
           </Space>
         }
@@ -173,7 +175,7 @@ const WebhookContent: React.FC = () => {
           size="middle"
           pagination={{ 
             pageSize: 15,
-            showTotal: (total) => `共 ${total} 条日志`,
+            showTotal: (total) => `${t('common.total')} ${total}`,
             showSizeChanger: true
           }} 
         />

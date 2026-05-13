@@ -1,6 +1,7 @@
 import React from 'react';
 import { Typography, Space, Divider, Button } from 'antd';
 import { ExportOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 const { Title, Text } = Typography;
 
@@ -19,6 +20,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   stats,
   onExport,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
       {/* 左侧标题区 */}
@@ -38,7 +41,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
       <Space size="small" wrap>
         {onExport && (
           <Button icon={<ExportOutlined />} onClick={onExport}>
-            导出
+            {t('common.export')}
           </Button>
         )}
         {extra}

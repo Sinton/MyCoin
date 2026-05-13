@@ -39,7 +39,7 @@ const DeveloperSettings: React.FC<DeveloperSettingsProps> = ({
                 </Button>
               </Space.Compact>
             </Form.Item>
-            <Form.Item label="API Endpoint" style={{ marginBottom: 0 }}>
+            <Form.Item label={t('settings.developer.api_label')} style={{ marginBottom: 0 }}>
               <Input 
                 value={data?.apiEndpoint} 
                 readOnly 
