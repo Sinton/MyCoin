@@ -1,0 +1,301 @@
+{
+  "common": {
+    "edit": "編集",
+    "confirm": "確定",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "refresh": "更新",
+    "more": "詳細",
+    "copy": "コピー",
+    "delete": "削除",
+    "export": "データ出力",
+    "total": "合計",
+    "unit_items": "項目",
+    "pending": "保留中",
+    "select_feature": "特典を選択してください",
+    "copy_success": "クリップボードにコピーしました",
+    "comparison": {
+      "vs_yesterday": "前日比",
+      "vs_last_week": "前週比"
+    },
+    "currency": {
+      "cny": "人民元",
+      "usd": "米ドル",
+      "jpy": "日本円",
+      "krw": "韓国ウォン"
+    },
+    "status": {
+      "success": "成功",
+      "error": "失敗",
+      "pending": "処理中",
+      "inactive": "未アクティブ",
+      "refunded": "返金済み"
+    },
+    "tabs": {
+      "all": "すべて"
+    },
+    "ranges": {
+      "last_7_days": "過去7日間",
+      "last_30_days": "過去30日間"
+    },
+    "validation": {
+      "required": "この項目は必須です",
+      "invalid": "入力形式が正しくありません"
+    }
+  },
+  "menu": {
+    "dashboard": "ダッシュボード",
+    "orders": "注文管理",
+    "products": "購読プラン",
+    "webhooks": "Webhookログ",
+    "settings": "システム設定",
+    "notifications": "通知"
+  },
+  "dashboard": {
+    "title": "運営概要",
+    "subtitle": "全プラットフォームのコアビジネスデータのリアルタイム監視と分析",
+    "recent_activity": "アクティビティ",
+    "revenue_trend": "7日間の収益トレンド",
+    "product_dist": "購読プラン比率",
+    "stats": {
+      "revenue": "累計収益",
+      "users": "アクティブユーザー",
+      "order_value": "平均注文単価",
+      "health": "システム状態"
+    },
+    "messages": {
+      "refresh_success": "ダッシュボードのデータが更新されました"
+    }
+  },
+  "settings": {
+    "title": "システム設定センター",
+    "subtitle": "コンソールの設定、開発者認証、およびシステムステータスの管理",
+    "tabs": {
+      "general": "全般",
+      "developer": "開発者オプション",
+      "about": "システムについて"
+    },
+    "general": {
+      "lang_label": "表示言語",
+      "lang_help": "コンソールの表示言語を設定します",
+      "default_lang": "システムデフォルト",
+      "languages": {
+        "zh_CN": "簡体中国語",
+        "zh_TW": "繁体中国語",
+        "en_US": "英語",
+        "ja_JP": "日本語"
+      },
+      "refresh_label": "自動更新",
+      "refresh_help": "有効にすると、ダッシュボードのデータが30秒ごとに自動更新されます",
+      "theme_label": "システムテーマ",
+      "notifications": "システム通知",
+      "email_label": "異常アラートメール",
+      "email_help": "Webhookの処理失敗がしきい値を超えた場合に通知を送信します",
+      "browser_label": "ブラウザ通知",
+      "browser_help": "リアルタイムの注文完了をデスクトップ通知で受け取ります"
+    },
+    "developer": {
+      "sandbox_label": "サンドボックスモード",
+      "sandbox_help": "有効にすると、すべての注文リクエストがApple/Googleのサンドボックス環境に向けられます",
+      "api_label": "APIエンドポイント",
+      "secret_label": "App Secret",
+      "secret_help": "サーバー間通信用の安全なキーです。大切に保管してください。",
+      "reset_secret": "キーをリセット"
+    },
+    "about": {
+      "version": "バージョン",
+      "env": "環境",
+      "os": "OS",
+      "browser": "ブラウザ"
+    },
+    "messages": {
+      "save_success": "設定が保存され、即座に適用されました",
+      "reset_secret_success": "キーがリセットされました",
+      "cancel_info": "変更がキャンセルされました",
+      "copy_secret": "キーをクリップボードにコピーしました"
+    },
+    "reset_confirm": {
+      "title": "Webhookキーをリセットしますか？",
+      "content": "リセット後、既存のWebhook検証は失敗します。本番環境の検証ロジックを更新する必要があります。"
+    }
+  },
+  "orders": {
+    "title": "注文管理",
+    "subtitle": "全プラットフォームの取引記録と返金ステータスの照会、フィルタリング、管理",
+    "stats": {
+      "today_orders": "本日の注文数",
+      "today_revenue": "本日の収益",
+      "refund_orders": "返金注文",
+      "active_users": "アクティブ有料ユーザー"
+    },
+    "export": {
+      "no_data": "エクスポート可能なデータがありません",
+      "preparing": "エクスポートファイルを準備中...",
+      "success": "データのエクスポートに成功しました！"
+    },
+    "columns": {
+      "id": "注文ID",
+      "user": "ユーザー情報",
+      "product": "購入製品",
+      "amount": "支払金額",
+      "status": "ステータス",
+      "time": "注文日時",
+      "platform": "プラットフォーム",
+      "action": "操作"
+    },
+    "detail_title": "取引の詳細",
+    "actions": {
+      "view": "詳細を表示",
+      "refund": "返金をリクエスト"
+    },
+    "detail": {
+      "user_name": "ユーザー名",
+      "user_id": "ユーザー ID (UID)"
+    }
+  },
+  "products": {
+    "title": "購読管理センター",
+    "stats": {
+      "active": "オンラインプラン",
+      "features": "特典プール: {{count}} 項目",
+      "last_update": "最終更新: {{time}}",
+      "just_now": "たった今"
+    },
+    "actions": {
+      "new": "新規プラン公開",
+      "library": "素材ライブラリ",
+      "online": "公開する",
+      "offline": "非公開にする"
+    },
+    "search_placeholder": "プラン名、ID、またはSKUで検索...",
+    "empty_result": "該当するプランが見つかりません",
+    "messages": {
+      "delete_demo": "デモ環境では削除できません。非公開機能を使用してください。",
+      "save_demo": "保存に成功しました（デモモード）",
+      "localize_demo": "ローカライズ設定が更新されました（デモモード）"
+    },
+    "library": {
+      "title": "標準特典ライブラリ",
+      "categories": {
+        "all": "すべての特典",
+        "feature": "機能性",
+        "experience": "UX体験",
+        "storage": "ストレージ",
+        "service": "専属サポート",
+        "entitlement": "コア特典"
+      },
+      "columns": {
+        "name": "特典名",
+        "code": "特典コード",
+        "category": "カテゴリ",
+        "sort": "優先度",
+        "action": "操作"
+      },
+      "actions": {
+        "add": "特典を追加",
+        "search": "特典名またはコードで検索",
+        "new_item": "新規特典項目",
+        "update_success": "特典情報が更新されました"
+      }
+    },
+    "no_desc": "このプランには詳細な説明がありません",
+    "offline": "非公開",
+    "configure": "プラン設定",
+    "cycles": {
+      "month": "月額",
+      "year": "年額",
+      "forever": "買い切り"
+    },
+    "edit": {
+      "title_suffix": "プラン",
+      "title_edit": "購読プランの設定",
+      "title_add": "新規プランの公開",
+      "id_label": "製品ID",
+      "id_help": "一度作成すると変更できません。サーバー側の識別に使用されます。",
+      "name_label": "プラン名",
+      "name_placeholder": "例: ゴールド会員",
+      "price_label": "基本料金",
+      "currency_label": "通貨",
+      "cycle_label": "請求サイクル",
+      "platform_bind": "ストアSKU連携",
+      "currency_symbol": "¥",
+      "features_title": "特典構成",
+      "no_features": "特典が設定されていません",
+      "add_feature": "新規特典を追加",
+      "configuring_new": "新しい特典を設定中...",
+      "features_full": "利用可能なすべての特典が追加されました",
+      "feature_category": {
+        "feature": "機能性",
+        "experience": "UX体験",
+        "storage": "ストレージ",
+        "service": "専属サポート",
+        "entitlement": "コア特典",
+        "other": "その他"
+      }
+    },
+    "localization": {
+      "title": "多言語表示設定",
+      "tip": "各地域のストアで表示される名称と説明を設定します。設定しない場合、マスター名称が表示されます。",
+      "add_new": "言語設定を追加",
+      "empty": "ローカライズ設定がありません",
+      "columns": {
+        "lang": "対象言語",
+        "name": "表示名称",
+        "desc": "マーケティング説明"
+      },
+      "placeholders": {
+        "name": "地域別の表示名称を入力",
+        "desc": "地域別のマーケティング文言を入力"
+      }
+    }
+  },
+  "webhooks": {
+    "title": "Webhook 監視ボード",
+    "subtitle": "プラットフォーム全体の支払い通知とリトライ状態のリアルタイム追跡",
+    "search_placeholder": "注文番号、エンドポイントURL、イベント名で検索...",
+    "detail_title": "イベント詳細",
+    "payload": "リクエストペイロード",
+    "response": "レスポンスボディ",
+    "copy_payload": "ペイロードをコピー",
+    "tabs": {
+      "all": "すべてのログ",
+      "success": "送信成功",
+      "failed": "送信失敗"
+    },
+    "stats": {
+      "total_24h": "24h リクエスト総数",
+      "success_rate": "成功率",
+      "alerts": "異常アラート数"
+    },
+    "columns": {
+      "id": "イベントID",
+      "status": "ステータス",
+      "event": "イベントタイプ",
+      "product": "関連製品",
+      "url": "通知先URL",
+      "latency": "遅延",
+      "time": "発生日時",
+      "action": "詳細"
+    }
+  },
+  "notifications": {
+    "title": "通知センター",
+    "subtitle": "システム通知、注文アップデート、および異常アラートの確認",
+    "mark_all_read": "すべて既読にする",
+    "mark_read": "既読にする",
+    "already_read": "既読",
+    "clear_all": "履歴をクリア",
+    "clear_confirm": "すべての通知履歴をクリアしてもよろしいですか？",
+    "empty": "新しい通知はありません",
+    "high_priority": "緊急",
+    "view_all": "すべての通知を表示",
+    "history_tip": "システムは過去30日間の履歴のみを保持します",
+    "tabs": {
+      "all": "すべてのメッセージ",
+      "unread": "未読",
+      "order": "注文関連",
+      "alert": "アラート",
+      "system": "システム"
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import { App } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useConfigStore } from '@/store';
 import { 
   getDashboardStats, 
@@ -10,9 +11,10 @@ import {
 } from '@/api/dashboard';
 
 export const useDashboard = () => {
+  const { t } = useTranslation();
   const { message } = App.useApp();
   const navigate = useNavigate();
-  const { previewLang } = useConfigStore();
+  const { language } = useConfigStore();
 
   // --- Data Fetching ---
   const { data: statsRes, isLoading: isStatsLoading, refetch: refetchStats } = useQuery({
@@ -41,18 +43,18 @@ export const useDashboard = () => {
   // 动态处理图表语言
   const distData = (distRes?.data || []).map(item => ({
     ...item,
-    type: (previewLang === 'master' ? item.type : item.names?.[previewLang]) || item.type
+    type: item.names?.[language] || item.type
   }));
 
   // 动态处理动态列表语言
   const activities = (activityRes?.data || []).map(item => ({
     ...item,
-    title: (previewLang === 'master' ? item.title : item.i18n?.[previewLang]) || item.title
+    title: item.i18n?.[language] || item.title
   }));
 
   const handleRefresh = async () => {
     await refetchStats();
-    message.success('仪表盘数据已刷新');
+    message.success(t('dashboard.messages.refresh_success'));
   };
 
   // --- Chart Configurations ---
@@ -88,12 +90,12 @@ export const useDashboard = () => {
         labelSpacing: 8,
       },
       y: { 
-        labelFormatter: (v: any) => `¥${v}`,
+        labelFormatter: (v: any) => `${t('products.edit.currency_symbol')}${v}`,
         grid: { stroke: '#f0f0f0' }, // 浅灰色网格线
       }
     },
     tooltip: {
-      items: [{ channel: 'y', name: '营收金额', valueFormatter: (v: any) => `¥${v.toLocaleString()}` }],
+      items: [{ channel: 'y', name: t('dashboard.revenue_trend'), valueFormatter: (v: any) => `${t('products.edit.currency_symbol')}${v.toLocaleString()}` }],
     },
   };
 
@@ -120,13 +122,13 @@ export const useDashboard = () => {
       },
     },
     tooltip: {
-      items: [{ channel: 'y', name: '占比', valueFormatter: (v: any) => `${v}%` }],
+      items: [{ channel: 'y', name: t('dashboard.product_dist'), valueFormatter: (v: any) => `${v}%` }],
     },
     annotations: [
       {
         type: 'text',
         style: {
-          text: '订阅分布',
+          text: t('dashboard.product_dist'),
           x: '50%',
           y: '50%',
           textAlign: 'center',

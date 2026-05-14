@@ -1,0 +1,302 @@
+{
+  "common": {
+    "edit": "편집",
+    "confirm": "확인",
+    "cancel": "취소",
+    "save": "저장",
+    "refresh": "새로고침",
+    "more": "더 보기",
+    "copy": "복사",
+    "delete": "삭제",
+    "export": "데이터 내보내기",
+    "total": "합계",
+    "unit_items": "개",
+    "pending": "대기 중",
+    "select_feature": "항목을 선택하세요",
+    "copy_success": "클립보드에 복사되었습니다",
+    "comparison": {
+      "vs_yesterday": "어제 대비",
+      "vs_last_week": "지난주 대비"
+    },
+    "currency": {
+      "cny": "위안",
+      "usd": "달러",
+      "jpy": "엔",
+      "krw": "원"
+    },
+    "status": {
+      "success": "성공",
+      "error": "실패",
+      "pending": "처리 중",
+      "inactive": "비활성",
+      "refunded": "환불됨"
+    },
+    "tabs": {
+      "all": "전체"
+    },
+    "ranges": {
+      "last_7_days": "최근 7일",
+      "last_30_days": "최근 30일"
+    },
+    "validation": {
+      "required": "이 필드는 필수입니다",
+      "invalid": "올바르지 않은 형식입니다"
+    }
+  },
+  "menu": {
+    "dashboard": "대시보드",
+    "orders": "주문 관리",
+    "products": "구독 요금제",
+    "webhooks": "Webhook 로그",
+    "settings": "시스템 설정",
+    "notifications": "알림"
+  },
+  "dashboard": {
+    "title": "운영 개요",
+    "subtitle": "전 플랫폼 핵심 비즈니스 데이터 실시간 모니터링 및 분석",
+    "recent_activity": "최근 활동",
+    "revenue_trend": "7일 수익 트렌드",
+    "product_dist": "구독 요금제 비중",
+    "stats": {
+      "revenue": "누적 수익",
+      "users": "활성 사용자",
+      "order_value": "평균 주문 금액",
+      "health": "시스템 상태"
+    },
+    "messages": {
+      "refresh_success": "대시보드 데이터가 새로고침되었습니다"
+    }
+  },
+  "settings": {
+    "title": "시스템 설정 센터",
+    "subtitle": "콘솔 기본 설정, 개발자 인증 정보 및 시스템 상태 관리",
+    "tabs": {
+      "general": "일반 설정",
+      "developer": "개발자 옵션",
+      "about": "정보"
+    },
+    "general": {
+      "lang_label": "표시 언어",
+      "lang_help": "관리 콘솔의 표시 언어를 설정합니다",
+      "default_lang": "시스템 기본값",
+      "languages": {
+        "zh_CN": "중국어(간체)",
+        "zh_TW": "중국어(번체)",
+        "en_US": "영어",
+        "ja_JP": "일본어",
+        "ko_KR": "한국어"
+      },
+      "refresh_label": "자동 새로고침",
+      "refresh_help": "활성화하면 대시보드 데이터가 30초마다 자동으로 동기화됩니다",
+      "theme_label": "시스템 테마",
+      "notifications": "시스템 알림",
+      "email_label": "이상 알림 이메일",
+      "email_help": "Webhook 처리 실패가 임계값을 초과할 때 알림을 전송합니다",
+      "browser_label": "브라우저 푸시",
+      "browser_help": "실시간 주문 완료에 대한 데스크톱 알림을 활성화합니다"
+    },
+    "developer": {
+      "sandbox_label": "샌드박스 모드",
+      "sandbox_help": "활성화하면 모든 주문 요청이 Apple/Google 샌드박스 환경으로 전송됩니다",
+      "api_label": "API 엔드포인트",
+      "secret_label": "App Secret",
+      "secret_help": "서버 간 통신을 위한 보안 키입니다. 안전하게 보관하세요.",
+      "reset_secret": "비밀키 재설정"
+    },
+    "about": {
+      "version": "버전",
+      "env": "환경",
+      "os": "운영체제",
+      "browser": "브라우저"
+    },
+    "messages": {
+      "save_success": "설정이 성공적으로 저장되었으며 즉시 적용되었습니다",
+      "reset_secret_success": "비밀키가 재설정되었습니다",
+      "cancel_info": "변경이 취소되었습니다",
+      "copy_secret": "비밀키가 클립보드에 복사되었습니다"
+    },
+    "reset_confirm": {
+      "title": "Webhook 비밀키를 재설정하시겠습니까?",
+      "content": "재설정 후에는 기존 Webhook 인증이 실패합니다. 운영 환경의 인증 로직을 업데이트해야 합니다."
+    }
+  },
+  "orders": {
+    "title": "주문 관리",
+    "subtitle": "전 플랫폼의 거래 기록 및 환불 상태 조회, 필터링 및 관리",
+    "stats": {
+      "today_orders": "오늘 주문 수",
+      "today_revenue": "오늘 수익",
+      "refund_orders": "환불 주문",
+      "active_users": "활성 유료 사용자"
+    },
+    "export": {
+      "no_data": "내보낼 거래 데이터가 없습니다",
+      "preparing": "내보내기 파일을 준비 중...",
+      "success": "데이터 내보내기 성공!"
+    },
+    "columns": {
+      "id": "주문 ID",
+      "user": "사용자 정보",
+      "product": "구매 제품",
+      "amount": "결제 금액",
+      "status": "상태",
+      "time": "주문 시간",
+      "platform": "플랫폼",
+      "action": "작업"
+    },
+    "detail_title": "거래 상세",
+    "actions": {
+      "view": "상세 보기",
+      "refund": "환불 요청"
+    },
+    "detail": {
+      "user_name": "사용자 이름",
+      "user_id": "사용자 ID (UID)"
+    }
+  },
+  "products": {
+    "title": "구독 관리 센터",
+    "stats": {
+      "active": "활성 요금제",
+      "features": "혜택 풀: {{count}} 항목",
+      "last_update": "최종 업데이트: {{time}}",
+      "just_now": "방금 전"
+    },
+    "actions": {
+      "new": "새 요금제 게시",
+      "library": "혜택 라이브러리",
+      "online": "게시하기",
+      "offline": "게시 중단"
+    },
+    "search_placeholder": "요금제 이름, ID 또는 SKU로 검색...",
+    "empty_result": "검색 결과가 없습니다",
+    "messages": {
+      "delete_demo": "데모 환경에서는 삭제할 수 없습니다. 게시 중단 기능을 사용하세요.",
+      "save_demo": "저장 성공(데모 모드)",
+      "localize_demo": "현지화 설정이 업데이트되었습니다(데모 모드)"
+    },
+    "library": {
+      "title": "표준 혜택 라이브러리",
+      "categories": {
+        "all": "모든 혜택",
+        "feature": "기능",
+        "experience": "사용자 경험",
+        "storage": "저장 공간",
+        "service": "전담 지원",
+        "entitlement": "핵심 혜택"
+      },
+      "columns": {
+        "name": "혜택 이름",
+        "code": "혜택 코드",
+        "category": "카테고리",
+        "sort": "우선순위",
+        "action": "작업"
+      },
+      "actions": {
+        "add": "혜택 추가",
+        "search": "이름 또는 코드로 검색",
+        "new_item": "새 혜택 항목",
+        "update_success": "혜택 정보가 업데이트되었습니다"
+      }
+    },
+    "no_desc": "이 요금제에 대한 상세 설명이 없습니다",
+    "offline": "게시 중단됨",
+    "configure": "요금제 설정",
+    "cycles": {
+      "month": "월간",
+      "year": "연간",
+      "forever": "평생"
+    },
+    "edit": {
+      "title_suffix": " 요금제",
+      "title_edit": "구독 요금제 설정",
+      "title_add": "새 요금제 게시",
+      "id_label": "제품 ID",
+      "id_help": "생성 후에는 변경할 수 없습니다. 서버측 식별에 사용됩니다.",
+      "name_label": "요금제 이름",
+      "name_placeholder": "예: 골드 멤버십",
+      "price_label": "기본 요금",
+      "currency_label": "통화",
+      "cycle_label": "결제 주기",
+      "platform_bind": "스토어 SKU 연동",
+      "currency_symbol": "₩",
+      "features_title": "혜택 구성",
+      "no_features": "설정된 혜택이 없습니다",
+      "add_feature": "새 혜택 추가",
+      "configuring_new": "새 혜택 구성 중...",
+      "features_full": "사용 가능한 모든 혜택이 추가되었습니다",
+      "feature_category": {
+        "feature": "기능",
+        "experience": "사용자 경험",
+        "storage": "저장 공간",
+        "service": "전담 지원",
+        "entitlement": "핵심 혜택",
+        "other": "기타"
+      }
+    },
+    "localization": {
+      "title": "다국어 표시 설정",
+      "tip": "각 지역 스토어에 표시될 이름과 설명을 설정합니다. 설정하지 않으면 기본 이름이 표시됩니다.",
+      "add_new": "언어 설정 추가",
+      "empty": "현지화 설정이 없습니다",
+      "columns": {
+        "lang": "대상 언어",
+        "name": "표시 이름",
+        "desc": "마케팅 설명"
+      },
+      "placeholders": {
+        "name": "지역별 표시 이름 입력",
+        "desc": "지역별 마케팅 설명 입력"
+      }
+    }
+  },
+  "webhooks": {
+    "title": "Webhook 모니터링 보드",
+    "subtitle": "전 플랫폼 결제 알림 및 재시도 상태 실시간 추적",
+    "search_placeholder": "주문 번호, 엔드포인트 URL, 이벤트 이름으로 검색...",
+    "detail_title": "이벤트 상세",
+    "payload": "요청 페이로드",
+    "response": "응답 바디",
+    "copy_payload": "페이로드 복사",
+    "tabs": {
+      "all": "모든 로그",
+      "success": "전송 성공",
+      "failed": "전송 실패"
+    },
+    "stats": {
+      "total_24h": "24시간 요청 총수",
+      "success_rate": "성공률",
+      "alerts": "이상 알림 수"
+    },
+    "columns": {
+      "id": "이벤트 ID",
+      "status": "상태",
+      "event": "이벤트 유형",
+      "product": "관련 제품",
+      "url": "대상 URL",
+      "latency": "지연 시간",
+      "time": "발생 시간",
+      "action": "상세"
+    }
+  },
+  "notifications": {
+    "title": "알림 센터",
+    "subtitle": "시스템 알림, 주문 업데이트 및 이상 알림 확인",
+    "mark_all_read": "모두 읽음으로 표시",
+    "mark_read": "읽음으로 표시",
+    "already_read": "읽음",
+    "clear_all": "내역 삭제",
+    "clear_confirm": "모든 알림 내역을 삭제하시겠습니까?",
+    "empty": "새 알림이 없습니다",
+    "high_priority": "긴급",
+    "view_all": "모든 알림 보기",
+    "history_tip": "시스템은 최근 30일간의 내역만 유지합니다",
+    "tabs": {
+      "all": "모든 메시지",
+      "unread": "미읽음",
+      "order": "주문 알림",
+      "alert": "경고",
+      "system": "시스템"
+    }
+  }
+}

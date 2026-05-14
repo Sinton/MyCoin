@@ -1,0 +1,301 @@
+{
+  "common": {
+    "edit": "編輯",
+    "confirm": "確定",
+    "cancel": "取消",
+    "save": "儲存",
+    "refresh": "重新整理",
+    "more": "更多",
+    "copy": "複製",
+    "delete": "刪除",
+    "export": "匯出數據",
+    "total": "總計",
+    "unit_items": "項",
+    "pending": "待處理",
+    "select_feature": "請選擇一項權益",
+    "copy_success": "已成功複製到剪貼簿",
+    "comparison": {
+      "vs_yesterday": "較昨日",
+      "vs_last_week": "較上週"
+    },
+    "currency": {
+      "cny": "人民幣",
+      "usd": "美元",
+      "jpy": "日圓",
+      "krw": "韓元"
+    },
+    "status": {
+      "success": "成功",
+      "error": "失敗",
+      "pending": "處理中",
+      "inactive": "未激活",
+      "refunded": "已退款"
+    },
+    "tabs": {
+      "all": "全部"
+    },
+    "ranges": {
+      "last_7_days": "最近 7 天",
+      "last_30_days": "最近 30 天"
+    },
+    "validation": {
+      "required": "該欄位為必填項",
+      "invalid": "輸入格式不正確"
+    }
+  },
+  "menu": {
+    "dashboard": "控制台",
+    "orders": "訂單管理",
+    "products": "訂閱套餐",
+    "webhooks": "Webhook 日誌",
+    "settings": "系統設置",
+    "notifications": "系統通知"
+  },
+  "dashboard": {
+    "title": "營運概覽",
+    "subtitle": "全平台核心業務數據實時監控與分析",
+    "recent_activity": "實時動態",
+    "revenue_trend": "7日營收趨勢分析",
+    "product_dist": "全平台訂閱佔比",
+    "stats": {
+      "revenue": "累計營收",
+      "users": "活躍用戶",
+      "order_value": "平均客單價",
+      "health": "系統健康度"
+    },
+    "messages": {
+      "refresh_success": "儀表盤數據已刷新"
+    }
+  },
+  "settings": {
+    "title": "系統中心設置",
+    "subtitle": "管理控制台偏好、開發者憑據及查看系統運行狀態",
+    "tabs": {
+      "general": "常規設置",
+      "developer": "開發者選項",
+      "about": "關於系統"
+    },
+    "general": {
+      "lang_label": "界面語言",
+      "lang_help": "設置控制台界面的顯示語言",
+      "default_lang": "系統默認",
+      "languages": {
+        "zh_CN": "簡体中文",
+        "zh_TW": "繁體中文",
+        "en_US": "英語 (English)",
+        "ja_JP": "日語 (日本語)"
+      },
+      "refresh_label": "自動刷新",
+      "refresh_help": "開啟後，控制台數據將每隔 30 秒自動同步一次",
+      "theme_label": "系統主題顏色",
+      "notifications": "系統通知",
+      "email_label": "異常告警郵件",
+      "email_help": "當 Webhook 處理失敗超過閾值時發送通知",
+      "browser_label": "瀏覽器推送",
+      "browser_help": "開啟實時訂單成交的桌面通知"
+    },
+    "developer": {
+      "sandbox_label": "沙盒測試模式",
+      "sandbox_help": "開啟後，所有的訂單請求將指向 Apple/Google 的沙盒環境",
+      "api_label": "系統 API 端點 (API Endpoint)",
+      "secret_label": "系統應用密鑰 (App Secret)",
+      "secret_help": "用於伺服器間通信的安全校驗，請妥善保管",
+      "reset_secret": "重置密鑰"
+    },
+    "about": {
+      "version": "當前版本",
+      "env": "運行環境",
+      "os": "操作系統",
+      "browser": "瀏覽器內核"
+    },
+    "messages": {
+      "save_success": "配置已成功儲存並實時生效",
+      "reset_secret_success": "密鑰重置成功",
+      "cancel_info": "修改已取消",
+      "copy_secret": "密鑰已複製"
+    },
+    "reset_confirm": {
+      "title": "重置 Webhook 密鑰？",
+      "content": "重置後，現有的 Webhook 驗證將失效，您需要同步更新生產環境的驗證邏輯。"
+    }
+  },
+  "orders": {
+    "title": "訂單管理",
+    "subtitle": "查詢、篩選並管理全平台的交易記錄與退款狀態",
+    "stats": {
+      "today_orders": "今日訂單數",
+      "today_revenue": "今日營收",
+      "refund_orders": "退款訂單",
+      "active_users": "活躍付費用戶"
+    },
+    "export": {
+      "no_data": "暫無可匯出的交易數據",
+      "preparing": "正在準備匯出文件...",
+      "success": "數據匯出成功！"
+    },
+    "columns": {
+      "id": "訂單 ID",
+      "user": "用戶信息",
+      "product": "購買產品",
+      "amount": "支付金額",
+      "status": "狀態",
+      "time": "下單時間",
+      "platform": "來源平台",
+      "action": "操作"
+    },
+    "detail_title": "業務詳情",
+    "actions": {
+      "view": "查看詳情",
+      "refund": "申請退款"
+    },
+    "detail": {
+      "user_name": "用戶姓名",
+      "user_id": "用戶 ID (UID)"
+    }
+  },
+  "products": {
+    "title": "訂閱管理中心",
+    "stats": {
+      "active": "在線套餐",
+      "features": "權益池素材: {{count}} 項",
+      "last_update": "最後更新: {{time}}",
+      "just_now": "剛剛"
+    },
+    "actions": {
+      "new": "發布新套餐",
+      "library": "素材庫",
+      "online": "點擊上架",
+      "offline": "點擊下架"
+    },
+    "search_placeholder": "搜索套餐名稱、ID 或商店 SKU...",
+    "empty_result": "未找到符合條件的套餐",
+    "messages": {
+      "delete_demo": "演示環境暫不支持刪除，請使用下架功能",
+      "save_demo": "儲存成功（演示環境）",
+      "localize_demo": "本地化配置已更新（演示環境）"
+    },
+    "library": {
+      "title": "標準權益素材庫",
+      "categories": {
+        "all": "全部權益",
+        "feature": "功能特性",
+        "experience": "用戶體驗",
+        "storage": "存儲空間",
+        "service": "專屬服務",
+        "entitlement": "核心權益"
+      },
+      "columns": {
+        "name": "權益名稱",
+        "code": "權益代號",
+        "category": "類別",
+        "sort": "權重",
+        "action": "操作"
+      },
+      "actions": {
+        "add": "添加權益",
+        "search": "搜索權益名稱或代號",
+        "new_item": "新權益項",
+        "update_success": "權益信息已更新"
+      }
+    },
+    "no_desc": "該方案暫無詳細營銷描述內容",
+    "offline": "已下架",
+    "configure": "配置套餐",
+    "cycles": {
+      "month": "月度",
+      "year": "年度",
+      "forever": "終身"
+    },
+    "edit": {
+      "title_suffix": "套餐",
+      "title_edit": "配置訂閱方案",
+      "title_add": "發布新方案",
+      "id_label": "產品 ID",
+      "id_help": "該 ID 一經創建不可修改，用於服務端邏輯識別",
+      "name_label": "方案名稱",
+      "name_placeholder": "例如: 黃金會員",
+      "price_label": "基礎價格",
+      "currency_label": "貨幣單位",
+      "cycle_label": "計費週期",
+      "platform_bind": "上架商店 (SKU 綁定)",
+      "currency_symbol": "¥",
+      "features_title": "包含權益配置",
+      "no_features": "尚未配置任何權益項",
+      "add_feature": "添加新的權益",
+      "configuring_new": "正在配置新權益...",
+      "features_full": "權益池項已全部添加",
+      "feature_category": {
+        "feature": "功能特性",
+        "experience": "用戶體驗",
+        "storage": "存儲空間",
+        "service": "專屬服務",
+        "entitlement": "核心權益",
+        "other": "其他"
+      }
+    },
+    "localization": {
+      "title": "多語言展示配置",
+      "tip": "配置該套餐在不同地區商店顯示的名稱及營銷描述。如果不配置，客戶端將默認顯示主名稱。",
+      "add_new": "添加新的語言配置",
+      "empty": "尚未添加任何本地化配置",
+      "columns": {
+        "lang": "目標語言",
+        "name": "展示名稱",
+        "desc": "營銷描述 (Description)"
+      },
+      "placeholders": {
+        "name": "輸入該地區的展示名稱",
+        "desc": "輸入該地區的營銷描述文案"
+      }
+    }
+  },
+  "webhooks": {
+    "title": "Webhook 監控看板",
+    "subtitle": "實時追踪全平台支付回調事件與重試狀態",
+    "search_placeholder": "搜索訂單號、端點 URL 或事件名稱...",
+    "detail_title": "事件詳情",
+    "payload": "請求報文 (Payload)",
+    "response": "響應內容 (Response body)",
+    "copy_payload": "複製報文",
+    "tabs": {
+      "all": "全部日誌",
+      "success": "成功推送",
+      "failed": "推送失敗"
+    },
+    "stats": {
+      "total_24h": "24h 請求總數",
+      "success_rate": "請求成功率",
+      "alerts": "異常告警數"
+    },
+    "columns": {
+      "id": "事件 ID",
+      "status": "狀態",
+      "event": "事件類型",
+      "product": "關聯产品",
+      "url": "回調地址",
+      "latency": "延遲",
+      "time": "觸發時間",
+      "action": "詳情"
+    }
+  },
+  "notifications": {
+    "title": "消息中心",
+    "subtitle": "查看系統通知、訂單動態以及異常告警記錄",
+    "mark_all_read": "全部標記為已讀",
+    "mark_read": "標記已讀",
+    "already_read": "已讀",
+    "clear_all": "清空所有記錄",
+    "clear_confirm": "確定要清空所有的歷史通知記錄嗎？",
+    "empty": "暫無新消息",
+    "high_priority": "緊急",
+    "view_all": "查看全部消息",
+    "history_tip": "系統僅保留最近 30 天的消息記錄",
+    "tabs": {
+      "all": "全部消息",
+      "unread": "未讀",
+      "order": "訂單動態",
+      "alert": "異常告警",
+      "system": "系統通知"
+    }
+  }
+}

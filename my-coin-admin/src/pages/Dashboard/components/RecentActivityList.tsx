@@ -35,8 +35,8 @@ const RecentActivityList: React.FC<RecentActivityListProps> = ({
   onMore
 }) => {
   const { t } = useTranslation();
-  const { previewLang } = useConfigStore();
-  const locale = LOCALE_MAP[previewLang] || 'en';
+  const { language } = useConfigStore();
+  const locale = LOCALE_MAP[language] || 'en';
 
   return (
     <Card 

@@ -14,6 +14,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import 'dayjs/locale/zh-cn';
 import 'dayjs/locale/en';
 import 'dayjs/locale/ja';
+import 'dayjs/locale/ko';
 
 import PageHeader from '@/components/common/PageHeader';
 import { useNotifications } from './hooks/useNotifications';
@@ -34,6 +35,7 @@ const Notifications: React.FC = () => {
     switch (lang) {
       case 'zh_CN': return 'zh-cn';
       case 'ja_JP': return 'ja';
+      case 'ko_KR': return 'ko';
       default: return 'en';
     }
   };

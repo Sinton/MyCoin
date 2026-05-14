@@ -18,26 +18,24 @@ export const useUIStore = create<UIState>((set) => ({
 }));
 
 // ============================================================
-// 2. Config Store：管理需要持久化的全局偏好配置
-//    替代原 ConfigContext，使用 zustand/middleware 的 persist
-//    自动同步至 localStorage，无需手动调用 setItem
+// 2. Config Store：管理全局偏好配置
 // ============================================================
 interface ConfigState {
-  previewLang: string;
-  setPreviewLang: (lang: string) => void;
+  language: string;
+  setLanguage: (lang: string) => void;
 }
 
 export const useConfigStore = create<ConfigState>()(
   persist(
     (set) => ({
-      previewLang: 'master',
-      setPreviewLang: (lang) => {
-        set({ previewLang: lang });
+      language: 'zh_CN', // 默认简体中文
+      setLanguage: (lang) => {
+        set({ language: lang });
         i18n.changeLanguage(lang);
       },
     }),
     {
-      name: 'mycoin_config', // localStorage key
+      name: 'mycoin_config',
     }
   )
 );

@@ -24,7 +24,7 @@ const { Title, Text } = Typography;
 const ProductContent: React.FC = () => {
   const { t } = useTranslation();
   const { message } = App.useApp();
-  const { previewLang } = useConfigStore();
+  const { language } = useConfigStore();
   const queryClient = useQueryClient();
   
   const [searchKey, setSearchKey] = useState('');
@@ -80,21 +80,27 @@ const ProductContent: React.FC = () => {
 
   // --- 原始搜索过滤逻辑 ---
   const filteredList = useMemo(() => {
-    return packageList.filter(p => {
-      const search = searchKey.toLowerCase();
-      // 获取当前语言下的名称
-      let currentName = p.name;
-      if (previewLang !== 'master' && p.locales) {
-        const locale = p.locales.find((l: any) => l.lang === previewLang);
-        if (locale) currentName = locale.name;
+    let list = packageList;
+    
+    // 搜索过滤
+    if (searchKey) {
+      list = list.filter(p => 
+        p.name.toLowerCase().includes(searchKey.toLowerCase()) || 
+        p.id.toLowerCase().includes(searchKey.toLowerCase())
+      );
+    }
+    
+    // 多语言预览逻辑: 尝试替换显示名称
+    return list.map(p => {
+      if (p.locales) {
+        const locale = p.locales.find((l: any) => l.lang === language);
+        if (locale) {
+          return { ...p, name: locale.name, description: locale.description };
+        }
       }
-      
-      return currentName.toLowerCase().includes(search) || 
-        p.id.toLowerCase().includes(search) ||
-        p.appleId?.toLowerCase().includes(search) ||
-        p.googleId?.toLowerCase().includes(search);
+      return p;
     });
-  }, [packageList, searchKey, previewLang]);
+  }, [packageList, searchKey, language]);
 
   return (
     <div className="max-w-[1600px] mx-auto">
@@ -159,6 +165,7 @@ const ProductContent: React.FC = () => {
             <Col xs={24} lg={12} xl={8} key={pkg.id}>
                <SubscriptionCard 
                 pkg={pkg} 
+                featureLibrary={featureLibrary}
                 onEdit={(p) => { setEditingPackage(p); setEditModalOpen(true); }} 
                 onLocalize={(p) => { setLocalizingPackage(p); setLocModalOpen(true); }}
                 onDelete={(id) => message.info(t('products.messages.delete_demo'))}

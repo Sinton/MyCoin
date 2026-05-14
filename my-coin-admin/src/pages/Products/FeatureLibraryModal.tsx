@@ -26,9 +26,10 @@ export const getFeatureCategories = (t: any) => [
 
 export interface FeatureLibraryItem {
   key: string;
-  label: string;
+  name: string;
   sort: number;
   category: string;
+  locales?: Record<string, string>;
 }
 
 interface FeatureLibraryModalProps {
@@ -44,7 +45,8 @@ const FeatureLibraryModal: React.FC<FeatureLibraryModalProps> = ({
   library, 
   onChange 
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language;
   const FEATURE_CATEGORIES = getFeatureCategories(t);
   
   const [libCategory, setLibCategory] = useState('all');
@@ -66,7 +68,7 @@ const FeatureLibraryModal: React.FC<FeatureLibraryModalProps> = ({
 
   const handleAddNewRow = () => {
     const newKey = `FEAT_NEW_${Date.now()}`;
-    const newItem = { key: newKey, label: t('products.library.actions.new_item'), sort: 99, category: libCategory === 'all' ? 'feature' : libCategory };
+    const newItem = { key: newKey, name: t('products.library.actions.new_item'), sort: 99, category: libCategory === 'all' ? 'feature' : libCategory };
     onChange([newItem, ...library]);
     setEditingKey(newKey);
     setEditRowData(newItem);
@@ -119,23 +121,23 @@ const FeatureLibraryModal: React.FC<FeatureLibraryModalProps> = ({
           
           <div className="flex-1 overflow-auto p-4">
             <Table 
-              dataSource={library.filter(i => (libCategory === 'all' || i.category === libCategory) && (i.label.toLowerCase().includes(libSearchText.toLowerCase()) || i.key.toLowerCase().includes(libSearchText.toLowerCase())))}
+              dataSource={library.filter(i => (libCategory === 'all' || i.category === libCategory) && (i.name?.toLowerCase().includes(libSearchText.toLowerCase()) || i.key?.toLowerCase().includes(libSearchText.toLowerCase())))}
               pagination={false}
               size="middle"
               rowKey="key"
               columns={[
                 { 
                   title: t('products.library.columns.name'), 
-                  dataIndex: 'label', 
+                  dataIndex: 'name', 
                   render: (text, record) => record.key === editingKey ? (
                     <Input 
-                      value={editRowData.label} 
-                      onChange={e => setEditRowData({...editRowData, label: e.target.value})} 
+                      value={editRowData.name} 
+                      onChange={e => setEditRowData({...editRowData, name: e.target.value})} 
                       variant="borderless"
                       className="bg-gray-100 hover:bg-gray-200 rounded px-2"
                       style={{ height: '28px', fontSize: '14px' }}
                     />
-                  ) : <Text strong className="px-2 block" style={{ height: '28px', lineHeight: '28px', fontSize: '14px' }}>{text}</Text>
+                  ) : <Text strong className="px-2 block" style={{ height: '28px', lineHeight: '28px', fontSize: '14px' }}>{record.locales?.[currentLang] || text}</Text>
                 },
                 { 
                   title: t('products.library.columns.code'), 

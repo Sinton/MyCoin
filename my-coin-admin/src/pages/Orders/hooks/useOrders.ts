@@ -8,7 +8,7 @@ import { type Order } from '@/types';
 export const useOrders = () => {
   const { message } = App.useApp();
   const queryClient = useQueryClient();
-  const { previewLang } = useConfigStore();
+  const { language } = useConfigStore();
   
   const [activeTab, setActiveTab] = useState('all');
   const [selectedUserKey, setSelectedUserKey] = useState<string | undefined>(undefined);
@@ -68,13 +68,13 @@ export const useOrders = () => {
     // 映射多语言产品名称
     let result = ordersData.map(order => ({
       ...order,
-      product: (previewLang === 'master' ? order.product : order.productNames?.[previewLang]) || order.product
+      product: order.productNames?.[language] || order.product
     }));
 
     if (activeTab !== 'all') result = result.filter(item => item.status === activeTab);
     if (selectedUserKey) result = result.filter(item => item.user === selectedUserKey);
     return result;
-  }, [ordersData, activeTab, selectedUserKey, previewLang]);
+  }, [ordersData, activeTab, selectedUserKey, language]);
 
   const refreshAll = () => {
     refetchStats();

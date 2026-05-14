@@ -3,6 +3,7 @@ import type { ApiResponse } from '@/types';
 export interface SystemSettings {
   general: {
     previewLang: string;
+    language: string;
     compactMode: boolean;
     emailAlert: boolean;
     browserNotification: boolean;
@@ -21,7 +22,7 @@ export interface SystemSettings {
 
 export const MOCK_SETTINGS: SystemSettings = {
   general: {
-    previewLang: 'master',
+    language: 'zh_CN',
     compactMode: true,
     emailAlert: true,
     browserNotification: false,

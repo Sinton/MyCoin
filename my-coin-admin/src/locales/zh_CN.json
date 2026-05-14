@@ -1,5 +1,6 @@
 {
   "common": {
+    "edit": "编辑",
     "confirm": "确定",
     "cancel": "取消",
     "save": "保存",
@@ -9,6 +10,7 @@
     "delete": "删除",
     "export": "导出数据",
     "total": "总计",
+    "unit_items": "项",
     "pending": "待处理",
     "select_feature": "请选择一项权益",
     "copy_success": "已成功复制到剪贴板",
@@ -60,6 +62,9 @@
       "users": "活跃用户",
       "order_value": "平均客单价",
       "health": "系统健康度"
+    },
+    "messages": {
+      "refresh_success": "仪表盘数据已刷新"
     }
   },
   "settings": {
@@ -137,6 +142,15 @@
       "time": "下单时间",
       "platform": "来源平台",
       "action": "操作"
+    },
+    "detail_title": "业务详情",
+    "actions": {
+      "view": "查看详情",
+      "refund": "申请退款"
+    },
+    "detail": {
+      "user_name": "用户姓名",
+      "user_id": "用户 ID (UID)"
     }
   },
   "products": {
@@ -193,6 +207,7 @@
       "forever": "终身"
     },
     "edit": {
+      "title_suffix": "套餐",
       "title_edit": "配置订阅方案",
       "title_add": "发布新方案",
       "id_label": "产品 ID",
@@ -203,9 +218,11 @@
       "currency_label": "货币单位",
       "cycle_label": "计费周期",
       "platform_bind": "上架商店 (SKU 绑定)",
+      "currency_symbol": "¥",
       "features_title": "包含权益配置",
       "no_features": "尚未配置任何权益项",
       "add_feature": "添加新的权益",
+      "configuring_new": "正在配置新权益...",
       "features_full": "权益池项已全部添加",
       "feature_category": {
         "feature": "功能特性",
@@ -230,6 +247,10 @@
         "name": "输入该地区的展示名称",
         "desc": "输入该地区的营销描述文案"
       }
+    },
+    "messages": {
+      "delete_before_offline": "请先下架套餐后再删除",
+      "delete_demo": "演示环境，已模拟删除"
     }
   },
   "webhooks": {

@@ -12,11 +12,11 @@ interface GeneralSettingsProps {
 
 const GeneralSettings: React.FC<GeneralSettingsProps> = ({ data, onUpdate }) => {
   const { t } = useTranslation();
-  const { previewLang, setPreviewLang } = useConfigStore();
+  const { language, setLanguage } = useConfigStore();
 
   const handleLangChange = (val: string) => {
-    setPreviewLang(val);
-    onUpdate('general.previewLang', val);
+    setLanguage(val);
+    onUpdate('general.language', val);
   };
 
   return (
@@ -29,15 +29,15 @@ const GeneralSettings: React.FC<GeneralSettingsProps> = ({ data, onUpdate }) => 
               actions={[
                 <Select 
                   key="lang"
-                  value={data?.previewLang || previewLang} 
+                  value={language} 
                   onChange={handleLangChange} 
                   style={{ width: 140 }}
                   options={[
-                    { value: 'master', label: t('settings.general.default_lang') },
                     { value: 'zh_CN', label: '简体中文' },
                     { value: 'zh_TW', label: '繁體中文' },
                     { value: 'en_US', label: 'English' },
                     { value: 'ja_JP', label: '日本語' },
+                    { value: 'ko_KR', label: '한국어' },
                   ]}
                 />
               ]}

@@ -1,5 +1,6 @@
 {
   "common": {
+    "edit": "Edit",
     "confirm": "Confirm",
     "cancel": "Cancel",
     "save": "Save",
@@ -9,6 +10,7 @@
     "delete": "Delete",
     "export": "Export Data",
     "total": "Total",
+    "unit_items": "items",
     "pending": "Pending",
     "select_feature": "Select a feature",
     "copy_success": "Copied to clipboard",
@@ -60,6 +62,9 @@
       "users": "Active Users",
       "order_value": "Avg. Order Value",
       "health": "System Health"
+    },
+    "messages": {
+      "refresh_success": "Dashboard data refreshed"
     }
   },
   "settings": {
@@ -137,6 +142,15 @@
       "time": "Order Time",
       "platform": "Platform",
       "action": "Action"
+    },
+    "detail_title": "Transaction Details",
+    "actions": {
+      "view": "View Details",
+      "refund": "Request Refund"
+    },
+    "detail": {
+      "user_name": "Customer Name",
+      "user_id": "User ID (UID)"
     }
   },
   "products": {
@@ -193,6 +207,7 @@
       "forever": "Lifetime"
     },
     "edit": {
+      "title_suffix": " Plan",
       "title_edit": "Configure Plan",
       "title_add": "New Subscription Plan",
       "id_label": "Product ID",
@@ -203,9 +218,11 @@
       "currency_label": "Currency",
       "cycle_label": "Billing Cycle",
       "platform_bind": "Store SKU Binding",
+      "currency_symbol": "$",
       "features_title": "Included Features",
       "no_features": "No features configured yet",
       "add_feature": "Add New Feature",
+      "configuring_new": "Configuring new entitlement...",
       "features_full": "All available features have been added",
       "feature_category": {
         "feature": "Functionality",
@@ -230,6 +247,10 @@
         "name": "Enter regional display name",
         "desc": "Enter regional marketing description"
       }
+    },
+    "messages": {
+      "delete_before_offline": "Please offline the plan before deleting",
+      "delete_demo": "Demo environment: deletion simulated"
     }
   },
   "webhooks": {
