@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Typography, Card, Space, Button, Input, 
-  Row, Col, Divider, App, Empty, Skeleton
+  Flex, Divider, App, Empty, Skeleton
 } from 'antd';
 import { 
   PlusOutlined, SearchOutlined, 
@@ -11,7 +11,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useConfigStore } from '@/store';
-import { getProducts, getProductStats, updateProductStatus, getFeatureLibrary, updateFeatureLibrary } from '@/api/products';
+import { getProducts, getProductStats, updateProductStatus, getFeatureLibrary, updateFeatureLibrary, updateProduct, createProduct } from '@/api/products';
 import SubscriptionCard from './SubscriptionCard';
 import ProductEditModal from './ProductEditModal';
 import ProductLocalizationModal from './ProductLocalizationModal';
@@ -71,6 +71,20 @@ const ProductContent: React.FC = () => {
     onSuccess: (res) => {
       message.success(res.message);
       queryClient.invalidateQueries({ queryKey: ['featureLibrary'] });
+    }
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: ({ id, values }: { id: string; values: any }) => updateProduct(id, values),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    }
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (values: any) => createProduct(values),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
     }
   });
 
@@ -156,31 +170,28 @@ const ProductContent: React.FC = () => {
 
       {/* 列表渲染 - 原始交互 */}
       {isProductsLoading ? (
-        <Row gutter={[24, 24]}>
-          {[1, 2, 3].map(i => <Col xs={24} lg={12} xl={8} key={i}><Card loading variant="outlined" style={{ height: 400 }} /></Col>)}
-        </Row>
+        <Flex wrap="wrap" gap={15}>
+          {[1, 2, 3].map(i => <Card key={i} loading variant="outlined" style={{ width: 340, height: 400 }} />)}
+        </Flex>
       ) : (
-        <Row gutter={[24, 24]}>
+        <Flex wrap="wrap" gap={15}>
           {filteredList.map((pkg) => (
-            <Col xs={24} lg={12} xl={8} key={pkg.id}>
-               <SubscriptionCard 
-                pkg={pkg} 
-                featureLibrary={featureLibrary}
-                onEdit={(p) => { setEditingPackage(p); setEditModalOpen(true); }} 
-                onLocalize={(p) => { setLocalizingPackage(p); setLocModalOpen(true); }}
-                onDelete={(id) => message.info(t('products.messages.delete_demo'))}
-                onStatusChange={(id, status) => statusMutation.mutate({ id, status: status as any })}
-              />
-            </Col>
+             <SubscriptionCard 
+              key={pkg.id}
+              pkg={pkg} 
+              featureLibrary={featureLibrary}
+              onEdit={(p) => { setEditingPackage(p); setEditModalOpen(true); }} 
+              onLocalize={(p) => { setLocalizingPackage(p); setLocModalOpen(true); }}
+              onDelete={(id) => message.info(t('products.messages.delete_demo'))}
+              onStatusChange={(id, status) => statusMutation.mutate({ id, status: status as any })}
+            />
           ))}
           {filteredList.length === 0 && (
-            <Col span={24}>
-              <div className="py-20 bg-gray-50/50 rounded-2xl border-dashed border-2 flex flex-col items-center justify-center text-gray-400">
-                <Empty description={t('products.empty_result')} image={Empty.PRESENTED_IMAGE_SIMPLE} />
-              </div>
-            </Col>
+            <div className="w-full py-20 bg-gray-50/50 rounded-2xl border-dashed border-2 flex flex-col items-center justify-center text-gray-400">
+              <Empty description={t('products.empty_result')} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+            </div>
           )}
-        </Row>
+        </Flex>
       )}
 
       {/* 弹窗组件 - 原始功能 */}
@@ -194,9 +205,21 @@ const ProductContent: React.FC = () => {
         open={editModalOpen}
         onCancel={() => setEditModalOpen(false)}
         onSave={(values) => {
-           console.log('Saving product:', values);
-           setEditModalOpen(false);
-           message.success(t('products.messages.save_demo'));
+           if (editingPackage) {
+             saveMutation.mutate({ id: editingPackage.id, values }, {
+               onSuccess: () => {
+                 message.success(t('products.messages.save_demo'));
+                 setEditModalOpen(false);
+               }
+             });
+           } else {
+             createMutation.mutate(values, {
+               onSuccess: () => {
+                 message.success(t('products.messages.save_demo'));
+                 setEditModalOpen(false);
+               }
+             });
+           }
         }}
         editingProduct={editingPackage}
         featureLibrary={featureLibrary}
@@ -206,12 +229,18 @@ const ProductContent: React.FC = () => {
         open={locModalOpen}
         onCancel={() => setLocModalOpen(false)}
         onSave={(locales) => {
-           console.log('Saving locales:', locales);
-           setLocModalOpen(false);
-           message.success(t('products.messages.localize_demo'));
+           if (localizingPackage) {
+             saveMutation.mutate({ id: localizingPackage.id, values: { locales } }, {
+               onSuccess: () => {
+                 message.success(t('products.messages.localize_demo'));
+                 setLocModalOpen(false);
+               }
+             });
+           }
         }}
         initialLocales={localizingPackage?.locales || []}
         productName={localizingPackage?.name || ''}
+        productDescription={localizingPackage?.description || ''}
       />
     </div>
   );

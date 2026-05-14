@@ -109,8 +109,9 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
   return (
     <Card 
-      hoverable
-      className={`overflow-hidden border-none shadow-sm hover:shadow-xl transition-all duration-500 rounded-2xl h-full flex flex-col relative ${!isActive ? 'scale-[0.98]' : 'scale-100'}`}
+      hoverable={false}
+      className={`overflow-hidden border-none shadow-sm ${isActive ? 'hover:shadow-xl hover:-translate-y-1 transform-gpu' : ''} transition-[transform,box-shadow] duration-300 ease-out rounded-2xl h-full flex flex-col relative will-change-transform ${!isActive ? 'scale-[0.98]' : 'scale-100'}`}
+      style={{ width: 340 }}
       styles={{ body: { padding: 0, flex: 1, display: 'flex', flexDirection: 'column' } }}
     >
       {/* 已下架水印 */}
@@ -143,12 +144,19 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                 style={{ backgroundColor: 'white', color: themeColor, borderRadius: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }} 
               />
               <Tooltip title={isActive ? t('products.actions.offline') : t('products.actions.online')}>
-                <Switch 
-                  size="small" 
-                  checked={isActive} 
-                  onChange={(checked) => onStatusChange(pkg.id, checked ? 'active' : 'inactive')}
-                  style={{ backgroundColor: isActive ? '#52c41a' : '#bfbfbf', transform: 'scale(0.8)' }}
-                />
+                <Popconfirm
+                  title={isActive ? t('products.messages.confirm_offline') : t('products.messages.confirm_online')}
+                  onConfirm={() => onStatusChange(pkg.id, isActive ? 'inactive' : 'active')}
+                  okText={t('common.confirm')}
+                  cancelText={t('common.cancel')}
+                  placement="bottomRight"
+                >
+                  <Switch 
+                    size="small" 
+                    checked={isActive} 
+                    style={{ backgroundColor: isActive ? '#52c41a' : '#bfbfbf', transform: 'scale(0.8)' }}
+                  />
+                </Popconfirm>
               </Tooltip>
             </div>
          </div>

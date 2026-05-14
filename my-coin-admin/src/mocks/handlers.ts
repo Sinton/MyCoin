@@ -70,6 +70,17 @@ export const handlers = [
     }
     return HttpResponse.json({ code: 200, data: null, message: '产品配置更新成功' });
   }),
+  http.post(`${API_BASE}/products`, async ({ request }) => {
+    const values = await request.json() as any;
+    const newProduct = {
+      ...values,
+      id: values.id || `pkg_${Math.random().toString(36).substring(7)}`,
+      status: values.status || 'inactive',
+      features: values.features || []
+    };
+    LIVE_PRODUCTS.push(newProduct);
+    return HttpResponse.json({ code: 200, data: newProduct, message: '套餐发布成功' });
+  }),
   http.get(`${API_BASE}/products/features`, () => {
     return HttpResponse.json({ code: 200, data: MOCK_FEATURE_LIBRARY, message: 'success' });
   }),

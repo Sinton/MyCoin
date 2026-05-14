@@ -25,6 +25,14 @@ export const updateProduct = (id: string, values: Partial<Product>): Promise<Api
   });
 };
 
+export const createProduct = (values: Partial<Product>): Promise<ApiResponse<null>> => {
+  return request({ 
+    url: '/products', 
+    method: 'POST',
+    data: values
+  });
+};
+
 export const getFeatureLibrary = (): Promise<ApiResponse<any[]>> => {
   return request({ url: '/products/features', method: 'GET' });
 };

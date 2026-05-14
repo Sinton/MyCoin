@@ -194,7 +194,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-center mb-1">
                         <Text strong style={{ fontSize: 13 }}>{p.label}</Text>
-                        <Form.Item name={p.field} valuePropName="checked" initialValue={true} noStyle>
+                        <Form.Item name={p.field} valuePropName="checked" initialValue={false} noStyle>
                           <Switch size="small" />
                         </Form.Item>
                       </div>

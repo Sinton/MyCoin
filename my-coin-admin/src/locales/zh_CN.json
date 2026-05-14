@@ -169,11 +169,6 @@
     },
     "search_placeholder": "搜索套餐名称、ID 或商店 SKU...",
     "empty_result": "未找到符合条件的套餐",
-    "messages": {
-      "delete_demo": "演示环境暂不支持删除，请使用下架功能",
-      "save_demo": "保存成功（演示环境）",
-      "localize_demo": "本地化配置已更新（演示环境）"
-    },
     "library": {
       "title": "标准权益素材库",
       "categories": {
@@ -241,7 +236,7 @@
       "columns": {
         "lang": "目标语言",
         "name": "展示名称",
-        "desc": "营销描述 (Description)"
+        "desc": "营销描述"
       },
       "placeholders": {
         "name": "输入该地区的展示名称",
@@ -250,7 +245,12 @@
     },
     "messages": {
       "delete_before_offline": "请先下架套餐后再删除",
-      "delete_demo": "演示环境，已模拟删除"
+      "delete_demo": "演示环境暂不支持删除，请使用下架功能",
+      "save_success": "保存成功",
+      "save_demo": "保存成功（演示环境）",
+      "localize_demo": "本地化配置已更新（演示环境）",
+      "confirm_online": "确定要上架该套餐吗？上架后用户即可在商店看到并购买。",
+      "confirm_offline": "确定要下架该套餐吗？下架后新用户将无法购买，但不影响已订阅用户。"
     }
   },
   "webhooks": {

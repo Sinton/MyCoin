@@ -172,7 +172,9 @@
     "messages": {
       "delete_demo": "演示環境暫不支持刪除，請使用下架功能",
       "save_demo": "儲存成功（演示環境）",
-      "localize_demo": "本地化配置已更新（演示環境）"
+      "localize_demo": "本地化配置已更新（演示環境）",
+      "confirm_online": "確定要上架該套餐嗎？上架後用戶即可在商店看到並購買。",
+      "confirm_offline": "確定要下架該套餐嗎？下架後新用戶將無法購買，但不影響已訂閱用戶。"
     },
     "library": {
       "title": "標準權益素材庫",

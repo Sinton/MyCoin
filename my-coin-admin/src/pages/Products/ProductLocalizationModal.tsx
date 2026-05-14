@@ -18,6 +18,7 @@ interface ProductLocalizationModalProps {
   onSave: (locales: LocalizationItem[]) => void;
   initialLocales?: LocalizationItem[];
   productName: string;
+  productDescription: string;
 }
 
 const ProductLocalizationModal: React.FC<ProductLocalizationModalProps> = ({ 
@@ -25,11 +26,14 @@ const ProductLocalizationModal: React.FC<ProductLocalizationModalProps> = ({
   onCancel, 
   onSave, 
   initialLocales = [],
-  productName
+  productName,
+  productDescription
 }) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
   const { message } = App.useApp();
+
+  const LANG_ORDER = ['zh_CN', 'zh_TW', 'en_US', 'ja_JP', 'ko_KR'];
 
   const LANG_OPTIONS = [
     { value: 'zh_CN', label: '简体中文' },
@@ -41,15 +45,28 @@ const ProductLocalizationModal: React.FC<ProductLocalizationModalProps> = ({
 
   useEffect(() => {
     if (open) {
-      form.setFieldsValue({ locales: initialLocales });
+      // 自动补齐并排序：确保 5 种语言都在列表中且顺序一致
+      const fullLocales = LANG_ORDER.map(lang => {
+        const existing = initialLocales.find(l => l.lang === lang);
+        if (existing) return existing;
+        
+        // 如果是简体中文且没有配置过，则默认使用产品的主名称和描述
+        if (lang === 'zh_CN') {
+          return { lang, name: productName, description: productDescription };
+        }
+        
+        return { lang, name: '', description: '' };
+      });
+      form.setFieldsValue({ locales: fullLocales });
     }
-  }, [open, initialLocales, form]);
+  }, [open, initialLocales, form, productName, productDescription]);
 
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      onSave(values.locales || []);
-      message.success(t('common.copy_success'));
+      // 过滤掉名称为空的项，只保存有效翻译
+      const validLocales = (values.locales || []).filter((l: any) => l.name?.trim());
+      onSave(validLocales);
     } catch (error) {
       console.error('Validate Failed:', error);
     }
@@ -78,75 +95,54 @@ const ProductLocalizationModal: React.FC<ProductLocalizationModalProps> = ({
 
       <Form form={form} layout="vertical">
         <Form.List name="locales">
-          {(fields, { add, remove }) => (
-            <>
-              <Table
-                dataSource={fields}
-                pagination={false}
-                className="mb-4"
-                rowKey="key"
-                columns={[
-                  {
-                    title: t('products.localization.columns.lang'),
-                    dataIndex: 'lang',
-                    width: 180,
-                    render: (_, field) => (
-                      <Form.Item 
-                        name={[field.name, 'lang']} 
-                        rules={[{ required: true, message: t('common.validation.required') }]} 
-                        noStyle
-                      >
-                        <Select placeholder={t('products.localization.columns.lang')} size="small">
-                          {LANG_OPTIONS.map(opt => (
-                            <Option key={opt.value} value={opt.value} disabled={
-                              form.getFieldValue('locales')?.some((l: any, idx: number) => l?.lang === opt.value && idx !== field.name)
-                            }>
-                              {opt.label}
-                            </Option>
-                          ))}
-                        </Select>
+          {(fields) => (
+            <Table
+              dataSource={fields}
+              pagination={false}
+              className="mb-4"
+              rowKey="key"
+              columns={[
+                {
+                  title: t('products.localization.columns.lang'),
+                  dataIndex: 'lang',
+                  width: 150,
+                  render: (_, field) => {
+                    const langCode = form.getFieldValue(['locales', field.name, 'lang']);
+                    const langLabel = LANG_OPTIONS.find(o => o.value === langCode)?.label || langCode;
+                    return (
+                      <Form.Item name={[field.name, 'lang']} noStyle>
+                        <Text strong>{langLabel}</Text>
                       </Form.Item>
-                    )
-                  },
-                  {
-                    title: t('products.localization.columns.name'),
-                    dataIndex: 'name',
-                    render: (_, field) => (
-                      <Form.Item 
-                        name={[field.name, 'name']} 
-                        rules={[{ required: true, message: t('common.validation.required') }]} 
-                        noStyle
-                      >
-                        <Input placeholder={t('products.localization.placeholders.name')} size="small" />
-                      </Form.Item>
-                    )
-                  },
-                  {
-                    title: t('products.localization.columns.desc'),
-                    dataIndex: 'description',
-                    render: (_, field) => (
-                      <Form.Item 
-                        name={[field.name, 'description']} 
-                        noStyle
-                      >
-                        <Input.TextArea placeholder={t('products.localization.placeholders.desc')} autoSize={{ minRows: 1 }} size="small" />
-                      </Form.Item>
-                    )
-                  },
-                  {
-                    title: t('common.more'),
-                    width: 60,
-                    render: (_, field) => (
-                      <Button type="text" danger icon={<DeleteOutlined />} onClick={() => remove(field.name)} size="small" />
-                    )
+                    );
                   }
-                ]}
-                locale={{ emptyText: <Empty description={t('products.localization.empty')} image={Empty.PRESENTED_IMAGE_SIMPLE} /> }}
-              />
-              <Button type="dashed" block icon={<PlusOutlined />} onClick={() => add()}>
-                {t('products.localization.add_new')}
-              </Button>
-            </>
+                },
+                {
+                  title: t('products.localization.columns.name'),
+                  dataIndex: 'name',
+                  render: (_, field) => (
+                    <Form.Item 
+                      name={[field.name, 'name']} 
+                      noStyle
+                    >
+                      <Input placeholder={t('products.localization.placeholders.name')} size="small" />
+                    </Form.Item>
+                  )
+                },
+                {
+                  title: t('products.localization.columns.desc'),
+                  dataIndex: 'description',
+                  render: (_, field) => (
+                    <Form.Item name={[field.name, 'description']} noStyle>
+                      <Input.TextArea 
+                        placeholder={t('products.localization.placeholders.desc')} 
+                        autoSize={{ minRows: 1, maxRows: 3 }} 
+                        size="small"
+                      />
+                    </Form.Item>
+                  )
+                }
+              ]}
+            />
           )}
         </Form.List>
       </Form>

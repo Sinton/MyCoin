@@ -169,11 +169,6 @@
     },
     "search_placeholder": "Search by name, ID or SKU...",
     "empty_result": "No matching plans found",
-    "messages": {
-      "delete_demo": "Deletion is disabled in demo mode, please use offline instead",
-      "save_demo": "Saved successfully (Demo mode)",
-      "localize_demo": "Localization updated (Demo mode)"
-    },
     "library": {
       "title": "Standard Feature Pool",
       "categories": {
@@ -249,8 +244,13 @@
       }
     },
     "messages": {
-      "delete_before_offline": "Please offline the plan before deleting",
-      "delete_demo": "Demo environment: deletion simulated"
+      "delete_before_offline": "Please unpublish the plan before deleting",
+      "delete_demo": "Deletion is disabled in demo mode, please use offline instead",
+      "save_success": "Saved successfully",
+      "save_demo": "Saved successfully (Demo mode)",
+      "localize_demo": "Localization updated (Demo mode)",
+      "confirm_online": "Are you sure you want to publish this plan? It will be visible to users in the store.",
+      "confirm_offline": "Are you sure you want to unpublish this plan? New users won't be able to buy it, but active subscribers are not affected."
     }
   },
   "webhooks": {
