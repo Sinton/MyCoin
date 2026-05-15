@@ -44,6 +44,7 @@ function TableSelect<T extends object>({
       allowClear
       open={open}
       onOpenChange={setOpen}
+      dropdownMatchSelectWidth={false}
       popupRender={() => (
         <div 
           className="p-2 shadow-lg bg-white border border-gray-100 rounded-md"
@@ -53,6 +54,7 @@ function TableSelect<T extends object>({
             size="small"
             columns={columns}
             dataSource={dataSource}
+            scroll={{ x: 'max-content' }}
             pagination={{ ...pagination, size: 'small', showSizeChanger: false }}
             onRow={(record) => ({
               onClick: () => handleRowClick(record),

@@ -94,38 +94,49 @@ const Notifications: React.FC = () => {
           className="px-6"
           locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('notifications.empty')} /> }}
           renderItem={(item) => (
-            <List.Item 
-              className={`hover:bg-gray-50/50 transition-colors px-4 rounded-xl my-2 border-none ${!item.read ? 'bg-blue-50/20' : ''}`}
-              actions={[
-                !item.read ? (
-                  <Button type="link" onClick={() => actions.markRead(item.id)}>{t('notifications.mark_read')}</Button>
-                ) : <Text type="secondary" className="text-xs">{t('notifications.already_read')}</Text>,
-                <Button icon={<EyeOutlined />} type="text">{t('common.more')}</Button>
-              ]}
-            >
+            <List.Item className="border-none py-3 px-4 hover:bg-gray-50 transition-colors rounded-xl group">
               <List.Item.Meta
                 avatar={
-                  <div className={`p-3 rounded-full ${item.read ? 'bg-gray-100' : 'bg-white shadow-md'}`}>
-                    {React.cloneElement(getIcon(item.type) as React.ReactElement, { style: { fontSize: 20 } })}
+                  <div className={`w-9 h-9 flex items-center justify-center rounded-lg flex-shrink-0 ${
+                    item.type === 'order' ? 'bg-blue-50' : 
+                    item.type === 'alert' ? 'bg-red-50' : 
+                    'bg-orange-50'
+                  }`}>
+                    {React.cloneElement(getIcon(item.type) as React.ReactElement, { 
+                      className: `${
+                        item.type === 'order' ? 'text-blue-500' : 
+                        item.type === 'alert' ? 'text-red-500' : 
+                        'text-orange-500'
+                      } text-lg` 
+                    })}
                   </div>
                 }
                 title={
-                  <Space align="center">
-                    <Text strong={!item.read} className="text-sm">
-                      {(item.titles && item.titles[i18n.language]) || item.title}
-                    </Text>
-                    {!item.read && <Badge status="processing" />}
-                    {item.priority === 'high' && <Tag color="error">{t('notifications.high_priority')}</Tag>}
-                  </Space>
+                  <div className="flex justify-between items-center">
+                    <Space align="center" size={8}>
+                      <span className={`text-sm ${!item.read ? 'font-bold' : 'font-medium text-gray-700'}`}>
+                        {(item.titles && item.titles[i18n.language]) || item.title}
+                      </span>
+                      {!item.read && <Badge status="processing" color="blue" />}
+                      {item.priority === 'high' && <Tag color="error" bordered={false} className="text-[10px] px-1 line-height-[14px]">{t('notifications.high_priority')}</Tag>}
+                    </Space>
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      {!item.read && (
+                        <Button type="link" size="small" className="h-auto p-0 text-xs" onClick={() => actions.markRead(item.id)}>
+                          {t('notifications.mark_read')}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
                 }
                 description={
-                  <div className="mt-1">
-                    <div className={`text-xs ${item.read ? 'text-gray-400' : 'text-gray-600'}`}>
+                  <div className="flex justify-between items-end mt-0.5">
+                    <Text type="secondary" style={{ fontSize: 12 }} className="line-clamp-1 flex-1 pr-4">
                       {(item.contents && item.contents[i18n.language]) || item.content}
-                    </div>
-                    <div className="text-[10px] text-gray-400 mt-2">
+                    </Text>
+                    <Text type="secondary" style={{ fontSize: 11, opacity: 0.5 }} className="flex-shrink-0">
                       {dayjs(item.timestamp).locale(getDayjsLocale(i18n.language)).fromNow()}
-                    </div>
+                    </Text>
                   </div>
                 }
               />

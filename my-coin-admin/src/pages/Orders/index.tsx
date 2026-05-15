@@ -201,11 +201,14 @@ const Orders: React.FC = () => {
               value={selectedUserKey}
               onChange={setSelectedUserKey}
               dataSource={userData}
-              columns={[{ title: t('orders.columns.user'), dataIndex: 'name' }, { title: 'UID', dataIndex: 'uid' }]}
+              columns={[
+                { title: t('orders.columns.user'), dataIndex: 'name', width: 150 }, 
+                { title: 'UID', dataIndex: 'uid', width: 250 }
+              ]}
               rowKey="key"
-              dropdownWidth={300}
-              optionLabelRender={(record: any) => record.name}
-              width={160}
+              dropdownWidth={450}
+              optionLabelRender={(record: any) => `${record.name} (${record.uid})`}
+              width={200}
             />
             <Button icon={<ExportOutlined />} size="middle" onClick={handleExport}>{t('common.export')}</Button>
             <Button 
@@ -224,7 +227,11 @@ const Orders: React.FC = () => {
           dataSource={filteredData} 
           loading={isListLoading} 
           size="middle" 
-          pagination={{ pageSize: 10 }} 
+          pagination={{ 
+            pageSize: 15,
+            showTotal: (total) => `${t('common.total')} ${total}`,
+            showSizeChanger: true
+          }} 
         />
       </Card>
 

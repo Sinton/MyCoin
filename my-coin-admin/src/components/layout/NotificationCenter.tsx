@@ -107,7 +107,14 @@ const NotificationCenter: React.FC = () => {
             >
               <List.Item.Meta
                 avatar={
-                  <div className={`p-2 rounded-full ${item.read ? 'bg-gray-100' : 'bg-white shadow-sm'}`}>
+                  <div 
+                    className={`flex items-center justify-center rounded-xl ${
+                      item.type === 'order' ? 'bg-blue-50' : 
+                      item.type === 'alert' ? 'bg-red-50' : 
+                      'bg-orange-50'
+                    }`}
+                    style={{ width: 40, height: 40, flexShrink: 0 }}
+                  >
                     {getIcon(item.type)}
                   </div>
                 }
